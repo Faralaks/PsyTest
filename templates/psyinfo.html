@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block body %}
+    
+    <p>&nbsp;</p>
+    <form method="post" action={{ url_for('psyinfo', _id=_id) }}>
+        <table>
+            <thead><font size="6" face="Trebuchet MS">Изменить:</font></a></thead>
+            <tr>
+                <td><label for="loginField">Логин</label></td>
+                <td><input id="loginField" type="text" required name="login" value={{ psy_data['login'] }} required></td>
+            </tr>
+            <tr>
+                <td><label for="passwordField">Пароль</label></td>
+                <td><input id="passwordField" type="text" required name="password" value={{ dec(psy_data['pas']) }}></td>
+            </tr>
+            <tr>
+                <td><label for='DelCB'>Удален: </label></td>
+                <td><input id="DelCB" type="checkbox" value="yes" name="del" {% if psy_data['pre_del'] != None %} checked {% endif %}></td>
+            </tr>
+            <tr>
+                <td><label for="IdField">Идентификатор</label></td>
+                <td><input id="IdField" required type="text" name="ident" value={{psy_data['ident']}}></td>
+            </tr>
+            <tr>
+                <td><label for="countField">Кол-во</label></td>
+                <td><input id="countField" type="number" name="count" required value={{psy_data['count']}}></td>
+            </tr>
+            <tr>
+                <table>
+                    <thead><font size="4" face="Trebuchet MS">Тесты:</font></a></thead>
+                    <tr>
+                        <td><label for='test1'>Тест 1: </label></td>
+                        <td><input id="test1" type="checkbox" value=" 1" name="t1" {% if '1' in '1' %} checked {% endif %}></td>
+                    </tr>
+                    <tr>
+                        <td><label for='test2'>Тест 2: </label></td>
+                        <td><input id="test2" type="checkbox" value=" 2" name="t2" {% if '2' in '2' %} checked {% endif %}></td>
+                    </tr>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><input type="submit" class="btn btn-primary" value="Сохранить"></td>
+                <td colspan="1" style="text-align: center"><input type="button" class="btn btn-danger" value="Отменить" type="button" onclick="location.href='{{ url_for('admin') }}'"></td>
+            </tr>
+        </table>
+    </form>
+
+    <p>&nbsp;</p>
+    <h2 size="6" face="Trebuchet MS">Список Испытуемых выбранного психолога:</h2>
+
+    <table class="table" >
+        <thead>
+            <tr>
+                <th scope="col"><a href={{ url_for('psyinfo', _id=_id, sort_by='result') }}>Результат</a></th>
+                <th scope="col"><a href={{ url_for('psyinfo', _id=_id, sort_by='login') }}>Логин</a></th>
+                <th scope="col">Пароль</th>
+                <th scope="col"><a href={{ url_for('psyinfo', _id=_id, sort_by='grade') }}>Класс</a></th>
+                <th scope="col"><a href={{ url_for('psyinfo', _id=_id, sort_by='create_date') }}>Дата создания</a></th>
+            </tr>
+        </thead>
+        {% for testee in testees %}
+            <tr>
+                <td>{{ testee['result'] }}</td>
+                <td>{{ testee['login'] }}</td>
+                <td>{{ dec(testee['pas']) }}</td>
+                <td>{{ testee['grade'] }}</td>
+                <td>{{ t2st(testee['create_date']) }}</td>
+            </tr>
+        {% endfor %}
+
+    </table>
+{% endblock %}
