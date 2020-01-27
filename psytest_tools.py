@@ -70,15 +70,6 @@ def gen_pass(leng=8, alf=ascii_letters + digits*2):
 		pas += alf[randint(0, len(alf)-1)]
 	return pas
 
-def check_session(g, status, ses):
-    '''Проверяет, активна ли сессия и открыт ли доступ, если нет, редирект на главную'''
-    try:
-        col = get_users_col(g) 
-        count = col.count_documents({'login':ses['login'], 'pas':ses['pas'], 'pre_del':None})
-        if ses['status'] == status and now() < ses['timeout'] and count != 0:
-            return True
-        return False
-    except: return False
 
 # Функции для работы с MongoDB
 def get_db(g):
@@ -102,6 +93,21 @@ def get_users_col(g):
         users = g.users = db[g.USERS_COL_NAME]
     return users
 
+def check_session(g, ses, status):
+    """Проверяет, активна ли сессия и доступна ли ему эта страница."""
+    if True:
+        col = get_users_col(g) 
+        real_user = col.find_one({'_id':obj_id(ses['_id']),'$or':[{'pre_del':None}, {'pre_del':{'$gt':now_stamp()}}]},
+                {'_id':0,'status':1, 'login':1, 'pas':1})
+        if real_user:
+            if (now() < ses['timeout'] and
+                    real_user['status'] == status and
+                    real_user['login'] == ses['login'] and
+                    real_user['pas'] == ses['pas']):
+                return True
+        return False
+    else:#except: 
+        return False
 
 # Функции для работы с коллекцией юзеров
 def remake_users(g, yes='no'):

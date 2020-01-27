@@ -7,7 +7,7 @@ from psytest_tools import *
 
 @app.route('/admin')
 @app.route('/admin/<sort_by>')
-@decors.check_session
+@decors.check_admin
 def admin(sort_by='create_date'):
     users = get_users_col(g)
     psys = get_all_psys(g).sort(sort_by, 1)
