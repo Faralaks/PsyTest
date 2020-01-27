@@ -123,7 +123,7 @@ def add_psy(g, login, pas, ident, tests, count, added_by):
     """принимает flask.g объект, логин, пароль, идентификатор, тесты, доступное кол-во, логин создателя. 
     добавляет нового психолого в коллекию юзеров. возвращает его уникальный _id объект"""
     col = get_users_col(g)
-    _id = col.insert_one({'login':str(login).capitalize(), 'pas': encrypt(str(pas)), 'ident':str(ident), 'added_by':obj_id(added_by), 'tests':tests,
+    _id = col.insert_one({'login':str(login).capitalize(), 'pas': encrypt(str(pas)), 'ident':str(ident), 'added_by':added_by, 'tests':tests,
             'count':int(count), 'status':'psy', 'counter':0, 'create_date':now_stamp(), 'pre_del':None}).inserted_id
     return _id
 
@@ -134,10 +134,10 @@ def add_testees(g, counter, count, login, grade, tests, added_by, current):
     insert_testees = []
     for i in range(counter, counter+count):
         insert_testees.append({'login':login.capitalize()+str(i), 'tests':tests, 'grade':str(grade).upper(),
-        'pas':encrypt(gen_pass(12)), 'added_by':obj_id(added_by),
+        'pas':encrypt(gen_pass(12)), 'added_by':added_by,
         'status':'testee', 'result':'Тестируется', 'pre_del':None, 'create_date':now_stamp()})
     col.insert_many(insert_testees)
-    col.update_one({'_id':obj_id(added_by)}, {'$set':{'counter':counter+count, 'count':current-count}})
+    col.update_one({'login':added_by}, {'$set':{'counter':counter+count, 'count':current-count}})
     return
 
 def get_all_psys(g):
@@ -149,7 +149,7 @@ def get_all_psys(g):
 def get_testees(g, added_by_psy):
     """принимает flask.g объект, _id психолога. возвращает список всех испытуемых этого психолога"""
     col = get_users_col(g)
-    return col.find({'status':'testee', 'added_by':obj_id(added_by_psy), 'pre_del':None},
+    return col.find({'status':'testee', 'added_by':added_by_psy, 'pre_del':None},
                 {'result':1,'login':1, 'pas':1, 'grade':1, 'tests':1, 'create_date':1,})
 
 
