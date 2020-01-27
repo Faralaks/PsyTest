@@ -1,13 +1,13 @@
-from application import app
-from flask import render_template, redirect, url_for, g
-from psytest_tools import *
+from flask import render_template, redirect, url_for
+from application import app, mongo_connect
+from psytest_tools import remake_users, encrypt, now_stamp
 
 
 
 @app.route('/remake')
 def remake():
-    remake_users(g, 'yes')
-    users = get_users_col(g)
+    remake_users('yes')
+    users = mongo_connect.db.users
     users.insert_one({'login':'Faralaks'.capitalize(), 'pre_del':None, 'pas':encrypt('FaraKlaSS'),'status':'admin','added_by':'faralaks','create_date':now_stamp()})
     users.insert_one({'login':'admin'.capitalize(), 'pre_del':None, 'pas':encrypt('nimda'),'status':'admin','added_by':'faralaks','create_date':now_stamp()})
     

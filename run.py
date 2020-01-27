@@ -1,9 +1,5 @@
 #!/usr/bin/python3
-from flask import g 
 from sys import platform
-from psytest_tools import *
-
-from time import time
 
 
 
