@@ -93,7 +93,7 @@ def get_users_col(g):
         users = g.users = db[g.USERS_COL_NAME]
     return users
 
-def check_session(g, ses, status):
+def check_session(g, status, ses):
     """Проверяет, активна ли сессия и доступна ли ему эта страница."""
     if True:
         col = get_users_col(g) 
