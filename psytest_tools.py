@@ -15,6 +15,7 @@ import base64
 
 from pprint import pprint as pp
 
+
 # Функции для работы с датой
 def now_stamp():
     """возвращает текущюю дату и время в формате timestamp"""
@@ -110,7 +111,6 @@ def remake_users(g, yes='no'):
         col.remove()
         col.create_index('login', unique=True)  
         col.create_index('ident', unique=True, sparse=True) 
-        col.insert_one({'login':'Faralaks', 'pas':encrypt(''),'status':'admin','added_by':'faralaks','create_date':now_stamp()})
     else: vprint(("в качестве подтверждения, добавьте \"да\" вторым параметром"))
 
 def add_psy(g, login, pas, ident, tests, count, added_by):
@@ -171,3 +171,14 @@ def get_psy_data(g, _id, ret):
     ret_dict = {}
     for i in ret: ret_dict[i] = 1
     return col.find_one({'_id':obj_id(_id), '$or':[{'pre_del':None}, {'pre_del':{'$gt':now_stamp()}}]}, ret_dict)
+
+
+def insert(col, **dock):
+    return col.insert_one(dock).inserted_id
+def update_user(col, _id, **new):
+    col.update_one({'_id':obj_id(_id)}, { "$set":new})
+
+
+result_code = {'1': ['Любит печенье', 'Не любит печенье'],
+            '2': ['Любит изюм', 'Не любит изюм']
+            }
