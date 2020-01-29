@@ -1,6 +1,7 @@
 # My
-.vscode
-.PyCharm
+.idea/
+logs/
+psytest_venv/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
