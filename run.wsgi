@@ -14,7 +14,7 @@ def run(port: int):
         app.run(port=port)
 from application import app as application
 
-if __name__ == '__main__':
-    application.config.from_object('config')
+#if __name__ == '__main__':
+application.config.from_object('config')
     #run(81)
     
