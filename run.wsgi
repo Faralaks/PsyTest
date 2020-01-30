@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-
 from sys import platform
 import sys
-sys.path.insert(0, '/var/www/html/psytest')
+sys.path.insert(0, '/home/git/psytest')
 
 
 def run(port: int):
