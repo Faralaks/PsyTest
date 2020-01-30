@@ -13,6 +13,5 @@ def run(port: int):
 
 if __name__ == '__main__':
     from application import app
-    app.config.from_object('config')
     run(80)
     
