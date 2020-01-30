@@ -1,10 +1,15 @@
 {% extends "base.html" %}
+{% block stylesheet %}
+    <style>
+
+    </style>
+{% endblock %}
 {% block body %}
 
     <form method="post" action="{{ url_for('add_psy') }}">
-        <div class="card">
+        <div class="card" id="add_psy_card">
             <div class="card-body">
-
+                <h5 class="card-title">Добавить психолога</h5>
                 <div class="form-group">
                     <label for="loginField">Логин</label>
                     <input class="form-control" id="loginField" type="text" name="login" required>
@@ -51,12 +56,13 @@
         </tr>
     </table>
     <p>&nbsp;</p>
-    <h2 size="6" face="Trebuchet MS">Список Психологов:</h2>
+    <h1 class="display-3">Список Психологов:</h1>
+
     <table class="table">
         <thead>
         <tr>
             <th><a href={{ url_for('admin', sort_by='ident') }}>ID</a></th>
-            <th><a href={{ url_for('admin', sort_by='login') }}>Логин</th>
+            <th><a href={{ url_for('admin', sort_by='login') }}>Логин</a></th>
             <th>Пароль</th>
             <th><a href={{ url_for('admin', sort_by='count') }}>Доступно</a></th>
             <th>Тесты</th>
