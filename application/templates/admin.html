@@ -78,8 +78,9 @@
                 {% else %}
                     <td>-</td>
                 {% endif %}
-                <td><input class="btn btn-primary" value="Подробнее" type="button"
-                           onclick="location.href='{{ url_for('psyinfo', _id=psy['_id']) }}'"></td>
+                <td>
+                    <a class="btn btn-primary" href="{{ url_for('psyinfo', _id=psy['_id']) }}">Подробнее</a>
+                </td>
             </tr>
         {% endfor %}
 
