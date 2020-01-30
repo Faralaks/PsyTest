@@ -25,30 +25,36 @@
         </div>
 
          <p>&nbsp;</p>
-        <h2 size="6" face="Trebuchet MS">Список Испытуемых:</h2>
+        <h2 size="6" face="Trebuchet MS">Список классов:</h2>
 
         <table class="table" >
-          <thead>
-            <tr>
-              <th scope="col"><a href={{ url_for('psy', sort_by='grade') }}>Класс</a></th>
-              <th scope="col"><a href={{ url_for('psy', sort_by='notyet') }}>Еще не прошли</a></th>
-              <th scope="col"><a href={{ url_for('psy', sort_by='norisk') }}>Вне группы риска</a></th>
-              <th scope="col"><a href={{ url_for('psy', sort_by='risk') }}>В группах риска</a></th>
-            </tr>
-          </thead>
-          {% for grade in grades %}
-          <tr>
-            <td>{{ grade['grade'] }}</td>
-            <td>{{ grade['notyet'] }}</td>
-            <td>{{ grade['norisk'] }}</td>
-            {% if grade['risk'] == 0 %}
-              <td><span style="color: #ffffff; background-color: rgb(9, 148, 50);"></span>{{ grade['risk'] }}</span></td>>
-            {% else %}
-              <span style="color: #ffffff; background-color: rgb(170, 1, 1);">{{ grade['risk'] }}</span>
-            {% endif %}
-            <td><input class="btn btn-primary" value="Подробнее" type="button" onclick="location.href='{{ url_for('viewgrage', grade=grade['grade']) }}'"></td>
-          </tr>
-          {% endfor %}
 
+            <thead>
+                <tr>
+                    <th scope="col"><a href={{ url_for('psy', sort_by='col1') }}>Класс</a></th>
+                    <th scope="col"><a href={{ url_for('psy', sort_by='col2') }}>Кол-во</a></th>
+                    <th scope="col"><a href={{ url_for('psy', sort_by='col3') }}>Нет результата</a></th>
+                     <th scope="col"><a href={{ url_for('psy', sort_by='col4') }}>1 группа</a></th>
+                     <th scope="col"><a href={{ url_for('psy', sort_by='col4') }}>2 группа</a></th>
+                     <th scope="col"><a href={{ url_for('psy', sort_by='col5') }}>3 группа</a></th>
+                     <th scope="col"><a href={{ url_for('psy', sort_by='col6') }}>4 группа</a></th>
+                     <th scope="col"><a href={{ url_for('psy', sort_by='col7') }}>5 группа</a></th>
+                </tr>
+            </thead>
+
+           {% for grade in grades %}
+                <tr>
+                    <td>{{ grade }}</td>
+                    <td>{{ 0 }}</td>
+                    <td>{{ 0 }}</td>
+                    <td>{{ 0 }}</td>
+                    <td>{{ 0 }}</td>
+                    <td>{{ 0 }}</td>
+                    <td>{{ 0 }}</td>
+                    <td>{{ 0 }}</td>
+
+                    <td><input class="btn btn-primary" value="Подробнее" type="button" onclick="location.href='{{ url_for('grade', psy=login, name=b64enc(grade)) }}'"></td>
+                </tr>
+           {% endfor %}
         </table>
 {% endblock %}
