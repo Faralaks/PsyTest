@@ -1,5 +1,6 @@
 # My
 .idea/
+.vscode/
 logs/
 psytest_venv/
 
