@@ -1,41 +1,51 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Администратор</title>
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa:300,400,500,600,700|Montserrat+Alternates:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i|Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap&subset=cyrillic"
+          rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body{
+            font-family: 'Comfortaa', cursive;
+{#            font-family: 'Montserrat Alternates', sans-serif;#}
+{#            font-family: 'Montserrat', sans-serif;#}
+        }
+    </style>
     {% block stylesheet %}{% endblock %}
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Добро пожаловать {{ login }}</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Добро пожаловать {{ login }}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-      </button>
+    </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
         </ul>
         <div class="form-inline my-2 my-lg-0">
-          <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
-          {% if logged %}
-               <a class="btn btn-outline-danger my-2 my-sm-0" href="{{url_for('logout')}}">Выход</a>
-          {% endif %}
+            <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
+            {% if logged %}
+                <a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('logout') }}">Выход</a>
+            {% endif %}
         </div>
-      </div>
-    </nav>
-
-    <div class="container">
-    {% block body %}{% endblock %}
     </div>
+</nav>
+
+<div class="container mt-3">
+    {% block body %}{% endblock %}
+</div>
 
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-    {% block javascripts %}{% endblock %}
-  </body>
+{% block javascripts %}{% endblock %}
+</body>
 
 </html>

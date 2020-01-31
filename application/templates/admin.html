@@ -6,60 +6,68 @@
 {% endblock %}
 {% block body %}
 
-    <form method="post" action="{{ url_for('add_psy') }}">
-        <div class="card" id="add_psy_card">
-            <div class="card-body">
-                <h5 class="card-title">Добавить психолога</h5>
-                <div class="form-group">
-                    <label for="loginField">Логин</label>
-                    <input class="form-control" id="loginField" type="text" name="login" required>
-                </div>
-                <div class="form-group">
-                    <label for="passwordField">Пароль</label>
-                    <input class="form-control" id="passwordField" type="text" value="{{ pas }}" name="password"
-                           required>
-                </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-0 shadow" id="add_psy_card">
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('add_psy') }}">
 
-                <div class="form-group">
-                    <label for="IdField">Идентификатор</label>
-                    <input class="form-control" id="IdField" type="text" name="ident" required>
-                </div>
+                        <h5 class="card-title">Добавить психолога</h5>
+                        <div class="form-group">
+                            <label for="loginField">Логин</label>
+                            <input class="form-control" id="loginField" type="text" name="login" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordField">Пароль</label>
+                            <input class="form-control" id="passwordField" type="text" value="{{ pas }}" name="password"
+                                   required>
+                        </div>
 
-                <div class="form-group">
-                    <label for="countField">Кол-во</label>
-                    <input class="form-control" id="countField" type="number" name="count" required>
-                </div>
+                        <div class="form-group">
+                            <label for="IdField">Идентификатор</label>
+                            <input class="form-control" id="IdField" type="text" name="ident" required>
+                        </div>
 
-                <div class="form-group">
-                    <input type="submit" class="btn btn-primary" value="Добавить психолога">
-                </div>
-                <div class="form-group">
-                    <div class="custom-control custom-checkbox mr-sm-2">
-                        <input type="checkbox" class="custom-control-input" id="test1" value="1" name="t1" checked>
-                        <label class="custom-control-label" for="test1">Тест 1</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="custom-control custom-checkbox mr-sm-2">
-                        <input type="checkbox" class="custom-control-input" id="test2" value="2" name="t2" checked>
-                        <label class="custom-control-label" for="test2">Тест 2</label>
-                    </div>
+                        <div class="form-group">
+                            <label for="countField">Кол-во</label>
+                            <input class="form-control" id="countField" type="number" name="count" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary" value="Добавить психолога">
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox mr-sm-2">
+                                <input type="checkbox" class="custom-control-input" id="test1" value="1" name="t1"
+                                       checked>
+                                <label class="custom-control-label" for="test1">Тест 1</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox mr-sm-2">
+                                <input type="checkbox" class="custom-control-input" id="test2" value="2" name="t2"
+                                       checked>
+                                <label class="custom-control-label" for="test2">Тест 2</label>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
 
-    </form>
+
+        </div>
+        <div class="col-md-6">
+            <h4>Количество Психологов: <span class="badge badge-secondary">{{ counters['psy_count'] }}</span></h4>
+            <h4>Количество Испытуемых: <span class="badge badge-secondary">{{ counters['testee_count'] }}</span></h4>
+
+        </div>
+    </div>
+
     {% if msg %}
         <span style="color: #ffffff; background-color: rgb(170, 1, 1);">{{ msg }}</span>
     {% endif %}
 
-    <p>&nbsp;</p>
-
-    <h4>Количество Психологов: <span class="badge badge-secondary">{{ counters['psy_count'] }}</span></h4>
-    <h4>Количество Испытуемых: <span class="badge badge-secondary">{{ counters['testee_count'] }}</span></h4>
-
-    <p>&nbsp;</p>
-    <h1 class="display-3">Список Психологов:</h1>
+    <h3 class="display-3">Список Психологов:</h3>
 
     <table class="table">
         <thead>
