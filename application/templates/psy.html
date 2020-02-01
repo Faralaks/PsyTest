@@ -1,30 +1,41 @@
 {% extends "base.html" %}
 {% block body %}
-    <div class="row">
-        <div class="col-auto">
-            <div class="card">
+    <div class="row" xmlns="http://www.w3.org/1999/html">
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Общее кол-во
+                    <span class="badge badge-primary badge-pill">{{ counters['testee_count'] }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow" id="add_testees_card">
                 <div class="card-body">
                     <form method="post" action="{{ url_for('add_testee') }}">
-                        <div class="form-group">
-                            <label for="countField">Кол-во</label>
-                            <input class="form-control" id="countField" type="number" min="1" max="{{ count }}"
-                                   name="count" required>
-                        </div>
+                        <h5 class="card-title">Добавить испытуемых</h5>
+                        <h5 class="card-title">Доступно {{ count }}</h5>
                         <div class="form-group">
                             <label for="gradeField">Класс</label>
                             <input class="form-control" id="gradeField" type="text" name="grade" required>
                         </div>
-                        <input type="submit" class="btn btn-success" value="Добавить испытуемых">
+
+                        <div class="form-group">
+                            <label for="countField">Кол-во</label>
+                            <input class="form-control" id="countField" type="number" min="1" max="{{ count }}" name="count" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-success" value="Добавить испытуемых">
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="col">
-            <h3 class="display-4">Доступно: {{ count }}</h3>
-        </div>
     </div>
 
-    <h2 class="display-4 mt-5">Список классов:</h2>
+    <h2 class="display-4 mt-5">Список классов</h2>
     <div class="table-responsive">
         <table class="table text-center">
             <thead>
