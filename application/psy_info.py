@@ -10,8 +10,8 @@ from application import app, mongo_connect
 @decors.check_admin
 def psy_info(login, sort_by='create_date'):
     users = mongo_connect.db.users
-    grades = get_grades_by_psy(session['login'])
+    grades = get_grades_by_psy(login)
     counters = {'testee_count':users.count_documents({'status':'testee', 'added_by':session['login'], 'pre_del':None})}
     psy = get_user_by_login(login)
-    return render_template('psy_info.html', msg=request.args.get('msg'), logged=True, login=session['login'], psy=psy, counters=counters,
-                           back_url=url_for('psy_info', login=login), dec=decrypt, b64enc=b64enc)
+    return render_template('psy_info.html', msg=request.args.get('msg'), logged=True, login=session['login'], psy=psy, counters=counters, grades=grades,
+                           back_url=url_for('admin'), dec=decrypt, b64enc=b64enc)

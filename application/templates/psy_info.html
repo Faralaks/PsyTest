@@ -1,71 +1,118 @@
 {% extends "base.html" %}
+{% block stylesheet %}
+    <style>
+
+    </style>
+{% endblock %}
 {% block body %}
-    
-    <p>&nbsp;</p>
-    <form method="post" action={{ url_for('psyinfo', _id=_id) }}>
-        <table>
-            <thead><font size="6" face="Trebuchet MS">Изменить:</font></a></thead>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-0 shadow" id="edit_psy_card">
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('add_psy') }}">
+
+                        <h5 class="card-title">Редактировать психолога</h5>
+                        <div class="form-group">
+                            <label for="loginField">Логин</label>
+                            <input class="form-control" id="loginField" type="text" name="login" required value="{{ psy['login'] }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordField">Пароль</label>
+                            <input class="form-control" id="passwordField" type="text" name="password" required value="{{ dec( psy['pas']) }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="IdField">Идентификатор</label>
+                            <input class="form-control" id="IdField" type="text" name="ident" required value="{{ psy['ident'] }}">
+                        </div>
+
+                        <div class="form-group col-4 px-0">
+                            <label for="countField">Кол-во</label>
+                            <input class="form-control" id="countField" type="number" name="count" required value={{ psy['count'] }}>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox mr-sm-2">
+                                <input type="checkbox" class="custom-control-input" id="test1" value="1" name="t1" checked>
+                                <label class="custom-control-label" for="test1">Тест 1</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox mr-sm-2">
+                                <input type="checkbox" class="custom-control-input" id="test2" value="2" name="t2" checked>
+                                <label class="custom-control-label" for="test2">Тест 2</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary" value="Сохранить изменения">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">{{ psy['login'] }} - общая статистика</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Всего испытуемых
+                            <span>{{ counters['testee_count'] }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Количество классов
+                            <span>0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Еще не протестированы
+                            <span>0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Вне групп риска
+                            <span>0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            В группах риска
+                            <span>0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if msg %}
+        <span style="color: #ffffff; background-color: rgb(170, 1, 1);">{{ msg }}</span>
+    {% endif %}
+
+    <h2 class="display-4 mt-5">Список классов {{ psy['login'] }}</h2>
+    <div class="table-responsive">
+        <table class="table text-center">
+            <thead>
             <tr>
-                <td><label for="loginField">Логин</label></td>
-                <td><input id="loginField" type="text" required name="login" value={{ psy_data['login'] }} required></td>
+                <th scope="col"><a href={{ cur_url }}>Класс</a></th>
+                <th scope="col"><a href={{ cur_url }}>Общее Кол-во</a></th>
+                <th scope="col"><a href={{ cur_url }}>Нет результата</a></th>
+                <th scope="col"><a href={{ cur_url }}>Безопасны</a></th>
+                <th scope="col"><a href={{ cur_url }}>В группах риска</a></th>
+                <th></th>
             </tr>
-            <tr>
-                <td><label for="passwordField">Пароль</label></td>
-                <td><input id="passwordField" type="text" required name="password" value={{ dec(psy_data['pas']) }}></td>
-            </tr>
-            <tr>
-                <td><label for='DelCB'>Удален: </label></td>
-                <td><input id="DelCB" type="checkbox" value="yes" name="del" {% if psy_data['pre_del'] != None %} checked {% endif %}></td>
-            </tr>
-            <tr>
-                <td><label for="IdField">Идентификатор</label></td>
-                <td><input id="IdField" required type="text" name="ident" value={{psy_data['ident']}}></td>
-            </tr>
-            <tr>
-                <td><label for="countField">Кол-во</label></td>
-                <td><input id="countField" type="number" name="count" required value={{psy_data['count']}}></td>
-            </tr>
-            <tr>
-                <table>
-                    <thead><font size="4" face="Trebuchet MS">Тесты:</font></a></thead>
-                    <tr>
-                        <td><label for='test1'>Тест 1: </label></td>
-                        <td><input id="test1" type="checkbox" value=" 1" name="t1" {% if '1' in '1' %} checked {% endif %}></td>
-                    </tr>
-                    <tr>
-                        <td><label for='test2'>Тест 2: </label></td>
-                        <td><input id="test2" type="checkbox" value=" 2" name="t2" {% if '2' in '2' %} checked {% endif %}></td>
-                    </tr>
-            </tr>
-            <tr>
-                <td colspan="2" style="text-align: center"><input type="submit" class="btn btn-primary" value="Сохранить"></td>
-                <td colspan="1" style="text-align: center"><input type="button" class="btn btn-danger" value="Отменить" type="button" onclick="location.href='{{ url_for('admin') }}'"></td>
-            </tr>
+            </thead>
+
+            {% for grade in grades %}
+                <tr>
+                    <td>{{ grade }}</td>
+                    <td>{{ 0 }}</td>
+                    <td>{{ 0 }}</td>
+                    <td>{{ 0 }}</td>
+                    <td>{{ 0 }}</td>
+
+                    <td><a class="btn btn-primary" href="{{ url_for('grade', name=b64enc(grade)) }}"> Просмотреть</a></td>
+                </tr>
+            {% endfor %}
         </table>
-    </form>
-
-    <p>&nbsp;</p>
-    <h2 size="6" face="Trebuchet MS">Список Испытуемых выбранного психолога:</h2>
-
-    <table class="table" >
-        <thead>
-            <tr>
-                <th scope="col"><a href={{ url_for('psyinfo', _id=_id, sort_by='result') }}>Результат</a></th>
-                <th scope="col"><a href={{ url_for('psyinfo', _id=_id, sort_by='login') }}>Логин</a></th>
-                <th scope="col">Пароль</th>
-                <th scope="col"><a href={{ url_for('psyinfo', _id=_id, sort_by='grade') }}>Класс</a></th>
-                <th scope="col"><a href={{ url_for('psyinfo', _id=_id, sort_by='create_date') }}>Дата создания</a></th>
-            </tr>
-        </thead>
-        {% for testee in testees %}
-            <tr>
-                <td>{{ testee['result'] }}</td>
-                <td>{{ testee['login'] }}</td>
-                <td>{{ dec(testee['pas']) }}</td>
-                <td>{{ testee['grade'] }}</td>
-                <td>{{ t2st(testee['create_date']) }}</td>
-            </tr>
-        {% endfor %}
-
-    </table>
+    </div>
 {% endblock %}
