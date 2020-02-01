@@ -138,7 +138,6 @@ def get_grades_by_psy(added_by: str):
         return {testee['grade'] for testee in testees}
     return {}
 
-
 def get_testees_by_grade(added_by: str, grade: str):
     """Принимает логин психолога, добавившего испытуемых, класс испытуемых.
     Возвращает список всех испытуемых этого психолога в заданном классе"""
@@ -161,12 +160,12 @@ def get_user_by_id(users_id):
     return user_data
 
 
-def update_psy(user_id, login, pas, tests, count, ident, pre_del):
-    """Принимает уникальный _id психолога, новый логин, новый пароль, список новых тестов, новое доступное кол-во испытуемых,
+def update_psy(old_login: str, login: str, pas: str, ident: str, tests: list, count: int, pre_del):
+    """Принимает логин редактируемого психолога, новый логин, новый пароль, новый список тестов, новое доступное кол-во испытуемых,
     новый идентификатор, новое значение предварительного удаления. Обновляет данные у данного психолога"""
     users = mongo_connect.db.users
-    users.update_one({'_id':obj_id(_id)}, {'$set':{'login':str(login).capitalize(), 'pas':encrypt(str(pas)),
-        'tests':tests, 'count':int(count), 'ident':str(ident), 'pre_del':pre_del}})
+    users.update_one({'login':str(old_login).capitalize()}, {'$set':{'login':str(login).capitalize(), 'pas':encrypt(str(pas)), 'tests':tests, 'count':int(count),
+                                    'ident':str(ident), 'pre_del':pre_del}})
 
 
 
