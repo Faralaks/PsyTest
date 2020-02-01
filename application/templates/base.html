@@ -28,7 +28,7 @@
         <ul class="navbar-nav mr-auto">
             {% if back_url %}
                 <li class="nav-item active">
-                    <input class="btn btn-secondary" value="<- назад" type="button" onclick="location.href='{{ back_url }}'">
+                    <a class="btn btn-secondary" href="{{ back_url }}"> <- назад </a>
                 </li>
             {% endif %}
         </ul>
