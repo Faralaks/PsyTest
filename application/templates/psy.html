@@ -1,39 +1,56 @@
 {% extends "base.html" %}
 {% block body %}
     <div class="row" xmlns="http://www.w3.org/1999/html">
+        {% if status=='psy' %}
+            <div class="col-md-6">
+                <div class="card border-0 shadow" id="add_testees_card">
+                    <div class="card-body">
+                        <form method="post" action="{{ url_for('add_testee') }}">
+                            <h5 class="card-title">Добавить испытуемых</h5>
+                            <h5 class="card-title">Доступно {{ count }}</h5>
+                            <div class="form-group">
+                                <label for="gradeField">Класс</label>
+                                <input class="form-control" id="gradeField" type="text" name="grade" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="countField">Кол-во</label>
+                                <input class="form-control" id="countField" type="number" min="1" max="{{ count }}" name="count" required>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-success" value="Добавить испытуемых">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
         <div class="col-md-6">
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Общее кол-во
-                    <span class="badge badge-primary badge-pill">{{ counters['testee_count'] }}</span>
+                    Всего испытуемых
+                    <span>{{ counters['testee_count'] }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Количество классов
+                    <span>0</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Еще не протестированы
+                    <span>0</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Вне групп риска
+                    <span>0</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    В группах риска
+                    <span>0</span>
                 </li>
             </ul>
         </div>
-        {% if status=='psy' %}
-        <div class="col-md-6">
-            <div class="card border-0 shadow" id="add_testees_card">
-                <div class="card-body">
-                    <form method="post" action="{{ url_for('add_testee') }}">
-                        <h5 class="card-title">Добавить испытуемых</h5>
-                        <h5 class="card-title">Доступно {{ count }}</h5>
-                        <div class="form-group">
-                            <label for="gradeField">Класс</label>
-                            <input class="form-control" id="gradeField" type="text" name="grade" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="countField">Кол-во</label>
-                            <input class="form-control" id="countField" type="number" min="1" max="{{ count }}" name="count" required>
-                        </div>
-
-                        <div class="form-group">
-                            <input type="submit" class="btn btn-success" value="Добавить испытуемых">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% endif %}
     </div>
 
     <h2 class="display-4 mt-5">Список классов</h2>
@@ -58,8 +75,7 @@
                     <td>{{ 0 }}</td>
                     <td>{{ 0 }}</td>
 
-                    <td><a class="btn btn-success" href="{{ url_for('grade', name=b64enc(grade)) }}"> Просмотреть</a>
-                    </td>
+                    <td><a class="btn btn-success" href="{{ url_for('grade', name=b64enc(grade)) }}"> Просмотреть</a></td>
                 </tr>
             {% endfor %}
         </table>

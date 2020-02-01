@@ -1,36 +1,61 @@
 {% extends "base.html" %}
 {% block body %}
-         <input class="btn btn-secondary" value="<- Назад" type="button" onclick="location.href='{{ url_for('psy') }}'">
-          <p>&nbsp;</p>
-          <a>
-          <font size="6" face="Trebuchet MS">Доступно: {{ count }}</font></a>
-        <p>&nbsp;</p>
-        <div class="row">
-          <div class="">
-            <div class="card">
-              <div class="card-body">
-                <form method="post" action="{{ url_for('add_testee', ret=b64enc(cur_url)) }}">
-                    <div class="form-group">
-                      <label for="countField">Кол-во</label>
-                      <input id="countField" type="number" min="1" max="{{ count }}" name="count" required>
+    <div class="row" xmlns="http://www.w3.org/1999/html">
+        {% if status=='psy' %}
+            <div class="col-md-6">
+                <div class="card border-0 shadow" id="add_testees_card">
+                    <div class="card-body">
+                        <form method="post" action="{{ url_for('add_testee', ret=b64enc(cur_url)) }}">
+                            <h5 class="card-title">Добавить испытуемых</h5>
+                            <h5 class="card-title">Доступно {{ count }}</h5>
+                            <div class="form-group">
+                                <label for="gradeField">Класс</label>
+                                <input class="form-control" id="gradeField" type="text" name="grade" required value="{{ name }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="countField">Кол-во</label>
+                                <input class="form-control" id="countField" type="number" min="1" max="{{ count }}" name="count" required>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-success" value="Добавить испытуемых">
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                      <label for="gradeField">Класс</label>
-                      <input id="gradeField" type="text" name="grade"  value="{{ name }}">
-                    </div>
-                    <input type="submit" class="btn btn-success" value="Добавить испытуемых">
-                </form>
-              </div>
+                </div>
             </div>
+        {% endif %}
 
-          </div>
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Всего испытуемых
+                    <span>{{ counters['testee_grade_count'] }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Количество классов
+                    <span>0</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Еще не протестированы
+                    <span>0</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Вне групп риска
+                    <span>0</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    В группах риска
+                    <span>0</span>
+                </li>
+            </ul>
         </div>
+    </div>
 
-         <p>&nbsp;</p>
-        <h2 size="6" face="Trebuchet MS">Список испытуемых {{ name }}:</h2>
-
-        <table class="table" >
-
+    <h2 class="display-4 mt-5">Список испытуемых {{ name }}</h2>
+    <div class="table-responsive">
+        <table class="table text-center">
             <thead>
                 <tr>
                     <th scope="col"><a href={{ cur_url+'result' }}>Результат</a></th>
@@ -40,15 +65,14 @@
                 </tr>
             </thead>
 
-           {% for testee in testees %}
+            {% for testee in testees %}
                 <tr>
                     <td>{{ testee['result'] }}</td>
                     <td>{{ testee['login'] }}</td>
                     <td>{{ dec(testee['pas']) }}</td>
                     <td>{{ t2st(testee['create_date']) }}</td>
-
                 </tr>
-           {% endfor %}
+            {% endfor %}
         </table>
-
+    </div>
 {% endblock %}

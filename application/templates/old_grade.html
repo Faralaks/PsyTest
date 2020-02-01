@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block body %}
+         <input class="btn btn-secondary" value="<- Назад" type="button" onclick="location.href='{{ url_for('psy') }}'">
+          <p>&nbsp;</p>
+          <a>
+          <font size="6" face="Trebuchet MS">Доступно: {{ count }}</font></a>
+        <p>&nbsp;</p>
+        <div class="row">
+          <div class="">
+            <div class="card">
+              <div class="card-body">
+                <form method="post" action="{{ url_for('add_testee', ret=b64enc(cur_url)) }}">
+                    <div class="form-group">
+                      <label for="countField">Кол-во</label>
+                      <input id="countField" type="number" min="1" max="{{ count }}" name="count" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="gradeField">Класс</label>
+                      <input id="gradeField" type="text" name="grade"  value="{{ name }}">
+                    </div>
+                    <input type="submit" class="btn btn-success" value="Добавить испытуемых">
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+         <p>&nbsp;</p>
+        <h2 size="6" face="Trebuchet MS">Список испытуемых {{ name }}:</h2>
+
+        <table class="table" >
+
+            <thead>
+                <tr>
+                    <th scope="col"><a href={{ cur_url+'result' }}>Результат</a></th>
+                    <th scope="col"><a href={{ cur_url+'login' }}>Логин</a></th>
+                    <th scope="col">Пароль</th>
+                     <th scope="col"><a href={{ cur_url+'create_date' }}>Дата создания</a></th>
+                </tr>
+            </thead>
+
+           {% for testee in testees %}
+                <tr>
+                    <td>{{ testee['result'] }}</td>
+                    <td>{{ testee['login'] }}</td>
+                    <td>{{ dec(testee['pas']) }}</td>
+                    <td>{{ t2st(testee['create_date']) }}</td>
+                </tr>
+           {% endfor %}
+        </table>
+
+{% endblock %}

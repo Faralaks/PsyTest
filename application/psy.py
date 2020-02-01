@@ -14,4 +14,4 @@ def psy(sort_by='result'):
     cur_count = get_user_by_login(session['login'])['count']
     grades = get_grades_by_psy(session['login'])
     counters = {'testee_count':users.count_documents({'status':'testee', 'added_by':session['login'], 'pre_del':None})}
-    return render_template('psy.html', logged=True, login=session['login'], status=session['status'], count=cur_count, grades=grades, counters=counters, b64enc=b64enc)
+    return render_template('psy.html', logged=True, login=session['login'], status='psy', count=cur_count, grades=grades, counters=counters, b64enc=b64enc)
