@@ -1,27 +1,17 @@
-from application import app
-from flask import render_template, redirect, url_for, session, g
-from psytest_tools import *
+from psytest_tools import get_user_by_login, get_grades_by_psy, b64enc, decrypt
+from flask import render_template, redirect, url_for, session, request
+from application import decorators as decors
+from application import app, mongo_connect
 
 
 
-
-@app.route('/psyinfo/<_id>', methods=['GET', 'POST'])
-@app.route('/psyinfo/<_id>/<sort_by>', methods=['GET', 'POST'])
-def psyinfo(_id, sort_by='result'):
-    if check_session(g, 'admin', session):
-        users = get_users_col(g)
-        if request.method == 'GET':
-            psy_data = get_psy_data(g, _id, ('login', 'pas', 'pre_del', 'ident', 'count', 'tests'))
-            testees = get_testees(g, obj_id(_id)).sort(sort_by, 1)
-            return  render_template('psyinfo.html', _id=_id, psy_data=psy_data, testees=testees, dec=decrypt, t2st=stamp2str, logged=True, login=session['login'])
-
-        if request.method == 'POST':
-            try:
-                tests = [str(i) for i in range(1, 3) if  form_get('t'+str(i), None) != None]
-                pre_del = now_stamp() + 259200 if form_get('del', None) == 'yes' else None
-                update_psy(g, _id, form('login'), form('password'), tests, form('count'), form('ident'), pre_del)
-            except DuplicateKeyError: return redirect(url_for(session.get('status', 'index'), msg='Такой Логин или Идентификатор уже существует'))
-            #except: return redirect(url_for(session.get('status', 'index'), msg='Произошла неизвестная ошибка, если проблема не исчезнет, обратитесь к администратору!'))
-            return redirect(url_for('admin'))
-    else:
-        return redirect(url_for('logout'))
+@app.route('/psy_info/<login>/')
+@app.route('/psy_info/<login>/<sort_by>')
+@decors.check_admin
+def psy_info(login, sort_by='create_date'):
+    users = mongo_connect.db.users
+    grades = get_grades_by_psy(session['login'])
+    counters = {'testee_count':users.count_documents({'status':'testee', 'added_by':session['login'], 'pre_del':None})}
+    psy = get_user_by_login(login)
+    return render_template('psy_info.html', msg=request.args.get('msg'), logged=True, login=session['login'], psy=psy, counters=counters,
+                           back_url=url_for('psy_info', login=login), dec=decrypt, b64enc=b64enc)
