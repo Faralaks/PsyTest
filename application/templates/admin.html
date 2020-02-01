@@ -28,14 +28,11 @@
                             <input class="form-control" id="IdField" type="text" name="ident" required>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group col-4 px-0">
                             <label for="countField">Кол-во</label>
                             <input class="form-control" id="countField" type="number" name="count" required>
                         </div>
 
-                        <div class="form-group">
-                            <input type="submit" class="btn btn-primary" value="Добавить психолога">
-                        </div>
                         <div class="form-group">
                             <div class="custom-control custom-checkbox mr-sm-2">
                                 <input type="checkbox" class="custom-control-input" id="test1" value="1" name="t1"
@@ -50,16 +47,26 @@
                                 <label class="custom-control-label" for="test2">Тест 2</label>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary" value="Добавить психолога">
+                        </div>
                     </form>
                 </div>
             </div>
 
-
         </div>
         <div class="col-md-6">
-            <h4>Количество Психологов: <span class="badge badge-secondary">{{ counters['psy_count'] }}</span></h4>
-            <h4>Количество Испытуемых: <span class="badge badge-secondary">{{ counters['testee_count'] }}</span></h4>
-
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Количество Психологов:
+                    <span class="badge badge-primary badge-pill">{{ counters['psy_count'] }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Количество Испытуемых:
+                    <span class="badge badge-primary badge-pill">{{ counters['testee_count'] }}</span>
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -67,8 +74,8 @@
         <span style="color: #ffffff; background-color: rgb(170, 1, 1);">{{ msg }}</span>
     {% endif %}
 
-    <h3 class="display-3">Список Психологов:</h3>
-
+    <h3 class="display-4 mt-5">Список Психологов:</h3>
+    <hr>
     <table class="table">
         <thead>
         <tr>
