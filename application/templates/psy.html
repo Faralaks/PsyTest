@@ -1,54 +1,53 @@
 {% extends "base.html" %}
 {% block body %}
-        <a>
-          <font size="6" face="Trebuchet MS">Доступно: {{ count }}</font></a>
-        <p>&nbsp;</p>
-        <div class="row">
-          <div class="">
+    <div class="row">
+        <div class="col-auto">
             <div class="card">
-              <div class="card-body">
-                <form method="post" action="{{ url_for('add_testee') }}">
-                    <div class="form-group">
-                      <label for="countField">Кол-во</label>
-                      <input id="countField" type="number" min="1" max="{{ count }}" name="count" required>
-                    </div>
-                    <div class="form-group">
-                      <label for="gradeField">Класс</label>
-                      <input id="gradeField" type="text" name="grade" required>
-                    </div>
-                    <input type="submit" class="btn btn-success" value="Добавить испытуемых">
-                </form>
-              </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('add_testee') }}">
+                        <div class="form-group">
+                            <label for="countField">Кол-во</label>
+                            <input class="form-control" id="countField" type="number" min="1" max="{{ count }}"
+                                   name="count" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gradeField">Класс</label>
+                            <input class="form-control" id="gradeField" type="text" name="grade" required>
+                        </div>
+                        <input type="submit" class="btn btn-success" value="Добавить испытуемых">
+                    </form>
+                </div>
             </div>
-
-          </div>
         </div>
+        <div class="col">
+            <h3 class="display-4">Доступно: {{ count }}</h3>
+        </div>
+    </div>
 
-         <p>&nbsp;</p>
-        <h2 size="6" face="Trebuchet MS">Список классов:</h2>
+    <h2 class="display-4 mt-5">Список классов:</h2>
 
-        <table class="table" >
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col"><a href={{ url_for('psy', sort_by='col1') }}>Класс</a></th>
+            <th scope="col"><a href={{ url_for('psy', sort_by='col2') }}>Общее Кол-во</a></th>
+            <th scope="col"><a href={{ url_for('psy', sort_by='col3') }}>Нет результата</a></th>
+            <th scope="col"><a href={{ url_for('psy', sort_by='col4') }}>Безопасны</a></th>
+            <th scope="col"><a href={{ url_for('psy', sort_by='col4') }}>В группах риска</a></th>
+            <th></th>
+        </tr>
+        </thead>
 
-            <thead>
-                <tr>
-                    <th scope="col"><a href={{ url_for('psy', sort_by='col1') }}>Класс</a></th>
-                    <th scope="col"><a href={{ url_for('psy', sort_by='col2') }}>Общее Кол-во</a></th>
-                    <th scope="col"><a href={{ url_for('psy', sort_by='col3') }}>Нет результата</a></th>
-                     <th scope="col"><a href={{ url_for('psy', sort_by='col4') }}>Безопасны</a></th>
-                     <th scope="col"><a href={{ url_for('psy', sort_by='col4') }}>В группах риска</a></th>
-                </tr>
-            </thead>
+        {% for grade in grades %}
+            <tr>
+                <td>{{ grade }}</td>
+                <td>{{ 0 }}</td>
+                <td>{{ 0 }}</td>
+                <td>{{ 0 }}</td>
+                <td>{{ 0 }}</td>
 
-           {% for grade in grades %}
-                <tr>
-                    <td>{{ grade }}</td>
-                    <td>{{ 0 }}</td>
-                    <td>{{ 0 }}</td>
-                    <td>{{ 0 }}</td>
-                    <td>{{ 0 }}</td>
-
-                    <td><input class="btn btn-success" value="Просмотреть" type="button" onclick="location.href='{{ url_for('grade', name=b64enc(grade)) }}'"></td>
-                </tr>
-           {% endfor %}
-        </table>
+                <td><a class="btn btn-success" href="{{ url_for('grade', name=b64enc(grade)) }}"> Просмотреть</a></td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
