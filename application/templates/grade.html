@@ -11,7 +11,7 @@
                             <div class="form-group">
                                 <label for="gradeField">Класс</label>
                                 <input class="form-control" id="gradeField" type="text" name="grade" required
-                                       value="{{ name }}">
+                                       value="{{ name }}" readonly>
                             </div>
 
                             <div class="form-group">
@@ -71,7 +71,15 @@
 
             {% for testee in testees %}
                 <tr>
-                    <td>{{ testee['result'] }}</td>
+                    {% if testee['result'] == 'Рискует' %}
+                        <td><span class="badge badge-danger badge-pill">{{ testee['result'] }}</span></td>
+                    {% elif testee['result'] == 'Не рискует' %}
+                        <td><span class="badge badge-success badge-pill">{{ testee['result'] }}</span></td>
+                    {% elif testee['result'] == 'Нет результата' %}
+                        <td><span class="badge badge-secondary badge-pill">{{ testee['result'] }}</span></td>
+                     {% else %}
+                        <td><span class="badge badge-Light badge-pill">{{ testee['result'] }}</span></td>
+                    {% endif %}
                     <td>{{ testee['login'] }}</td>
                     <td>{{ dec(testee['pas']) }}</td>
                     <td>{{ t2st(testee['create_date']) }}</td>

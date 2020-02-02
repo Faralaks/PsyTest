@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block body %}
+    <a align="center">
+        <form method="post" action="{{ url_for('testee') }}">
+            <table>
+                <thead><font size="6" face="Trebuchet MS">Тест 1:</font></a></thead>
+                <tr>
+                    <td><font size="5" face="Trebuchet MS">Плизки, скажите честно, вы в группе риска?</font></td>
+                </tr>
+                <tr>
+                    <table>
+                         {% if msg %} <tr><span style="color: #ffffff; background-color: rgb(170, 1, 1);">{{ msg }}</span></tr>{% endif %}
+                        <tr>
+                            <td><label for='test1'>ДА!: </label></td>
+                            <td><input id="test1" type="radio" value=0 name="q1"></td>
+                        </tr>
+                        <tr>
+                            <td><label for='test2'>НЕТ!: </label></td>
+                            <td><input id="test2" type="radio" value=1 name="q1"></td>
+                        </tr>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center"><input type="submit" value="Готово"></td>
+                </tr>
+            </table>
+        </form>
+    </a>
+
+{% endblock %}

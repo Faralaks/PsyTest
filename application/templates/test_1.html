@@ -1,33 +1,28 @@
 {% extends "base.html" %}
 {% block body %}
-    <a align="center">
-        <form method="post" action="{{ url_for('testee') }}">
-            <table>
-                <thead><font size="6" face="Trebuchet MS">Тест 1:</font></a></thead>
-                <tr>
-                    <td><font size="5" face="Trebuchet MS">Скажите честно, вы псих?</font></td>
-                </tr>
-                <tr>
-                    <table>
-                         {% if msg %} <tr><span style="color: #ffffff; background-color: rgb(170, 1, 1);">{{ msg }}</span></tr>{% endif %}
-                        <tr>
-                            <td><label for='test1'>ДА!: </label></td>
-                            <td><input id="test1" type="radio" value=0 name="q1"></td>
-                        </tr>
-                        <tr>
-                            <td><label for='test2'>НЕТ!: </label></td>
-                            <td><input id="test2" type="radio" value=1 name="q1"></td>
-                        </tr>
-                        <tr>
-                            <td><label for='test3'>Зайду попозже, не сохраняйте мой результат!: </label></td>
-                            <td><input id="test3" type="radio" value=2 name="q1"></td>
-                        </tr>
-                </tr>
-                <tr>
-                    <td colspan="2" style="text-align: center"><input type="submit" value="Готово"></td>
-                </tr>
-            </table>
-        </form>
-    </a>
+    <div class="row" xmlns="http://www.w3.org/1999/html">
+        <div class="col-md-6">
+            <div class="card border-0 shadow" id="add_testees_card">
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('testee') }}">
+                        <h5 class="card-title">Плизки, скажите честно, вы в группе риска?</h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q1" id="t1q1a1" value=0>
+                            <label class="form-check-label" for="t1q1a1">
+                                Да! признаюсь, я такой весь из себя нехооший и всячески рискую, спасите меня!
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q1" id="t1q1a2" value=1>
+                            <label class="form-check-label" for="t1q1a2">
+                                Нет! Ну что вы? Я весь из себя такой хороший, примерный и вообще круче меня никого нет и зовут меня Миша
+                            </label>
+                        </div>
+                        <div class="form-group"><input type="submit" class="btn btn-info" value="Готово"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
