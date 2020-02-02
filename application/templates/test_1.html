@@ -5,10 +5,11 @@
             <table>
                 <thead><font size="6" face="Trebuchet MS">Тест 1:</font></a></thead>
                 <tr>
-                    <td><font size="5" face="Trebuchet MS">Вы любите печенье?</font></td>
+                    <td><font size="5" face="Trebuchet MS">Скажите честно, вы псих?</font></td>
                 </tr>
                 <tr>
                     <table>
+                         {% if msg %} <tr><span style="color: #ffffff; background-color: rgb(170, 1, 1);">{{ msg }}</span></tr>{% endif %}
                         <tr>
                             <td><label for='test1'>ДА!: </label></td>
                             <td><input id="test1" type="radio" value=0 name="q1"></td>
@@ -16,6 +17,10 @@
                         <tr>
                             <td><label for='test2'>НЕТ!: </label></td>
                             <td><input id="test2" type="radio" value=1 name="q1"></td>
+                        </tr>
+                        <tr>
+                            <td><label for='test3'>Зайду попозже, не сохраняйте мой результат!: </label></td>
+                            <td><input id="test3" type="radio" value=2 name="q1"></td>
                         </tr>
                 </tr>
                 <tr>

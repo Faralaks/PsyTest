@@ -120,7 +120,7 @@ def add_testees(counter: int, count: int, ident: str, grade: str, tests: list, a
     added_by = str(added_by)
     for i in range(counter, counter+count):
         users.insert_one({'login':login+'_'+str(i), 'tests':tests, 'grade':grade, 'pas':encrypt(gen_pass(10)),
-                                'step':'start', 'added_by':added_by, 'status':'testee', 'result':'Нет Результата', 'pre_del':None, 'create_date':now_stamp()})
+                                'step':'start', 'added_by':added_by, 'status':'testee', 'result':'Нет результата', 'pre_del':None, 'create_date':now_stamp()})
     users.update_one({'login':added_by}, {'$set':{'counter':counter+count, 'count':current_count-count}})
 
 def get_all_psys():
@@ -169,6 +169,11 @@ def update_psy(old_login: str, login: str, pas: str, ident: str, tests: list, co
         users.update_many({'added_by':str(old_login).capitalize()}, {'$set':{'added_by':str(login).capitalize()}})
 
 def set_test_index(login: str, new_step: int):
-    """Принимает логин испытуемого. Увеличивает значение поля step на 1"""
+    """Принимает логин испытуемого и новое значение шага тестирования, на котором он находится. Устанавливает новое значение"""
     users = mongo_connect.db.users
     users.update_one({'login':str(login).capitalize()}, {'$set':{'step':int(new_step)}})
+
+def set_result(login: str, new_result: str):
+    """Принимает логин испытуемого и новое значение результата тестирования. Устанавливает новое значение"""
+    users = mongo_connect.db.users
+    users.update_one({'login':str(login).capitalize()}, {'$set':{'result':str(new_result)}})
