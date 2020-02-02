@@ -110,19 +110,18 @@ def add_psy(login: str, pas: str, ident: str, tests: list, count: int, added_by:
             'count':int(count), 'status':'psy', 'counter':0, 'create_date':now_stamp(), 'pre_del':None}).inserted_id
     return user_id
 
-def add_testees(counter: int, count: int, ident: str, grade: str, tests: list, added_by: str, current_count):
+def add_testees(counter: int, count: int, ident: str, grade: str, tests: list, added_by: str, current_count: int):
     """Принимает каунтер для создания логинов испытуемых, кол-во создаваемых испытуемых,
     идентификатор психолога, который их создает, класс создаваемых испытуемых, тесты, логин создателя.
     Добавляет новых испытуемых в коллекию юзеров. возвращает список их уникальных _id."""
     users = mongo_connect.db.users
-    insert_testees = []
+    login = str(ident).capitalize()
+    grade=str(grade).upper()
+    added_by = str(added_by)
     for i in range(counter, counter+count):
-        insert_testees.append({'login':str(ident).capitalize()+'_'+str(i), 'tests':tests, 'grade':str(grade).upper(),
-        'pas':encrypt(gen_pass(12)), 'added_by':str(added_by),
-        'status':'testee', 'result':'Тестируется', 'pre_del':None, 'create_date':now_stamp()})
-    inserted_ids = users.insert_many(insert_testees).inserted_ids
-    users.update_one({'login':str(added_by)}, {'$set':{'counter':counter+count, 'count':current_count-count}})
-    return inserted_ids
+        users.insert_one({'login':login+'_'+str(i), 'tests':tests, 'grade':grade, 'pas':encrypt(gen_pass(10)),
+                                'step':'start', 'added_by':added_by, 'status':'testee', 'result':'Нет Результата', 'pre_del':None, 'create_date':now_stamp()})
+    users.update_one({'login':added_by}, {'$set':{'counter':counter+count, 'count':current_count-count}})
 
 def get_all_psys():
     """Возвращает список всех псизологов"""
@@ -168,14 +167,3 @@ def update_psy(old_login: str, login: str, pas: str, ident: str, tests: list, co
                                     'ident':str(ident), 'pre_del':pre_del}})
     if old_login != login:
         users.update_many({'added_by':str(old_login).capitalize()}, {'$set':{'added_by':str(login).capitalize()}})
-
-
-def insert(col, **dock):
-    return users.insert_one(dock).inserted_id
-def update_user(col, _id, **new):
-    users.update_one({'_id':obj_id(_id)}, { "$set":new})
-
-
-result_code = {'1': ['Любит печенье', 'Не любит печенье'],
-            '2': ['Любит изюм', 'Не любит изюм']
-            }
