@@ -17,6 +17,9 @@
                                 Нет! Ну что вы? Я весь из себя такой хороший, примерный и вообще круче меня никого нет
                             </label>
                         </div>
+                         {% if msg %}
+                             <span style="color: #ffffff; background-color: rgb(170, 1, 1);">{{ msg }}</span>
+                         {% endif %}
                         <div class="form-group"><input type="submit" class="btn btn-info" value="Готово"></div>
                     </form>
                 </div>
