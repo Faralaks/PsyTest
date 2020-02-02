@@ -18,9 +18,9 @@ def testee():
 
             new_res = 'Нет результата'
             if res == 0:
-                new_res = 'Ристует'
+                new_res = 'Рискует'
             elif  res == 1:
-                new_res = 'Не ристует'
+                new_res = 'Не рискует'
 
             set_result(session['login'], new_res)
             set_test_index(session['login'], user['step'] + 1)
@@ -29,8 +29,8 @@ def testee():
         elif request.method == 'GET':
             nxt = user['step']
             if user['step'] == 'start':
-                nxt = 0
                 set_test_index(session['login'], 0)
+                return render_template('test_start.html', login=session['login'])
             return render_template('test_%s.html'%user['tests'][nxt], login=session['login'])
     except IndexError:
         return render_template('test_stop.html', login=session['login'])
