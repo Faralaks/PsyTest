@@ -10,10 +10,10 @@ form_get = lambda key, ret: request.form.get(key, ret)
 @app.route('/edit_psy/<login>', methods=['POST'])
 @decors.check_admin
 def edit_psy(login):
-    if True:#try:
+    try:
         tests = [str(i) for i in range(1, 3) if form_get('t' + str(i), None) is not None]
         pre_del = now_stamp() + 259200 if form_get('del', None) == 'Yes' else None
         update(login, form('login'), form('password'), form('ident'), tests, form('count'), pre_del)
-    #except DuplicateKeyError: return redirect(url_for('psy_info', login=login, msg='Такой Логин или Идентификатор уже существует'))
+    except DuplicateKeyError: return redirect(url_for('psy_info', login=login, msg='Такой Логин или Идентификатор уже существует'))
     #except: return redirect(url_for('psy_info', login=login, msg='Произошла неизвестная ошибка, если проблема не исчезнет, обратитесь к администратору!'))
     return redirect(url_for('psy_info', login=form('login').capitalize()))
