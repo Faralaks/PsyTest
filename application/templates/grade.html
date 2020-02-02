@@ -10,12 +10,14 @@
                             <h5 class="card-title">Доступно {{ count }}</h5>
                             <div class="form-group">
                                 <label for="gradeField">Класс</label>
-                                <input class="form-control" id="gradeField" type="text" name="grade" required value="{{ name }}">
+                                <input class="form-control" id="gradeField" type="text" name="grade" required
+                                       value="{{ name }}">
                             </div>
 
                             <div class="form-group">
                                 <label for="countField">Кол-во</label>
-                                <input class="form-control" id="countField" type="number" min="1" max="{{ count }}" name="count" required>
+                                <input class="form-control" id="countField" type="number" min="1" max="{{ count }}"
+                                       name="count" required>
                             </div>
 
                             <div class="form-group">
@@ -28,28 +30,30 @@
         {% endif %}
 
         <div class="col-md-6">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Всего испытуемых
-                    <span>{{ counters['testee_grade_count'] }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Количество классов
-                    <span>0</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Еще не протестированы
-                    <span>0</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Вне групп риска
-                    <span>0</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    В группах риска
-                    <span>0</span>
-                </li>
-            </ul>
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">{{ name }} статистика</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Всего испытуемых
+                            <span class="badge badge-Light badge-pill">{{ counters['testee_grade_count'] }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Еще не протестированы
+                            <span class="badge badge-secondary badge-pill">0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Вне групп риска
+                            <span class="badge badge-success badge-pill">0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            В группах риска
+                            <span class="badge badge-danger badge-pill">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -57,12 +61,12 @@
     <div class="table-responsive">
         <table class="table text-center">
             <thead>
-                <tr>
-                    <th scope="col"><a href={{ cur_url+'result' }}>Результат</a></th>
-                    <th scope="col"><a href={{ cur_url+'login' }}>Логин</a></th>
-                    <th scope="col">Пароль</th>
-                     <th scope="col"><a href={{ cur_url+'create_date' }}>Дата создания</a></th>
-                </tr>
+            <tr>
+                <th scope="col"><a href={{ cur_url+'result' }}>Результат</a></th>
+                <th scope="col"><a href={{ cur_url+'login' }}>Логин</a></th>
+                <th scope="col">Пароль</th>
+                <th scope="col"><a href={{ cur_url+'create_date' }}>Дата создания</a></th>
+            </tr>
             </thead>
 
             {% for testee in testees %}

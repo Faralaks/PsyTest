@@ -57,16 +57,33 @@
 
         </div>
         <div class="col-md-6">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Количество психологов
-                    <span class="badge badge-primary badge-pill">{{ counters['psy_count'] }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Количество испытуемых
-                    <span class="badge badge-primary badge-pill">{{ counters['testee_count'] }}</span>
-                </li>
-            </ul>
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Общая статистика</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Количество психологов
+                            <span class="badge badge-Light badge-pill">{{ counters['psy_count'] }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Количество испытуемых
+                            <span class="badge badge-Light badge-pill">{{ counters['testee_count'] }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Еще не протестированы
+                            <span class="badge badge-secondary badge-pill">0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Вне групп риска
+                            <span class="badge badge-success badge-pill">0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            В группах риска
+                            <span class="badge badge-danger badge-pill">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -106,7 +123,7 @@
                         <td>-</td>
                     {% endif %}
                     <td>
-                        <a class="btn btn-primary" href="{{ url_for('psy_info', _id=psy['_id']) }}">Подробнее</a>
+                        <a class="btn btn-primary" href="{{ url_for('psy_info', login=psy['login']) }}">Подробнее</a>
                     </td>
                 </tr>
             {% endfor %}
