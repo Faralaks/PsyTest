@@ -167,3 +167,8 @@ def update_psy(old_login: str, login: str, pas: str, ident: str, tests: list, co
                                     'ident':str(ident), 'pre_del':pre_del}})
     if old_login != login:
         users.update_many({'added_by':str(old_login).capitalize()}, {'$set':{'added_by':str(login).capitalize()}})
+
+def set_test_index(login: str, new_step: int):
+    """Принимает логин испытуемого. Увеличивает значение поля step на 1"""
+    users = mongo_connect.db.users
+    users.update_one({'login':str(login).capitalize()}, {'$set':{'step':int(new_step)}})

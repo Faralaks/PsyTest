@@ -1,6 +1,5 @@
-<!DOCTYPE html>
-<html>
-<body>
+{% extends "base.html" %}
+{% block body %}
     <a align="center">
         <form method="post" action="{{ url_for('testee') }}">
             <table>
@@ -26,6 +25,4 @@
         </form>
     </a>
 
-        
-</body>
-</html>
+{% endblock %}
