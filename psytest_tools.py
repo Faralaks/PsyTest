@@ -131,13 +131,11 @@ def get_all_psys():
     return users.find({'status':'psy', '$or':[{'pre_del':None}, {'pre_del':{'$gt':now_stamp()}}]},
                 {'login':1, 'pas':1, 'create_date':1, 'pre_del':1, 'ident':1, 'count':1, 'tests':1})
 
-def get_grades_by_psy(added_by: str):
-    """Принимает логин психолога, добавившего испытуемых. Возвращает список классов испытуемых этого психолога и статистику по ним"""
+def get_grades_by_psy(login: str):
+    """Принимает логин психолога, добавившего испытуемых. Возвращает словарь классов испытуемых этого психолога и статистику по ним"""
     users = mongo_connect.db.users
-    testees = users.find({'status':'testee', 'added_by':str(added_by), 'pre_del':None}, {'result':1, 'grade':1, '_id':0})
-    if testees:
-        return {testee['grade'] for testee in testees}
-    return {}
+    user_data = users.find_one({'login': str(login).capitalize(), '$or': [{'pre_del': None}, {'pre_del': {'$gt': now_stamp()}}]}, {'_id':0, 'grades':1})
+    return user_data
 
 def get_testees_by_grade(added_by: str, grade: str):
     """Принимает логин психолога, добавившего испытуемых, класс испытуемых.

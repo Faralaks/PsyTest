@@ -34,19 +34,19 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Всего испытуемых
-                            <span class="badge badge-Light badge-pill">{{ counters['testee_count'] }}</span>
+                            <span class="badge badge-Light badge-pill">{{ counters['whole'] }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Еще не протестированы
-                            <span class="badge badge-secondary badge-pill">0</span>
+                            <span class="badge badge-secondary badge-pill">{{ counters['not_yet'] }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Вне групп риска
-                            <span class="badge badge-success badge-pill">0</span>
+                            <span class="badge badge-success badge-pill">{{ counters['clear'] }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             В группах риска
-                            <span class="badge badge-danger badge-pill">0</span>
+                            <span class="badge badge-danger badge-pill">{{ counters['danger'] }}</span>
                         </li>
                     </ul>
                 </div>
@@ -59,11 +59,11 @@
         <table class="table text-center">
             <thead>
             <tr>
-                <th scope="col"><a href={{ url_for('psy', sort_by='col1') }}>Класс</a></th>
-                <th scope="col"><a href={{ url_for('psy', sort_by='col2') }}>Общее Кол-во</a></th>
-                <th scope="col"><a href={{ url_for('psy', sort_by='col3') }}>Нет результата</a></th>
-                <th scope="col"><a href={{ url_for('psy', sort_by='col4') }}>Безопасны</a></th>
-                <th scope="col"><a href={{ url_for('psy', sort_by='col4') }}>В группах риска</a></th>
+                <th scope="col"><a>Класс</a></th>
+                <th scope="col"><a>Общее Кол-во</a></th>
+                <th scope="col"><a>Нет результата</a></th>
+                <th scope="col"><a>Не рискуют</a></th>
+                <th scope="col"><a>Рискуют</a></th>
                 <th></th>
             </tr>
             </thead>

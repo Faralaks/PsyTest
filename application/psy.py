@@ -6,14 +6,17 @@ from application import app, mongo_connect
 
 
 
-@app.route('/psy')
+@app.route('/psy/')
 @app.route('/psy/<sort_by>')
 @decors.check_psy
 def psy(sort_by='result'):
     users = mongo_connect.db.users
-    cur_count = get_user_by_login(session['login'])['count']
-    grades = get_user_by_login(session['login'])['grades']
-    #grades = get_grades_by_psy(session['login'])
-    counters = {'testee_count':users.count_documents({'status':'testee', 'added_by':session['login'], 'pre_del':None})}
-    return render_template('psy.html', logged=True, login=session['login'], status='psy', count=cur_count, grades=grades,
-                           counters=counters, b64enc=b64enc, b64dec=b64dec)
+    user = get_user_by_login(session['login'])
+    counters = {'whole':0, 'not_yet':0, 'clear':0, 'danger':0}
+    for stats in user['grades'].values():
+        counters['whole'] += stats.get('whole', 0)
+        counters['not_yet'] += stats.get('not_yet', 0)
+        counters['clear'] += stats.get('clear', 0)
+        counters['danger'] += stats.get('danger', 0)
+    return render_template('psy.html', logged=True, login=session['login'], status='psy', count=user['count'], grades=user['grades'],
+                           counters=counters, b64enc=b64enc, b64dec=b64dec, cur_url=url_for('psy'))
