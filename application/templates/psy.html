@@ -70,13 +70,13 @@
 
             {% for grade in grades %}
                 <tr>
-                    <td>{{ grade }}</td>
-                    <td>{{ 0 }}</td>
-                    <td>{{ 0 }}</td>
-                    <td>{{ 0 }}</td>
-                    <td>{{ 0 }}</td>
+                    <td>{{ b64dec(grade) }}</td>
+                    <td>{{ grades[grade]['whole'] }}</td>
+                    <td><span class="badge badge-secondary badge-pill">{{ grades[grade].get('not_yet', 0) }}</span></td>
+                    <td><span class="badge badge-success badge-pill">{{ grades[grade].get('clear', 0) }}</span></td>
+                    <td><span class="badge badge-danger badge-pill">{{ grades[grade].get('danger', 0) }}</span></td>
 
-                    <td><a class="btn btn-success" href="{{ url_for('grade', name=b64enc(grade)) }}"> Просмотреть</a></td>
+                    <td><a class="btn btn-success" href="{{ url_for('grade', name=grade) }}"> Просмотреть</a></td>
                 </tr>
             {% endfor %}
         </table>

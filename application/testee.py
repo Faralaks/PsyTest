@@ -1,5 +1,5 @@
 from application import decorators as decors
-from psytest_tools import get_user_by_login, set_test_index, set_result
+from psytest_tools import get_user_by_login, set_test_index, set_result, inc_grade_clear, inc_grade_danger
 from flask import render_template, session, request, redirect, url_for
 from application import app
 
@@ -19,7 +19,9 @@ def testee():
             new_res = 'Нет результата'
             if res == 0:
                 new_res = 'Рискует'
+                inc_grade_danger(user['added_by'], user['grade'])
             elif  res == 1:
+                inc_grade_clear(user['added_by'], user['grade'])
                 new_res = 'Не рискует'
 
             set_result(session['login'], new_res)

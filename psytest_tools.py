@@ -59,7 +59,7 @@ def gen_pass(leng=8, alf=ascii_letters + digits*2):
 
 def b64enc(line: str):
     """Принимает на вход строку символов. Возвращает  base64 от этой строки"""
-    return base64.b64encode(line.encode('utf-8'))
+    return base64.b64encode(line.encode('utf-8')).decode('utf-8')
 
 def b64dec(line: str):
     """Принимает на вход строку байт в формате base64. Возвращает  декодированну строку"""
@@ -107,7 +107,7 @@ def add_psy(login: str, pas: str, ident: str, tests: list, count: int, added_by:
     добавляет нового психолого в коллекию юзеров. возвращает его уникальный _id"""
     users = mongo_connect.db.users
     user_id = users.insert_one({'login':str(login).capitalize(), 'pas': encrypt(str(pas)), 'ident':str(ident), 'added_by':str(added_by), 'tests':tests,
-            'count':int(count), 'status':'psy', 'counter':0, 'create_date':now_stamp(), 'pre_del':None}).inserted_id
+            'grades':{}, 'count':int(count), 'status':'psy', 'counter':0, 'create_date':now_stamp(), 'pre_del':None}).inserted_id
     return user_id
 
 def add_testees(counter: int, count: int, ident: str, grade: str, tests: list, added_by: str, current_count: int):
@@ -116,12 +116,14 @@ def add_testees(counter: int, count: int, ident: str, grade: str, tests: list, a
     Добавляет новых испытуемых в коллекию юзеров. возвращает список их уникальных _id."""
     users = mongo_connect.db.users
     login = str(ident).capitalize()
-    grade=str(grade).upper()
+    grade = str(grade).upper()
     added_by = str(added_by)
     for i in range(counter, counter+count):
         users.insert_one({'login':login+'_'+str(i), 'tests':tests, 'grade':grade, 'pas':encrypt(gen_pass(10)),
                                 'step':'start', 'added_by':added_by, 'status':'testee', 'result':'Нет результата', 'pre_del':None, 'create_date':now_stamp()})
-    users.update_one({'login':added_by}, {'$set':{'counter':counter+count, 'count':current_count-count}})
+    grade = b64enc(grade)
+    users.update_one({'login':added_by}, {'$inc':{'grades.%s.whole'%grade:count, 'grades.%s.not_yet'%grade:count},
+                                          '$set':{'counter':counter+count, 'count':current_count-count}})
 
 def get_all_psys():
     """Возвращает список всех псизологов"""
@@ -177,3 +179,17 @@ def set_result(login: str, new_result: str):
     """Принимает логин испытуемого и новое значение результата тестирования. Устанавливает новое значение"""
     users = mongo_connect.db.users
     users.update_one({'login':str(login).capitalize()}, {'$set':{'result':str(new_result)}})
+
+def inc_grade_danger(login: str, grade: str):
+    """Принимает логин психолога и класс испытуемых в base64. Увеличивает на 1 кол-во рискующих и уменьшает кол-во не прошедших тест на 1"""
+    users = mongo_connect.db.users
+    login = str(login).capitalize()
+    grade = b64enc(grade)
+    users.update_one({'login':login}, {'$inc':{'grades.%s.danger'%grade:1, 'grades.%s.not_yet'%grade:-1}})
+
+def inc_grade_clear(login: str, grade: str):
+    """Принимает логин психолога и класс испытуемых в base64. Увеличивает на 1 кол-во не рискующих и уменьшает кол-во не прошедших тест на 1"""
+    users = mongo_connect.db.users
+    login = str(login).capitalize()
+    grade = b64enc(grade)
+    users.update_one({'login':login}, {'$inc':{'grades.%s.clear'%grade:1, 'grades.%s.not_yet'%grade:-1}})
