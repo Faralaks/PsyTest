@@ -129,7 +129,7 @@ def get_all_psys():
     """Возвращает список всех псизологов"""
     users = mongo_connect.db.users
     return users.find({'status':'psy', '$or':[{'pre_del':None}, {'pre_del':{'$gt':now_stamp()}}]},
-                {'login':1, 'pas':1, 'create_date':1, 'pre_del':1, 'ident':1, 'count':1, 'tests':1})
+                {'login':1, 'pas':1, 'create_date':1, 'pre_del':1, 'ident':1, 'count':1, 'tests':1, 'grades':1})
 
 def get_grades_by_psy(login: str):
     """Принимает логин психолога, добавившего испытуемых. Возвращает словарь классов испытуемых этого психолога и статистику по ним"""

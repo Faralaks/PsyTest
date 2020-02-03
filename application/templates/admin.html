@@ -63,23 +63,23 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Количество психологов
-                            <span class="badge badge-Light badge-pill">{{ counters['psy_count'] }}</span>
+                            <span class="badge badge-Light badge-pill">{{ counters.get('psys') }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Количество испытуемых
-                            <span class="badge badge-Light badge-pill">{{ counters['testee_count'] }}</span>
+                            <span class="badge badge-Light badge-pill">{{ counters.get('whole', 0) }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Еще не протестированы
-                            <span class="badge badge-secondary badge-pill">0</span>
+                            Еще не протестировано
+                            <span class="badge badge-secondary badge-pill">{{ counters.get('not_yet', 0) }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Вне групп риска
-                            <span class="badge badge-success badge-pill">0</span>
+                            <span class="badge badge-success badge-pill">{{ counters.get('clear', 0) }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             В группах риска
-                            <span class="badge badge-danger badge-pill">0</span>
+                            <span class="badge badge-danger badge-pill">{{ counters.get('danger', 0) }}</span>
                         </li>
                     </ul>
                 </div>
@@ -102,6 +102,7 @@
                 <th><a href={{ url_for('admin', sort_by='login') }}>Логин</a></th>
                 <th>Пароль</th>
                 <th><a href={{ url_for('admin', sort_by='count') }}>Доступно</a></th>
+                <th>Статистика</th>
                 <th>Тесты</th>
                 <th><a href={{ url_for('admin', sort_by='create_date') }}>Дата создания</a></th>
                 <th><a href={{ url_for('admin', sort_by='pre_del') }}>Удалиться</a></th>
@@ -115,6 +116,12 @@
                     <td>{{ psy['login'] }}</td>
                     <td>{{ dec(psy['pas']) }}</td>
                     <td>{{ psy['count'] }}</td>
+                    <td>
+                        <span class="badge badge-light badge-pill">{{ psy['counters'].get('whole', 0) }}</span>
+                        <span class="badge badge-secondary badge-pill">{{ psy['counters'].get('not_yet', 0) }}</span>
+                        <span class="badge badge-success badge-pill">{{ psy['counters'].get('clear', 0) }}</span>
+                        <span class="badge badge-danger badge-pill">{{ psy['counters'].get('danger', 0) }}</span>
+                    </td>
                     <td>{{ " ".join(psy['tests']) }}</td>
                     <td>{{ t2st(psy['create_date']) }}</td>
                     {% if psy['pre_del'] %}
