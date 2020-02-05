@@ -34,6 +34,11 @@ def now():
     """returns the current datetime as datetime object"""
     return dt.datetime.now()
 
+def now_str():
+    """returns the current datetime as datetime object"""
+    return str(dt.datetime.now())[:-10]
+
+
 # Функции шифрования/дешифрования (ECB AES), кодирования/декодирования (base64) и генерации паролей
 def encrypt(message, passphrase=b'i1O?Tq#AhMh1?zcm?vg00wUm'):
     """принимает message и key, возвращает результат шифрования в формате base64
@@ -143,6 +148,13 @@ def get_testees_by_grade(added_by: str, grade: str):
     users = mongo_connect.db.users
     return users.find({'status':'testee', 'added_by':str(added_by), 'grade':str(grade), 'pre_del':None},
                 {'result':1,'login':1, 'pas':1, 'grade':1, 'tests':1, 'create_date':1})
+
+def get_testees_by_grade_not_yet(added_by: str, grade: str):
+    """Принимает логин психолога, добавившего испытуемых, класс испытуемых.
+    Возвращает список всех испытуемых этого психолога в заданном классе которые ще не протестированы"""
+    users = mongo_connect.db.users
+    return users.find({'status':'testee', 'added_by':str(added_by), 'grade':str(grade), 'result':'Нет результата', 'pre_del':None},
+                {'login':1, 'pas':1})
 
 def get_user_by_login(login: str):
     """Принимает логин пользователшя, возвращает его данные в словаре, если такого пользователя нет
