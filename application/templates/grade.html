@@ -59,7 +59,7 @@
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         <a class="dropdown-item" href="{{ url_for(status+'_download', name=b64enc(name), target='not_yet') }}">
                             Таблица логинов и паролей для непротестированных</a>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="{{ url_for(status+'_download', name=b64enc(name), target='done') }}">
                             Таблица с результатами всех протестированных</a>
                       </div>
             </div>

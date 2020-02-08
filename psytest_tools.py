@@ -157,6 +157,13 @@ def get_testees_by_grade_not_yet(added_by: str, grade: str):
     return users.find({'status':'testee', 'added_by':str(added_by), 'grade':str(grade), 'result':'Нет результата', 'pre_del':None},
                 {'login':1, 'pas':1})
 
+def get_testees_by_grade_done(added_by: str, grade: str):
+    """Принимает логин психолога, добавившего испытуемых, класс испытуемых.
+    Возвращает список всех испытуемых этого психолога в заданном классе которые ще не протестированы"""
+    users = mongo_connect.db.users
+    return users.find({'status':'testee', 'added_by':str(added_by), 'grade':str(grade), 'result':{'$ne':  'Нет результата'}, 'pre_del':None},
+                {'login':1, 'result':1})
+
 def get_user_by_login(login: str):
     """Принимает логин пользователшя, возвращает его данные в словаре, если такого пользователя нет
     или подошел срок удаления, функция возвращает None"""
