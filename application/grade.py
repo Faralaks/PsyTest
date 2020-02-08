@@ -15,7 +15,7 @@ def grade(name, sort_by='result'):
     if session['status'] == 'admin':
         counters = get_grades_by_psy(session['psy_login'])['grades'][name]
         testees = get_testees_by_grade(session['psy_login'], dec_name).sort(sort_by, 1)
-        return render_template('grade.html', logged=True, login=session['login'], count=0, testees=testees, counters=counters, name=dec_name,
+        return render_template('grade.html', logged=True, login=session['login'], count=0, testees=testees, counters=counters, name=dec_name, status='admin',
                                back_url=url_for('psy_info', login=session['psy_login']), dec=decrypt, t2st=stamp2str, b64enc=b64enc, cur_url=url_for('grade', name=name))
 
 
