@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 {% block body %}
-    <span>ДОбро пожаловать бла-бла-бла. какой-то текст который объяснит незрелым умам что вообще тут происходит.</span>
-    <span>хватит уже читать, жми уже на кнопку</span>
-<a class="btn btn-info" href="{{ url_for('testee') }}">Начать уже</a>
+
+<div class="card border-0 shadow" id="start_tests_card">
+    <div class="card-body">
+        <div class="form-check">
+            <span>Добро пожаловать бла-бла-бла. какой-то текст который объяснит незрелым умам что вообще тут происходит.
+             <br>Хватит уже читать, жми на кнопку</span>
+        </div>
+        <a class="btn btn-info" href="{{ url_for('testee') }}">Начать уже</a>
+    </div>
+</div>
+
 
 {% endblock %}

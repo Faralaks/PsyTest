@@ -4,6 +4,7 @@
 logs/
 psytest_venv/
 node_modules/
+docks/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

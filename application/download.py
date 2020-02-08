@@ -1,5 +1,5 @@
-from psytest_tools import b64enc, b64dec, get_testees_by_grade, get_user_by_login, decrypt, stamp2str, get_grades_by_psy, vprint, get_testees_by_grade_not_yet, now_str
-from application import app, mongo_connect
+from psytest_tools import b64dec, decrypt, get_testees_by_grade_not_yet, make_filename, vprint
+from application import app
 from application import decorators as decors
 from flask import session, render_template, url_for, redirect, send_file
 from os import path
@@ -8,9 +8,9 @@ import docx
 
 
 
-@app.route('/download/<name>/<target>')
-@decors.check_admin_or_psy
-def download(name, target):
+@app.route('/psy_download/<name>/<target>')
+@decors.check_psy
+def psy_download(name, target):
     dec_name = b64dec(name)
 
     if target == 'not_yet':
@@ -23,7 +23,8 @@ def download(name, target):
             table.cell(row, 1).text = decrypt(testee['pas'])
             table.cell(row, 2).text = '\n\n'
 
-        filename = path.join(app.config['DOCKS_FOLDER'], session['login']+'_'+now_str().replace(':', '_')+'.docx')
+        filename = path.join(app.config['DOCKS_FOLDER'], make_filename(session['login'], 'docx'))
+        vprint(filename)
         doc.save(filename)
         return send_file(filename)
 

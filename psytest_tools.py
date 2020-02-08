@@ -34,9 +34,10 @@ def now():
     """returns the current datetime as datetime object"""
     return dt.datetime.now()
 
-def now_str():
-    """returns the current datetime as datetime object"""
-    return str(dt.datetime.now())[:-10]
+def make_filename(login: str, ext: str):
+    """Принимает логин пользователя. Возвращает имя для файла основываясь на логине пользователя,
+    текущей дате и значению после точки в текущей временной метске."""
+    return '%s_%s_%s.%s'%(login, dt.date.today().strftime('%Y-%m-%d'), str(now().timestamp()).split('.')[1], ext)
 
 
 # Функции шифрования/дешифрования (ECB AES), кодирования/декодирования (base64) и генерации паролей
