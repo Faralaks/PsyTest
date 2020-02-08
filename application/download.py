@@ -1,4 +1,4 @@
-from psytest_tools import b64dec, decrypt, get_testees_by_grade_not_yet, make_filename, vprint
+from psytest_tools import b64dec, decrypt, get_testees_by_grade_not_yet, make_filename
 from application import app
 from application import decorators as decors
 from flask import session, render_template, url_for, redirect, send_file
@@ -24,9 +24,8 @@ def psy_download(name, target):
             table.cell(row, 2).text = '\n\n'
 
         filename = path.join(app.config['DOCKS_FOLDER'], make_filename(session['login'], 'docx'))
-        vprint(filename)
         doc.save(filename)
-        return send_file(filename)
+        return send_file(filename, cache_timeout=0, as_attachment=True)
 
     else:
         return redirect(url_for(session['status']))
