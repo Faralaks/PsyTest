@@ -1,0 +1,29 @@
+<div class="card border-0 shadow mt-md-0 mt-2">
+    <div class="card-body">
+        <h5 class="card-title">Общая статистика</h5>
+        <ul class="list-group">
+            {% if 'psys' in counters %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Количество психологов
+                <span class="badge badge-Light badge-pill">{{ counters.get('psys') }}</span>
+            </li>
+            {% endif %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Количество испытуемых
+                <span class="badge badge-Light badge-pill">{{ counters.get('whole', 0) }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Еще не протестировано
+                <span class="badge badge-secondary badge-pill">{{ counters.get('not_yet', 0) }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Вне групп риска
+                <span class="badge badge-success badge-pill">{{ counters.get('clear', 0) }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                В группах риска
+                <span class="badge badge-danger badge-pill">{{ counters.get('danger', 0) }}</span>
+            </li>
+        </ul>
+    </div>
+</div>
