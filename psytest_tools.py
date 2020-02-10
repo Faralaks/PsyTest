@@ -162,7 +162,7 @@ def get_testees_by_grade_done(added_by: str, grade: str):
     Возвращает список всех испытуемых этого психолога в заданном классе которые ще не протестированы"""
     users = mongo_connect.db.users
     return users.find({'status':'testee', 'added_by':str(added_by), 'grade':str(grade), 'result':{'$ne':  'Нет результата'}, 'pre_del':None},
-                {'login':1, 'result':1})
+                {'login':1, 'result':1, 'grade':1, 'create_date':1, 'tests':1})
 
 def get_user_by_login(login: str):
     """Принимает логин пользователшя, возвращает его данные в словаре, если такого пользователя нет
