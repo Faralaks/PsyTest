@@ -31,6 +31,7 @@ def psy_download(name, target):
         testees = tuple(get_testees_by_grade_done(session['login'], dec_name))
         wb = Workbook()
         ws = wb.active
+        ws.append(['Результат', 'Логин', 'Класс', 'Пройденные тести', 'Дата создания'])
         for testee in testees:
             ws.append([testee['result'], testee['login'], testee['grade'], ' '.join(testee['tests']), stamp2str(testee['create_date'])])
         filename = path.join(app.config['DOCKS_FOLDER'], make_filename(session['login'], 'xlsx'))
