@@ -10,6 +10,7 @@ import application.add_testee as add_testee
 import application.admin as admin
 import application.admin_download as admin_download
 import application.decorators as decorators
+import application.del_result as del_result
 import application.edit_psy as edit_psy
 import application.grade as grade
 import application.index as index

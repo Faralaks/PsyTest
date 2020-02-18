@@ -75,6 +75,7 @@
                 <th scope="col"><a href={{ cur_url+'login' }}>Логин</a></th>
                 <th scope="col">Пароль</th>
                 <th scope="col"><a href={{ cur_url+'create_date' }}>Дата создания</a></th>
+                <th scope="col"></th>
             </tr>
             </thead>
 
@@ -92,6 +93,15 @@
                     <td>{{ testee['login'] }}</td>
                     <td>{{ dec(testee['pas']) }}</td>
                     <td>{{ t2st(testee['create_date']) }}</td>
+                    {% if testee['result'] != 'Нет результата' %}
+                        <!-- <td>
+                            <button type="button" class="btn btn-default btn-lg">
+                              <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Star
+                            </button>
+                        </td>
+                        -->
+                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=b64enc(name), login=testee['login']) }}">DEL</a></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </table>
