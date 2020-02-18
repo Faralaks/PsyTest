@@ -75,7 +75,6 @@
                 <th scope="col"><a href={{ cur_url+'login' }}>Логин</a></th>
                 <th scope="col">Пароль</th>
                 <th scope="col"><a href={{ cur_url+'create_date' }}>Дата создания</a></th>
-                <th scope="col"></th>
             </tr>
             </thead>
 
@@ -93,7 +92,7 @@
                     <td>{{ testee['login'] }}</td>
                     <td>{{ dec(testee['pas']) }}</td>
                     <td>{{ t2st(testee['create_date']) }}</td>
-                    {% if testee['result'] != 'Нет результата' %}
+                    {% if testee['result'] != 'Нет результата' and status == 'psy'%}
                         <!-- <td>
                             <button type="button" class="btn btn-default btn-lg">
                               <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Star
