@@ -3,7 +3,7 @@
 
             <div class="card border-0 shadow" id="del_result_comment">
                 <div class="card-body">
-                    <form method="post" action="{{ url_for('del_result', grade=grade, login=testee_login) }}">
+                    <form method="post" action="{{ url_for('del_result', grade=enc_grade, login=testee_login) }}">
                         <h5 class="card-title">Введите причину удаления результата испытуемого {{ testee_login }} из {{ grade }}</h5>
                         <div class="form-group">
                             <textarea class="form-control" rows="5" required maxlength="500" aria-describedby="stopLen"></textarea>
