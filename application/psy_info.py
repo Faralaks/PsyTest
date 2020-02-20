@@ -18,4 +18,4 @@ def psy_info(login, sort_by='create_date'):
         counters['danger'] += stats.get('danger', 0)
     session['psy_login'] = login
     return render_template('psy_info.html', msg=request.args.get('msg'), logged=True, login=session['login'], psy=psy, counters=counters, grades=psy['grades'],
-                           back_url=url_for('admin'), dec=decrypt, b64enc=b64enc, b64dec=b64dec)
+                           back_url=url_for('admin'), dec=decrypt, b64enc=b64enc, b64dec=b64dec, title=psy['login']+' | Информация')

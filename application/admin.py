@@ -28,4 +28,5 @@ def admin(sort_by='create_date'):
             big_counters['danger'] += stats.get('danger', 0)
             psy_and_stats[-1]['counters']['danger'] += stats.get('danger', 0)
         vprint(psy_and_stats)
-    return render_template('admin.html', msg=request.args.get('msg'), logged=True, login=session['login'], psys=psy_and_stats, counters=big_counters, pas=gen_pass(12), dec=decrypt, t2st=stamp2str)
+    return render_template('admin.html', msg=request.args.get('msg'), logged=True, login=session['login'], psys=psy_and_stats, counters=big_counters,
+                           pas=gen_pass(12), dec=decrypt, t2st=stamp2str, title='Администратор')

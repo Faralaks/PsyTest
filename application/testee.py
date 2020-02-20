@@ -14,7 +14,7 @@ def testee():
             try:
                 res = int(form('q1'))
             except KeyError:
-                return render_template('test_%s.html' % user['tests'][user['step']], login=session['login'], msg="Вы пропустили этот вопрос!")
+                return render_template('test_%s.html' % user['tests'][user['step']], login=session['login'], msg="Вы пропустили этот вопрос!", title='Идет тестирование')
 
             new_res = 'Нет результата'
             if res == 0:
@@ -32,7 +32,7 @@ def testee():
             nxt = user['step']
             if user['step'] == 'start':
                 set_test_index(session['login'], 0)
-                return render_template('test_start.html', login=session['login'])
-            return render_template('test_%s.html'%user['tests'][nxt], login=session['login'])
+                return render_template('test_start.html', login=session['login'], title='Начало тестирования')
+            return render_template('test_%s.html'%user['tests'][nxt], login=session['login'], title='Идет тестирование')
     except IndexError:
-        return render_template('test_stop.html', login=session['login'])
+        return render_template('test_stop.html', login=session['login'], title='Тесты пройдены')

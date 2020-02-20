@@ -17,4 +17,4 @@ def login():
             session['timeout'] = now() + dt.timedelta(days=1)
             session['status'] = user_data['status']
             return redirect(url_for(session['status']))
-    return render_template('index.html', bad_auth=True)
+    return render_template('index.html', bad_auth=True, title='Авторизуйтесь')

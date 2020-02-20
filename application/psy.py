@@ -18,4 +18,4 @@ def psy(sort_by='result'):
         counters['clear'] += stats.get('clear', 0)
         counters['danger'] += stats.get('danger', 0)
     return render_template('psy.html', logged=True, login=session['login'], status='psy', count=user['count'], grades=user['grades'],
-                           counters=counters, b64enc=b64enc, b64dec=b64dec, cur_url=url_for('psy'))
+                           counters=counters, b64enc=b64enc, b64dec=b64dec, cur_url=url_for('psy'), title='Психолог')
