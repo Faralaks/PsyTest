@@ -3,10 +3,10 @@
 
             <div class="card border-0 shadow" id="del_result_comment">
                 <div class="card-body">
-                    <form method="post" action="{{ url_for('del_result', grade=enc_grade, login=testee_login) }}">
+                    <form method="post" action="{{ url_for('del_result', grade=enc_grade, login=testee_login, prev_res=prev_res) }}">
                         <h5 class="card-title">Введите причину удаления результата испытуемого {{ testee_login }} из {{ grade }}</h5>
                         <div class="form-group">
-                            <textarea class="form-control" rows="5" required maxlength="500" aria-describedby="stopLen"></textarea>
+                            <textarea class="form-control" rows="5" required maxlength="500" aria-describedby="stopLen" name="reason"></textarea>
                             <small id="stopLen" class="form-text text-muted">Не более 500 символов</small>
                         </div>
                         <div class="form-group"><input type="submit" class="btn btn-danger" value="Удалить"></div>

@@ -92,14 +92,16 @@
                     <td>{{ testee['login'] }}</td>
                     <td>{{ dec(testee['pas']) }}</td>
                     <td>{{ t2st(testee['create_date']) }}</td>
-                    {% if testee['result'] != 'Нет результата' and status == 'psy'%}
+                    {% if testee['result'] == 'Рискует' and status == 'psy' %}
                         <!-- <td>
                             <button type="button" class="btn btn-default btn-lg">
                               <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Star
                             </button>
                         </td>
                         -->
-                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=b64enc(name), login=testee['login']) }}">DEL</a></td>
+                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=b64enc(name), login=testee['login'], prev_res='danger') }}">DEL</a></td>
+                    {% elif testee['result'] == 'Не рискует' and status == 'psy' %}
+                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=b64enc(name), login=testee['login'], prev_res='clear') }}">DEL</a></td>
                     {% endif %}
                 </tr>
             {% endfor %}

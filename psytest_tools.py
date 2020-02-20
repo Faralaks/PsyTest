@@ -125,7 +125,7 @@ def add_testees(counter: int, count: int, ident: str, grade: str, tests: list, a
     grade = str(grade).upper()
     added_by = str(added_by)
     for i in range(counter, counter+count):
-        users.insert_one({'login':login+'_'+str(i), 'tests':tests, 'grade':grade, 'pas':encrypt(gen_pass(10)),
+        users.insert_one({'login':login+'_'+str(i), 'tests':tests, 'grade':grade, 'pas':encrypt(gen_pass(10)), 'msg':None,
                                 'step':'start', 'added_by':added_by, 'status':'testee', 'result':'Нет результата', 'pre_del':None, 'create_date':now_stamp()})
     grade = b64enc(grade)
     users.update_one({'login':added_by}, {'$inc':{'grades.%s.whole'%grade:count, 'grades.%s.not_yet'%grade:count},
@@ -198,16 +198,37 @@ def set_result(login: str, new_result: str):
     users = mongo_connect.db.users
     users.update_one({'login':str(login).capitalize()}, {'$set':{'result':str(new_result)}})
 
-def inc_grade_danger(login: str, grade: str):
-    """Принимает логин психолога и класс испытуемых в base64. Увеличивает на 1 кол-во рискующих и уменьшает кол-во не прошедших тест на 1"""
+def inc_grade_danger(login: str, grade: str, val=1):
+    """Принимает логин психолога и класс испытуемых и val - значение, на которое надо увеличить.
+    Увеличивает на val кол-во рискующих и уменьшает кол-во не прошедших тест на val"""
     users = mongo_connect.db.users
     login = str(login).capitalize()
     grade = b64enc(grade)
-    users.update_one({'login':login}, {'$inc':{'grades.%s.danger'%grade:1, 'grades.%s.not_yet'%grade:-1}})
+    users.update_one({'login':login}, {'$inc':{'grades.%s.danger'%grade:val, 'grades.%s.not_yet'%grade:-val}})
 
-def inc_grade_clear(login: str, grade: str):
-    """Принимает логин психолога и класс испытуемых в base64. Увеличивает на 1 кол-во не рискующих и уменьшает кол-во не прошедших тест на 1"""
+def inc_grade_clear(login: str, grade: str, val=1):
+    """Принимает логин психолога и класс испытуемых и val -  значение, на которое надо увеличить.
+    Увеличивает на val кол-во не рискующих и уменьшает кол-во не прошедших тест на val"""
     users = mongo_connect.db.users
     login = str(login).capitalize()
     grade = b64enc(grade)
-    users.update_one({'login':login}, {'$inc':{'grades.%s.clear'%grade:1, 'grades.%s.not_yet'%grade:-1}})
+    users.update_one({'login':login}, {'$inc':{'grades.%s.clear'%grade:val, 'grades.%s.not_yet'%grade:-val}})
+
+def del_clear_res(testee_login: str, psy_login: str, grade: str, msg: str):
+    """Принимает логин испытуемого, логин психолога, класс испытуемых и сообщение о причине удаления
+    Уменьшает на 1 кол-во не рискующих и увеличивает кол-во не прошедших тест на 1.
+    Устанавлевает значение 'Не рискует', в качестве результата данного испытуемого.
+    Добавляет сообщение о причине удаления к записи об этом испытуемом."""
+    users = mongo_connect.db.users
+    inc_grade_clear(psy_login, grade, -1)
+    users.update_one({'login':str(testee_login).capitalize()}, {'$set':{'result':'Нет результата', 'msg':b64enc(msg[:501]), 'step':'start'}})
+
+def del_danger_res(testee_login: str, psy_login: str, grade: str, msg: str):
+    """Принимает логин испытуемого, логин психолога, класс испытуемых и сообщение о причине удаления
+    Уменьшает на 1 кол-во рискующих и увеличивает кол-во не прошедших тест на 1.
+    Устанавлевает значение 'Не рискует', в качестве результата данного испытуемого.
+    Добавляет сообщение о причине удаления к записи об этом испытуемом."""
+    users = mongo_connect.db.users
+    inc_grade_danger(psy_login, grade, -1)
+    users.update_one({'login': str(testee_login).capitalize()}, {'$set': {'result': 'Нет результата', 'msg': b64enc(msg[:501]), 'step':'start'}})
+
