@@ -13,7 +13,8 @@ import docx
 @decors.check_admin_or_psy
 def download(name, target):
     dec_name = b64dec(name)
-    psy_login = session['login'] if session['status'] == 'psy' else session['psy_login']
+    psy_login = session['login']
+    if session['status'] == 'admin': psy_login= session['psy_login']
 
     if target == 'not_yet':
         testees = tuple(get_testees_by_grade_not_yet(psy_login, dec_name))

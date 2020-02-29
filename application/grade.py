@@ -11,17 +11,17 @@ from flask import session, render_template, url_for
 @decors.check_admin_or_psy
 def grade(name, sort_by='result'):
     dec_name = b64dec(name)
-
+    
+    psy_login = session['login']
+    back_url = url_for('psy')
     if session['status'] == 'admin':
-        counters = get_grades_by_psy(session['psy_login'])['grades'][name]
-        testees = get_testees_by_grade(session['psy_login'], dec_name).sort(sort_by, 1)
-        return render_template('grade.html', logged=True, login=session['login'], count=0, testees=testees, counters=counters, name=dec_name, status='admin',
-                               back_url=url_for('psy_info', login=session['psy_login']), dec=decrypt, t2st=stamp2str, b64enc=b64enc, cur_url=url_for('grade', name=name), title=dec_name+' класс')
+        psy_login= session['psy_login']
+        back_url = url_for('psy_info', login=session['psy_login'])
 
+    counters = get_grades_by_psy(psy_login)['grades'][name]
+    cur_count = get_user_by_login(psy_login)['count']
+    testees = get_testees_by_grade(psy_login, dec_name).sort(sort_by, 1)
 
-    counters = get_grades_by_psy(session['login'])['grades'][name]
-    cur_count = get_user_by_login(session['login'])['count']
-    testees = get_testees_by_grade(session['login'], dec_name).sort(sort_by, 1)
-
-    return render_template('grade.html', logged=True, login=session['login'], count=cur_count, testees=testees, counters=counters, name=dec_name, status='psy',
-                           back_url=url_for('psy'), dec=decrypt, t2st=stamp2str, b64enc=b64enc, cur_url=url_for('grade', name=name), title=dec_name+' класс')
+    return render_template('grade.html', logged=True, login=psy_login, count=cur_count, testees=testees, counters=counters, name=(name, dec_name),
+                            status=session['status'], back_url=back_url, dec=decrypt, t2st=stamp2str, b64enc=b64enc,
+                           cur_url=url_for('grade', name=name), title=dec_name+' класс')

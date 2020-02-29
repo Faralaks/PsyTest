@@ -11,7 +11,7 @@
                             <div class="form-group">
                                 <label for="gradeField">Класс</label>
                                 <input class="form-control" id="gradeField" type="text" name="grade" required
-                                       value="{{ name }}" readonly>
+                                       value="{{ name[1] }}" readonly>
                             </div>
 
                             <div class="form-group">
@@ -32,7 +32,7 @@
         <div class="col-md-6">
             <div class="card border-0 shadow">
                 <div class="card-body">
-                    <h5 class="card-title">{{ name }} статистика</h5>
+                    <h5 class="card-title">{{ name[1] }} статистика</h5>
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Всего испытуемых
@@ -57,16 +57,16 @@
                       </a>
 
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="{{ url_for('download', name=b64enc(name), target='not_yet') }}">
+                        <a class="dropdown-item" href="{{ url_for('download', name=name[0], target='not_yet') }}">
                             Таблица логинов и паролей для непротестированных</a>
-                        <a class="dropdown-item" href="{{ url_for('download', name=b64enc(name), target='done') }}">
+                        <a class="dropdown-item" href="{{ url_for('download', name=name[0], target='done') }}">
                             Таблица с результатами всех протестированных</a>
                       </div>
             </div>
         </div>
     </div>
 
-    <h2 class="display-4 mt-5">Список испытуемых {{ name }}</h2>
+    <h2 class="display-4 mt-5">Список испытуемых {{ name[1] }}</h2>
     <div class="table-responsive">
         <table class="table text-center">
             <thead>
@@ -99,9 +99,9 @@
                             </button>
                         </td>
                         -->
-                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=b64enc(name), login=testee['login'], prev_res='danger') }}">DEL</a></td>
+                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=name[0], login=testee['login'], prev_res='danger') }}">DEL</a></td>
                     {% elif testee['result'] == 'Не рискует' and status == 'psy' %}
-                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=b64enc(name), login=testee['login'], prev_res='clear') }}">DEL</a></td>
+                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=name[0], login=testee['login'], prev_res='clear') }}">DEL</a></td>
                     {% endif %}
                 </tr>
             {% endfor %}
