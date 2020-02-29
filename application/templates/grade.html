@@ -58,9 +58,9 @@
 
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         <a class="dropdown-item" href="{{ url_for('download', name=name[0], target='not_yet') }}">
-                            Таблица логинов и паролей для непротестированных</a>
+                            <i class="fa fa-file-word-o" aria-hidden="true"></i>&nbsp;&nbsp;Таблица логинов и паролей для непротестированных</a>
                         <a class="dropdown-item" href="{{ url_for('download', name=name[0], target='done') }}">
-                            Таблица с результатами всех протестированных</a>
+                            <i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Таблица с результатами всех протестированных</a>
                       </div>
             </div>
         </div>
@@ -93,15 +93,11 @@
                     <td>{{ dec(testee['pas']) }}</td>
                     <td>{{ t2st(testee['create_date']) }}</td>
                     {% if testee['result'] == 'Рискует' and status == 'psy' %}
-                        <!-- <td>
-                            <button type="button" class="btn btn-default btn-lg">
-                              <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Star
-                            </button>
-                        </td>
-                        -->
-                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=name[0], login=testee['login'], prev_res='danger') }}">DEL</a></td>
+                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=name[0], login=testee['login'], prev_res='danger') }}">
+                            <i class="fa fa-trash" aria-hidden="true"></i></a></td>
                     {% elif testee['result'] == 'Не рискует' and status == 'psy' %}
-                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=name[0], login=testee['login'], prev_res='clear') }}">DEL</a></td>
+                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=name[0], login=testee['login'], prev_res='clear') }}">
+                            <i class="fa fa-trash" aria-hidden="true"></i></a></td>
                     {% endif %}
                 </tr>
             {% endfor %}
