@@ -118,10 +118,10 @@
                     <td>{{ dec(psy['pas']) }}</td>
                     <td>{{ psy['count'] }}</td>
                     <td>
-                        <span class="badge badge-light badge-pill">{{ psy['counters'].get('whole', 0) }}</span>
-                        <span class="badge badge-secondary badge-pill">{{ psy['counters'].get('not_yet', 0) }}</span>
-                        <span class="badge badge-success badge-pill">{{ psy['counters'].get('clear', 0) }}</span>
-                        <span class="badge badge-danger badge-pill">{{ psy['counters'].get('danger', 0) }}</span>
+                        <span class="badge badge-light badge-pill" title="Количество испытуемых">{{ psy['counters'].get('whole', 0) }}</span>
+                        <span class="badge badge-secondary badge-pill" title="Еще не протестировано">{{ psy['counters'].get('not_yet', 0) }}</span>
+                        <span class="badge badge-success badge-pill" title="Вне групп риска">{{ psy['counters'].get('clear', 0) }}</span>
+                        <span class="badge badge-danger badge-pill" title="В группах риска">{{ psy['counters'].get('danger', 0) }}</span>
                     </td>
                     <td>{{ " ".join(psy['tests']) }}</td>
                     <td>{{ t2st(psy['create_date']) }}</td>

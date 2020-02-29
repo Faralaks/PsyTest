@@ -1,4 +1,4 @@
-from psytest_tools import b64enc, b64dec, get_testees_by_grade, get_user_by_login, decrypt, stamp2str, get_grades_by_psy, vprint
+from psytest_tools import b64enc, b64dec, get_testees_by_grade, get_user_by_login, decrypt, stamp2str, get_grades_by_psy
 from application import app, mongo_connect
 from application import decorators as decors
 from flask import session, render_template, url_for

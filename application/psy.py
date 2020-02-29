@@ -1,4 +1,4 @@
-from psytest_tools import get_user_by_login, get_grades_by_psy, b64enc, b64dec, vprint
+from psytest_tools import get_user_by_login, get_grades_by_psy, b64enc, b64dec
 from flask import render_template, redirect, url_for, session
 from application import decorators as decors
 from application import app
