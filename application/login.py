@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, session, request
 from application import app
-from psytest_tools import get_user_by_login, encrypt, now
+from psytest_tools import get_user_by_login, decrypt, now
 import  datetime as dt
 
 form = lambda key: request.form[key]
@@ -10,7 +10,7 @@ form = lambda key: request.form[key]
 def login():
     user_data = get_user_by_login(form('login').capitalize())
     if user_data:
-        if user_data['pas'] == encrypt(form('password')):
+        if decrypt(user_data['pas']) == form('password'):
             session['_id'] = str(user_data['_id'])
             session['login'] = user_data['login']
             session['pas'] = user_data['pas']
