@@ -30,38 +30,25 @@
         {% endif %}
 
         <div class="col-md-6">
-            <div class="card border-0 shadow">
+            <div class="card border-0 shadow mt-md-0 mt-2">
                 <div class="card-body">
-                    <h5 class="card-title">{{ name[1] }} статистика</h5>
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Всего испытуемых
-                            <span class="badge badge-Light badge-pill">{{ counters.get('whole', 0) }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Еще не протестированы
-                            <span class="badge badge-secondary badge-pill">{{ counters.get('not_yet', 0)  }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Вне групп риска
-                            <span class="badge badge-success badge-pill">{{ counters.get('clear', 0)  }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            В группах риска
-                            <span class="badge badge-danger badge-pill">{{ counters.get('danger', 0)  }}</span>
-                        </li>
-                    </ul>
+                    <h5 class="card-title">{{ name[1] }}&nbsp; | Общая статистика</h5>
+                    {% include 'stats.html' %}
                 </div>
-                      <a class="btn btn-success dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Скачать
-                      </a>
+                {% if status == 'psy' %}
+                    <a class="btn btn-success dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% elif status == 'admin' %}
+                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% endif %}
+                    Скачать
+                </a>
 
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="{{ url_for('download', name=name[0], target='not_yet') }}">
-                            <i class="fa fa-file-word-o" aria-hidden="true"></i>&nbsp;&nbsp;Таблица логинов и паролей для непротестированных</a>
-                        <a class="dropdown-item" href="{{ url_for('download', name=name[0], target='done') }}">
-                            <i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Таблица с результатами всех протестированных</a>
-                      </div>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="{{ url_for('download', name=name[0], target='not_yet') }}">
+                        <i class="fa fa-file-word-o" aria-hidden="true"></i>&nbsp;&nbsp;Таблица логинов и паролей для непротестированных</a>
+                    <a class="dropdown-item" href="{{ url_for('download', name=name[0], target='done') }}">
+                        <i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Таблица с результатами всех протестированных</a>
+                </div>
             </div>
         </div>
     </div>
@@ -92,12 +79,21 @@
                     <td>{{ testee['login'] }}</td>
                     <td>{{ dec(testee['pas']) }}</td>
                     <td>{{ t2st(testee['create_date']) }}</td>
-                    {% if testee['result'] == 'Рискует' and status == 'psy' %}
-                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=name[0], login=testee['login'], prev_res='danger') }}">
-                            <i class="fa fa-trash" aria-hidden="true"></i></a></td>
-                    {% elif testee['result'] == 'Не рискует' and status == 'psy' %}
-                        <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=name[0], login=testee['login'], prev_res='clear') }}">
-                            <i class="fa fa-trash" aria-hidden="true"></i></a></td>
+
+                    {% if status == 'psy' %}
+                        {% if testee['result'] == 'Рискует' %}
+                            <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=name[0], login=testee['login'], prev_res='danger') }}">
+                                <i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                        {% elif testee['result'] == 'Не рискует' %}
+                            <td><a class="btn btn-outline-danger my-2 my-sm-0" href="{{ url_for('del_result', grade=name[0], login=testee['login'], prev_res='clear') }}">
+                                <i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                        {% elif testee.get('msg') %}
+                            <td><p title="Результат удален, заявка ожидает рассмотрения">
+                                <i class="fa fa-trash" aria-hidden="true"></i></p></td>
+                        {% endif %}
+                    {% elif status == 'admin' and testee.get('msg') %}
+                        <td><a class="btn btn-warning my-2 my-sm-0" href="{{ url_for('messages', login=testee['login']) }}">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i></a></td>
                     {% endif %}
                 </tr>
             {% endfor %}

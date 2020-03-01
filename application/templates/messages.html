@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block body %}
+
+<div class="card border-0 shadow" id="show_msg_card">
+    <div class="card-body">
+        <h5 class="card-title">Психолог {{ psy_login }} удалил результат испытуемого {{ testee_login }} из класса {{ name[1] }}</h5>
+        <p>
+            {{ msg }}
+        </p>
+        <form method="POST" action="{{ url_for('messages', login=testee_login) }}">
+            <input type="submit" class="btn btn-primary" value="Подтвердить удаление">
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

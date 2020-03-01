@@ -30,9 +30,11 @@ def testee():
 
         elif request.method == 'GET':
             nxt = user['step']
-            if user['step'] == 'start':
+            if nxt == 'start':
                 set_test_index(session['login'], 0)
                 return render_template('test_start.html', login=session['login'], title='Начало тестирования')
+            elif nxt == 'deleted':
+                return render_template('test_deleted.html', login=session['login'], title='Удален')
             return render_template('test_%s.html'%user['tests'][nxt], login=session['login'], title='Идет тестирование')
     except IndexError:
         return render_template('test_stop.html', login=session['login'], title='Тесты пройдены')

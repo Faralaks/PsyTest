@@ -10,13 +10,13 @@ from application import app
 @decors.check_admin
 def admin(sort_by='create_date'):
     psys = get_all_psys().sort(sort_by, 1)
-    big_counters = {'psys':0, 'whole':0, 'not_yet':0, 'clear':0, 'danger':0}
+    big_counters = {'psys':0, 'whole':0, 'not_yet':0, 'clear':0, 'danger':0, 'msg':0}
     psy_and_stats = []
 
     for psy in psys:
         big_counters['psys'] += 1
         psy_and_stats.append({'login':psy['login'], 'pas':psy['pas'] ,'create_date':psy['create_date'], 'pre_del':psy.get('pre_del'), 'ident':psy['ident'], 'tests':psy['tests'],
-                             'count':psy['count'], 'counters':{'whole':0, 'not_yet':0, 'clear':0, 'danger':0}})
+                             'count':psy['count'], 'counters':{'whole':0, 'not_yet':0, 'clear':0, 'danger':0, 'msg':0}})
 
         for stats in psy['grades'].values():
             big_counters['whole'] += stats.get('whole', 0)
@@ -27,5 +27,7 @@ def admin(sort_by='create_date'):
             psy_and_stats[-1]['counters']['clear'] += stats.get('clear', 0)
             big_counters['danger'] += stats.get('danger', 0)
             psy_and_stats[-1]['counters']['danger'] += stats.get('danger', 0)
+            big_counters['msg'] += stats.get('msg', 0)
+            psy_and_stats[-1]['counters']['msg'] += stats.get('msg', 0)
     return render_template('admin.html', msg=request.args.get('msg'), logged=True, login=session['login'], psys=psy_and_stats, counters=big_counters,
                            pas=gen_pass(12), dec=decrypt, t2st=stamp2str, title='Администратор')

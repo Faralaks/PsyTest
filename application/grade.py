@@ -19,6 +19,7 @@ def grade(name, sort_by='result'):
         back_url = url_for('psy_info', login=session['psy_login'])
 
     counters = get_grades_by_psy(psy_login)['grades'][name]
+
     cur_count = get_user_by_login(psy_login)['count']
     testees = get_testees_by_grade(psy_login, dec_name).sort(sort_by, 1)
 

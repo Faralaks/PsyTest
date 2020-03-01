@@ -148,7 +148,7 @@ def get_testees_by_grade(added_by: str, grade: str):
     Возвращает список всех испытуемых этого психолога в заданном классе"""
     users = mongo_connect.db.users
     return users.find({'status':'testee', 'added_by':str(added_by), 'grade':str(grade), 'pre_del':None},
-                {'result':1,'login':1, 'pas':1, 'grade':1, 'tests':1, 'create_date':1})
+                {'result':1,'login':1, 'pas':1, 'grade':1, 'tests':1, 'create_date':1, 'msg':1})
 
 def get_testees_by_grade_not_yet(added_by: str, grade: str):
     """Принимает логин психолога, добавившего испытуемых, класс испытуемых.
@@ -199,7 +199,7 @@ def set_result(login: str, new_result: str):
     users.update_one({'login':str(login).capitalize()}, {'$set':{'result':str(new_result)}})
 
 def inc_grade_danger(login: str, grade: str, val=1):
-    """Принимает логин психолога и класс испытуемых и val - значение, на которое надо увеличить.
+    """Принимает логин психолога, класс испытуемых и val - значение, на которое надо увеличить.
     Увеличивает на val кол-во рискующих и уменьшает кол-во не прошедших тест на val"""
     users = mongo_connect.db.users
     login = str(login).capitalize()
@@ -207,12 +207,27 @@ def inc_grade_danger(login: str, grade: str, val=1):
     users.update_one({'login':login}, {'$inc':{'grades.%s.danger'%grade:val, 'grades.%s.not_yet'%grade:-val}})
 
 def inc_grade_clear(login: str, grade: str, val=1):
-    """Принимает логин психолога и класс испытуемых и val -  значение, на которое надо увеличить.
+    """Принимает логин психолога, класс испытуемых и val -  значение, на которое надо увеличить.
     Увеличивает на val кол-во не рискующих и уменьшает кол-во не прошедших тест на val"""
     users = mongo_connect.db.users
     login = str(login).capitalize()
     grade = b64enc(grade)
     users.update_one({'login':login}, {'$inc':{'grades.%s.clear'%grade:val, 'grades.%s.not_yet'%grade:-val}})
+
+def inc_grade_msg(login: str, grade: str, val=1):
+    """Принимает логин психолога, класс испытуемых и val - значение, на которое надо увеличить.
+    Увеличивает на val кол-во сообщений об удалении."""
+    users = mongo_connect.db.users
+    login = str(login).capitalize()
+    grade = b64enc(grade)
+    users.update_one({'login':login}, {'$inc':{'grades.%s.msg'%grade:val}})
+
+def accept_del(testee_login: str, psy_login: str, grade: str):
+    """"Принимает логин испытуемого, логин психолога, класс испытуемого. Удаляет сообщение, прикрепленное при удалении.
+     Уменьшает на 1 количество сообщений об удалении для этого психолога."""
+    users = mongo_connect.db.users
+    inc_grade_msg(psy_login, grade, -1)
+    users.update_one({'login':str(testee_login).capitalize()}, {'$set':{'msg':None, 'step':'start'}})
 
 def del_clear_res(testee_login: str, psy_login: str, grade: str, msg: str):
     """Принимает логин испытуемого, логин психолога, класс испытуемых и сообщение о причине удаления
@@ -221,7 +236,8 @@ def del_clear_res(testee_login: str, psy_login: str, grade: str, msg: str):
     Добавляет сообщение о причине удаления к записи об этом испытуемом."""
     users = mongo_connect.db.users
     inc_grade_clear(psy_login, grade, -1)
-    users.update_one({'login':str(testee_login).capitalize()}, {'$set':{'result':'Нет результата', 'msg':b64enc(msg[:501]), 'step':'start'}})
+    inc_grade_msg(psy_login, grade)
+    users.update_one({'login':str(testee_login).capitalize()}, {'$set':{'result':'Нет результата', 'msg':b64enc(msg[:501]), 'step':'deleted'}})
 
 def del_danger_res(testee_login: str, psy_login: str, grade: str, msg: str):
     """Принимает логин испытуемого, логин психолога, класс испытуемых и сообщение о причине удаления
@@ -230,5 +246,6 @@ def del_danger_res(testee_login: str, psy_login: str, grade: str, msg: str):
     Добавляет сообщение о причине удаления к записи об этом испытуемом."""
     users = mongo_connect.db.users
     inc_grade_danger(psy_login, grade, -1)
-    users.update_one({'login': str(testee_login).capitalize()}, {'$set': {'result': 'Нет результата', 'msg': b64enc(msg[:501]), 'step':'start'}})
+    inc_grade_msg(psy_login, grade)
+    users.update_one({'login': str(testee_login).capitalize()}, {'$set': {'result': 'Нет результата', 'msg': b64enc(msg[:501]), 'step':'deleted'}})
 
