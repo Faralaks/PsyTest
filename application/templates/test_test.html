@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block body %}
+
+            <div class="card border-0 shadow" id="add_testees_card">
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('testee') }}">
+                        <h5 class="card-title">Плизки, скажите честно, вы в группе риска?</h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q1" id="t1q1a1" value=0>
+                            <label class="form-check-label" for="t1q1a1">
+                                Да! признаюсь, я такой весь из себя нехооший и всячески рискую, спасите меня!
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q1" id="t1q1a2" value=1>
+                            <label class="form-check-label" for="t1q1a2">
+                                Нет! Ну что вы? Я весь из себя такой хороший, примерный и вообще круче меня никого нет
+                            </label>
+                        </div>
+                         {% if msg %}
+                             <span style="color: #ffffff; background-color: rgb(170, 1, 1);">{{ msg }}</span>
+                         {% endif %}
+                        <div class="form-group"><input type="submit" class="btn btn-info" value="Готово"></div>
+                    </form>
+                </div>
+            </div>
+
+{% endblock %}
