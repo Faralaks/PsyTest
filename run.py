@@ -2,7 +2,6 @@
 from sys import platform
 
 
-
 def run(port: int):
     """Запускает flask-сервер согласно текущей платформе.
     Функция принимает ПОРТ, на котором будет работать сервер."""
@@ -11,7 +10,7 @@ def run(port: int):
     else:
         app.run(port=port)
 
+
 if __name__ == '__main__':
     from application import app
-    run(80)
-    
+    run(5000)
