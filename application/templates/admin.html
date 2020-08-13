@@ -77,7 +77,6 @@
     {% endif %}
 
     <h3 class="display-4 mt-5">Список психологов</h3>
-    <input type="button" class="btn btn-primary" value="Показать" onclick="getPsyList()">
 
     <div class="table-responsive">
         <table class="table text-center" id="psyTable">
@@ -95,35 +94,8 @@
             </tr>
 
             </thead>
-        {#
-            {% for psy in psys %}
-                <tr>
-                    <td>{{ psy['ident'] }}</td>
-                    <td>{{ psy['login'] }}</td>
-                    <td>{{ dec(psy['pas']) }}</td>
-                    <td>{{ psy['count'] }}</td>
-                    <td>
-                        <span class="badge badge-light badge-pill" title="Количество испытуемых">{{ psy['counters'].get('whole', 0) }}</span>
-                        <span class="badge badge-secondary badge-pill" title="Еще не протестировано">{{ psy['counters'].get('not_yet', 0) }}</span>
-                        <span class="badge badge-success badge-pill" title="Вне групп риска">{{ psy['counters'].get('clear', 0) }}</span>
-                        <span class="badge badge-danger badge-pill" title="В группах риска">{{ psy['counters'].get('danger', 0) }}</span>
-                        {% if psy['counters'].get('msg') %}
-                            <span class="badge badge-warning badge-pill" title="Сообщения об удалении">{{ psy['counters'].get('msg', 0) }}</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ " ".join(psy['tests']) }}</td>
-                    <td>{{ t2st(psy['create_date']) }}</td>
-                    {% if psy['pre_del'] %}
-                        <td>{{ t2st(psy['pre_del']) }}</td>
-                    {% else %}
-                        <td>-</td>
-                    {% endif %}
-                    <td>
-                        <a class="btn btn-primary" href="{{ url_for('psy_info', login=psy['login']) }}">Подробнее</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            #}
+            <script>getPsyList()</script>
+
         </table>
     </div>
 {% endblock %}
