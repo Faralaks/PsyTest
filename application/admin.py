@@ -6,10 +6,9 @@ from application import app
 
 
 @app.route('/admin')
-@app.route('/admin/<sort_by>')
 @decors.check_admin
-def admin(sort_by='create_date'):
-    psys = get_all_psys().sort(sort_by, 1)
+def admin():
+    psys = get_all_psys()
     big_counters = {'psys':0, 'whole':0, 'not_yet':0, 'clear':0, 'danger':0, 'msg':0}
     psy_and_stats = []
 
