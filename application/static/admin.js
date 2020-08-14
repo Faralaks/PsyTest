@@ -36,9 +36,6 @@ function showPsy(key) {
         if (psyList[i].counters.msg) {
             ownStats += `<span class="badge badge-warning badge-pill" title="Сообщения об удалении">${psyList[i].counters.msg}</span>`
         }
-        let preDel;
-        if (psyList[i].pre_del) { preDel = (psyList[i].pre_del - (Date.now() / 1000 | 0))/3600 | 0}
-        else { preDel = '-' }
         let trPsy = jq("<tr></tr>")
             .append(jq(`<td>${psyList[i].ident}</td>`))
             .append(jq(`<td>${psyList[i].login}</td>`))
@@ -47,8 +44,9 @@ function showPsy(key) {
             .append(jq(`<td>${ownStats}</td>`))
             .append(jq(`<td>${psyList[i].tests}</td>`))
             .append(jq(`<td>${psyList[i].create_date.replace(' ', '<br>')}</td>`))
-            .append(jq(`<td>${preDel}</td>`))
             .append(jq(`<td><a class="btn btn-primary" href="/psy_info/${psyList[i].login}">Подробнее</a></td>`));
+        if (psyList[i].pre_del) trPsy.append(jq(`<td><i class="fa fa-trash" aria-hidden="true" title="Будет удален менее чем через ${Math.ceil((psyList[i].pre_del - (Date.now() / 1000 | 0))/3600)} ч."></i></td>`));
+
         console.log(psyList[i]);
         psyTable.append(trPsy);
     }
