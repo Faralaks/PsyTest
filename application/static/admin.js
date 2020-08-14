@@ -2,13 +2,12 @@ let psyList;
 let lastKey;
 let stats;
 
-function showErrMsg(msg) {
-    jq("#msg").text(msg).addClass("msgErr").fadeIn(1000).delay(5000).fadeOut(1000)
+function showMsg(msg, status) {
+    status = "msg" + status;
+    let msgLine = jq("#msg");
+    msgLine.removeClass();
+    msgLine.text(msg).addClass(status).fadeIn(1000).delay(5000).fadeOut(1000);
 }
-function showSucMsg(msg) {
-    jq("#msg").text(msg).addClass("msgSuc").fadeIn(1000).delay(5000).fadeOut(1000)
-}
-
 
 
 function showPsy(key) {
@@ -72,5 +71,12 @@ function getPsyList() {
 }
 
 function addNewPsy() {
-    jq.post("/add_psy", jq("#addPsyForm").serialize())
+    jq.ajaxSetup({timeout:3000});
+    jq.post("/add_psy", jq("#addPsyForm").serialize()).done(function (response) {
+        showMsg(response.msg, response.status);
+        if (response.status === "Suc") getPsyList();
+    }).fail(function () {
+        showMsg("Превышено время ожидания или произошла ошибка на стороне сервера, Психолог не добавлен", 'Err')
+
+    })
 }
