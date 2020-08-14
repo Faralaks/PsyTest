@@ -2,6 +2,14 @@ let psyList;
 let lastKey;
 let stats;
 
+function showErrMsg(msg) {
+    jq("#msg").text(msg).addClass("msgErr").fadeIn(1000).delay(5000).fadeOut(1000)
+}
+function showSucMsg(msg) {
+    jq("#msg").text(msg).addClass("msgSuc").fadeIn(1000).delay(5000).fadeOut(1000)
+}
+
+
 
 function showPsy(key) {
     let psyTable = jq("#psyTable");
@@ -54,12 +62,12 @@ function showPsy(key) {
 }
 
 function getPsyList() {
-    jq.ajaxSetup({timeout:10000});
+    jq.ajaxSetup({timeout:1000});
     jq.post("/admin").done(function (psysAndStats) {
         psyList = psysAndStats.psys;
         stats = psysAndStats.stats;
         showPsy();
-    }).fail(function () { alert('Данные загрузить не удалось')
+    }).fail(function () { showErrMsg('Данные загрузить не удалось')
 
     });
 }

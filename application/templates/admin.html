@@ -8,6 +8,24 @@
             cursor: pointer;
             text-decoration: underline;
         }
+
+        #msg {
+            padding: 0  7px 0 7px;
+            display: none;
+            border: 3px solid rgba(0, 0, 0, 0);
+            border-radius: 15px;
+        }
+
+        .msgSuc {
+            color: #ffffff;
+            background-color: rgb(38, 110, 0);
+        }
+
+        .msgErr {
+            color: #ffffff;
+            background-color: rgb(170, 1, 1);
+        }
+
     </style>
 {% endblock %}
 {% block body %}
@@ -72,9 +90,10 @@
             </div>
         </div>
     </div>
+    <br>
 
 
-    <span id="msg" style="color: #ffffff; background-color: rgb(170, 1, 1);" hidden></span>
+    <span id="msg"></span>
 
     <h3 class="display-4 mt-5">Список психологов</h3>
 
