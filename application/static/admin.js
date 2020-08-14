@@ -61,7 +61,7 @@ function showPsy(key) {
             .append(jq(`<td>${ownStats}</td>`))
             .append(jq(`<td>${psyList[i].tests}</td>`))
             .append(jq(`<td>${psyList[i].create_date.replace(' ', '<br>')}</td>`))
-            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="fillPsyData(${i})" value="Подробнее"></td>`));
+            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showPsyInfo(${i})" value="Подробнее"></td>`));
         if (psyList[i].pre_del) trPsy.append(jq(`<td><i class="fa fa-trash" aria-hidden="true" title="Будет удален менее чем через ${Math.ceil((psyList[i].pre_del - (Date.now() / 1000 | 0))/3600)} ч."></i></td>`));
 
         psyTable.append(trPsy);
@@ -102,7 +102,7 @@ function setToDefault() {
     jq("#psyFormCheckDel").prop("checked", curPsy.pre_del);
 }
 
-function fillPsyData(psyIdx) {
+function showPsyInfo(psyIdx) {
     curPsy = psyList[psyIdx];
     setToDefault();
 
@@ -119,14 +119,6 @@ function fillPsyData(psyIdx) {
     jq("#psyFormBtnSave").val("Сохранить");
 
     showStats(curPsy.counters)
-
-
-
-
-
-
-
-
 
 
 
