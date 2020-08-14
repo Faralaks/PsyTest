@@ -9,7 +9,7 @@ from application import app
 @decors.check_admin
 def admin():
     if request.method == 'GET':
-        return render_template('admin.html', logged=True, login=session['login'],  pas=gen_pass(1), title='Администратор')
+        return render_template('admin.html', login=session['login'],  pas=gen_pass(1), title='Администратор')
 
     elif request.method == 'POST':
         psys = get_all_psys()
