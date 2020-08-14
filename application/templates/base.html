@@ -32,13 +32,11 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            {% if back_url %}
-                <li class="nav-item active">
-                    <a class="btn btn-secondary" href="{{ back_url }}">
-                        <i class="fa fa-chevron-left" aria-hidden="true"></i> назад
-                    </a>
-                </li>
-            {% endif %}
+            <li id="barBtnBack"  class="nav-item active"  style="display: none;">
+                <a class="btn btn-secondary" href="#">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i> назад
+                </a>
+            </li>
         </ul>
         <div class="form-inline my-2 my-lg-0">
             <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->

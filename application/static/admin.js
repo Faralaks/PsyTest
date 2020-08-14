@@ -10,6 +10,21 @@ function showMsg(msg, status) {
     msgLine.text(msg).addClass(status).fadeIn(1000).delay(5000).fadeOut(1000);
 }
 
+function showStats(stats) {
+    jq('#stat_psy_count').text(stats.psy_count);
+    jq('#stat_whole').text(stats.whole);
+    jq('#stat_not_yet').text(stats.not_yet);
+    jq('#stat_clear').text(stats.clear);
+    jq('#stat_danger').text(stats.danger);
+    if (stats.msg)  {
+        jq('#stat_msg').text(stats.msg);
+        jq('#statsLinesMsg').addClass('d-flex').show()
+    }
+    else {
+        jq('#statsLinesMsg').removeClass('d-flex').hide()
+    }
+
+}
 
 function showPsy(key) {
     let psyTable = jq("#psyTable");
@@ -25,13 +40,7 @@ function showPsy(key) {
         return 0;
         });
     }
-    jq('#stat_psy_count').text(stats.psy_count);
-    jq('#stat_whole').text(stats.whole);
-    jq('#stat_not_yet').text(stats.not_yet);
-    jq('#stat_clear').text(stats.clear);
-    jq('#stat_danger').text(stats.danger);
-    if (stats.msg)  jq('#stat_msg').text(stats.msg);
-    else {jq('#stat_msg').parent().remove()}
+
 
 
 
@@ -56,7 +65,9 @@ function showPsy(key) {
         if (psyList[i].pre_del) trPsy.append(jq(`<td><i class="fa fa-trash" aria-hidden="true" title="Будет удален менее чем через ${Math.ceil((psyList[i].pre_del - (Date.now() / 1000 | 0))/3600)} ч."></i></td>`));
 
         psyTable.append(trPsy);
+
     }
+
 
 }
 
@@ -66,6 +77,7 @@ function getPsyList() {
         psyList = psysAndStats.psys;
         stats = psysAndStats.stats;
         showPsy();
+        showStats(stats)
     }).fail(function () { showErrMsg('Данные загрузить не удалось')
 
     });
@@ -87,15 +99,26 @@ function setToDefault() {
     jq("#psyFormPas").val(curPsy.pas);
     jq("#psyFormIdent").val(curPsy.ident);
     jq("#psyFormCount").val(curPsy.count);
+    jq("#psyFormCheckDel").prop("checked", curPsy.pre_del);
 }
 
 function fillPsyData(psyIdx) {
     curPsy = psyList[psyIdx];
     setToDefault();
 
+
     jq("#psyTablePlace").hide();
+    jq("#statsLinesPsyCount").removeClass("d-flex").hide();
+
+    jq("#psyFormBtnDef").show();
+    jq("#psyFormPlaceDel").show();
+    jq("#barBtnBack").show();
+
     jq("#psyFormTitle").text("Редактировать Психолога");
+    jq("#statsCardTitle").text(`${curPsy.login} | Статистика`);
     jq("#psyFormBtnSave").val("Сохранить");
+
+    showStats(curPsy.counters)
 
 
 

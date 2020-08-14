@@ -72,8 +72,17 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <input type="button" id="psyFormBtnSave" class="btn btn-primary" value="Добавить психолога" onclick="addNewPsy()">
+                            <div class="form-row align-items-center justify-content-between">
+                                <div class="form-group">
+                                    <input type="button" id="psyFormBtnSave" class="btn btn-primary" value="Добавить психолога" onclick="addNewPsy()">
+                                    <input type="button" id="psyFormBtnDef" class="btn btn-danger" value="Отменить" onclick="setToDefault()" style="display: none">
+                                </div>
+                            <div class="form-group">
+                                  <div id="psyFormPlaceDel" class="custom-control custom-checkbox mr-sm-2" style="display: none">
+                                      <input type="checkbox" class="custom-control-input danger" id="psyFormCheckDel" value="Yes" name="del">
+                                      <label class="custom-control-label" for="psyFormCheckDel">Удален</label>
+                                  </div>
+                              </div>
                         </div>
                     </form>
                 </div>
@@ -84,7 +93,7 @@
         <div class="col-md-6">
             <div class="card border-0 shadow mt-md-0 mt-2">
                 <div class="card-body">
-                    <h5 class="card-title">Полная статистика</h5>
+                    <h5 id="statsCardTitle" class="card-title">Полная статистика</h5>
                      {% include 'stats.html' %}
                 </div>
             </div>
