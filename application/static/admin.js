@@ -55,7 +55,6 @@ function showPsy(key) {
             .append(jq(`<td><a class="btn btn-primary" href="/psy_info/${psyList[i].login}">Подробнее</a></td>`));
         if (psyList[i].pre_del) trPsy.append(jq(`<td><i class="fa fa-trash" aria-hidden="true" title="Будет удален менее чем через ${Math.ceil((psyList[i].pre_del - (Date.now() / 1000 | 0))/3600)} ч."></i></td>`));
 
-        console.log(psyList[i]);
         psyTable.append(trPsy);
     }
 
@@ -70,4 +69,8 @@ function getPsyList() {
     }).fail(function () { showErrMsg('Данные загрузить не удалось')
 
     });
+}
+
+function addNewPsy() {
+    jq.post("/add_psy", jq("#addPsyForm").serialize())
 }
