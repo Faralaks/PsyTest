@@ -62,7 +62,7 @@ function showPsy(key) {
 }
 
 function getPsyList() {
-    jq.ajaxSetup({timeout:1000});
+    jq.ajaxSetup({timeout:10000});
     jq.post("/admin").done(function (psysAndStats) {
         psyList = psysAndStats.psys;
         stats = psysAndStats.stats;
