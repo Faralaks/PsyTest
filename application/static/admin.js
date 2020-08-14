@@ -54,9 +54,12 @@ function showPsy(key) {
 }
 
 function getPsyList() {
+    jq.ajaxSetup({timeout:10000});
     jq.post("/admin").done(function (psysAndStats) {
         psyList = psysAndStats.psys;
         stats = psysAndStats.stats;
         showPsy();
+    }).fail(function () { alert('Данные загрузить не удалось')
+
     });
 }
