@@ -1,6 +1,7 @@
 let psyList;
 let lastKey;
 let stats;
+let curPsy;
 
 function showMsg(msg, status) {
     status = "msg" + status;
@@ -81,8 +82,29 @@ function addNewPsy() {
     })
 }
 
+function setToDefault() {
+    jq("#psyFormLogin").val(curPsy.login);
+    jq("#psyFormPas").val(curPsy.pas);
+    jq("#psyFormIdent").val(curPsy.ident);
+    jq("#psyFormCount").val(curPsy.count);
+}
 
 function fillPsyData(psyIdx) {
-    console.log(psyList[psyIdx])
+    curPsy = psyList[psyIdx];
+    setToDefault();
+
+    jq("#psyTablePlace").hide();
+    jq("#psyFormTitle").text("Редактировать Психолога");
+    jq("#psyFormBtnSave").val("Сохранить");
+
+
+
+
+
+
+
+
+
+
 
 }
