@@ -36,25 +36,25 @@
                 <div class="card-body">
                     <form id="addPsyForm">
 
-                        <h5 class="card-title">Добавить психолога</h5>
+                        <h5 id="psyFormTitle" class="card-title">Добавить психолога</h5>
                         <div class="form-group">
-                            <label for="loginField">Логин</label>
-                            <input class="form-control" id="loginField" type="text" name="login" required>
+                            <label for="psyFormLogin">Логин</label>
+                            <input class="form-control" id="psyFormLogin" type="text" name="login">
                         </div>
                         <div class="form-group">
-                            <label for="passwordField">Пароль</label>
-                            <input class="form-control" id="passwordField" type="text" value="{{ pas }}" name="password"
+                            <label for="psyFormPas">Пароль</label>
+                            <input class="form-control" id="psyFormPas" type="text" name="password"
                                    required>
                         </div>
 
                         <div class="form-group">
-                            <label for="IdField">Идентификатор</label>
-                            <input class="form-control" id="IdField" type="text" name="ident" required>
+                            <label for="psyFormId">Идентификатор</label>
+                            <input class="form-control" id="psyFormId" type="text" name="ident">
                         </div>
 
                         <div class="form-group col-4 px-0">
-                            <label for="countField">Кол-во</label>
-                            <input class="form-control" id="countField" type="number" name="count" required>
+                            <label for="psyFormCount">Кол-во</label>
+                            <input class="form-control" id="psyFormCount" type="number" name="count">
                         </div>
 
                         <div class="form-group">
@@ -73,7 +73,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input type="button" class="btn btn-primary" value="Добавить психолога" onclick="addNewPsy()">
+                            <input type="button" id="psyFormBtnSave" class="btn btn-primary" value="Добавить психолога" onclick="addNewPsy()">
                         </div>
                     </form>
                 </div>
