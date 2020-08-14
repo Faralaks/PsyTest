@@ -94,27 +94,28 @@
 
 
     <span id="msg"></span>
+    <div id="psyTablePlace">
+        <h3 class="display-4 mt-5">Список психологов</h3>
 
-    <h3 class="display-4 mt-5">Список психологов</h3>
+        <div class="table-responsive">
+            <table class="table text-center" id="psyTable">
+                <thead>
+                <tr>
+                    <th class="sortKey" onclick="showPsy('ident')">ID</th>
+                    <th class="sortKey" onclick="showPsy('login')">Логин</th>
+                    <th>Пароль</th>
+                    <th class="sortKey" onclick="showPsy('count')">Доступно</th>
+                    <th>Статистика</th>
+                    <th>Тесты</th>
+                    <th class="sortKey" onclick="showPsy('create_date')">Дата создания</th>
 
-    <div class="table-responsive">
-        <table class="table text-center" id="psyTable">
-            <thead>
-            <tr>
-                <th class="sortKey" onclick="showPsy('ident')">ID</th>
-                <th class="sortKey" onclick="showPsy('login')">Логин</th>
-                <th>Пароль</th>
-                <th class="sortKey" onclick="showPsy('count')">Доступно</th>
-                <th>Статистика</th>
-                <th>Тесты</th>
-                <th class="sortKey" onclick="showPsy('create_date')">Дата создания</th>
+                    <th></th>
+                </tr>
 
-                <th></th>
-            </tr>
+                </thead>
+                <script>getPsyList()</script>
 
-            </thead>
-            <script>getPsyList()</script>
-
-        </table>
+            </table>
+        </div>
     </div>
 {% endblock %}
