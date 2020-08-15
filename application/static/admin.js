@@ -97,6 +97,16 @@ function addNewPsy() {
 
     })
 }
+function editPsy() {
+    jq.ajaxSetup({timeout:3000});
+    jq.post(`/edit_psy/${curPsy.login}`, jq("#addPsyForm").serialize()).done(function (response) {
+        showMsg(response.msg, response.kind);
+        if (response.status === "Suc") getPsyList();
+    }).fail(function () {
+        showMsg("Превышено время ожидания или произошла ошибка на стороне сервера, Психолог не добавлен", 'Err')
+
+    })
+}
 
 
 
@@ -182,7 +192,7 @@ function showPsyInfo(psyIdx) {
 
     jq("#psyFormTitle").text("Редактировать Психолога");
     jq("#statsCardTitle").text(`${curPsy.login} | Статистика`);
-    jq("#psyFormBtnSave").val("Сохранить");
+    jq("#psyFormBtnSave").attr("onclick", "editPsy()").val("Сохранить");
 
     showStats(curPsy.counters);
     getGradeList();
@@ -204,7 +214,7 @@ function showAdminMainPage() {
 
     jq("#psyFormTitle").text("Добавить психолога");
     jq("#statsCardTitle").text(`Полная статистика`);
-    jq("#psyFormBtnSave").val("Добавить психолога");
+    jq("#psyFormBtnSave").attr("onclick", "addNewPsy()").val("Добавить психолога");
     jq("#psyFormPas").val(preGeneratedPas);
 
 
