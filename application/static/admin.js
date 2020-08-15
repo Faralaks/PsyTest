@@ -47,10 +47,10 @@ function showPsy(key) {
 
     for (let i = 0; i < psyList.length; i++) {
         let ownStats = `
-            <span class="badge badge-light badge-pill" title="Количество испытуемых">${ psyList[i].counters.whole}</span>
-            <span class="badge badge-secondary badge-pill" title="Еще не протестировано">${ psyList[i].counters.not_yet }</span>
-            <span class="badge badge-success badge-pill" title="Вне групп риска">${ psyList[i].counters.clear }</span>
-            <span class="badge badge-danger badge-pill" title="В группах риска">${ psyList[i].counters.danger }</span>`;
+            <span class="badge badge-light badge-pill" title="Количество испытуемых">${ psyList[i].counters.whole?psyList[i].counters.whole:0}</span>
+            <span class="badge badge-secondary badge-pill" title="Еще не протестировано">${ psyList[i].counters.not_yet?psyList[i].counters.not_yet:0 }</span>
+            <span class="badge badge-success badge-pill" title="Вне групп риска">${ psyList[i].counters.clear?psyList[i].counters.clear:0 }</span>
+            <span class="badge badge-danger badge-pill" title="В группах риска">${ psyList[i].counters.danger?psyList[i].counters.danger:0 }</span>`;
         if (psyList[i].counters.msg) {
             ownStats += `<span class="badge badge-warning badge-pill" title="Сообщения об удалении">${psyList[i].counters.msg}</span>`
         }
@@ -117,10 +117,10 @@ function showGrades(key) {
 
     for (let i = 0; i < gradeList.length; i++) {
         let trGrade = jq("<tr></tr>").append(jq(`<td>${atob(gradeList[i][0])}</td>`))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${gradeList[i][1].whole}</span>`)))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${gradeList[i][1].not_yet}</span>`)))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${gradeList[i][1].clear}</span>`)))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${gradeList[i][1].danger}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${gradeList[i][1].whole?gradeList[i][1].whole:0}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${gradeList[i][1].not_yet?gradeList[i][1].not_yet:0}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${gradeList[i][1].clear?gradeList[i][1].clear:0}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${gradeList[i][1].danger?gradeList[i][1].danger:0}</span>`)))
             .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showsyInfo(${i})" value="Просптреть"></td>`))
         if (gradeList[i][1].msg) {
             trGrade.append(`<td><span class="btn btn-warning my-2 my-sm-0" title="В этом классе есть запросы на удаление результата">
