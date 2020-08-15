@@ -3,6 +3,8 @@ let lastKey;
 let stats;
 let curPsy;
 let gradeList, gradeStats;
+let preGeneratedPas;
+
 
 function showMsg(msg, kind) {
     kind = "msg" + kind;
@@ -28,6 +30,7 @@ function showStats(stats) {
 }
 
 function showPsy(key) {
+    preGeneratedPas = jq("#psyFormPas").val();
     let psyTable = jq("#psyTable");
     jq('td').remove();
 
@@ -99,7 +102,7 @@ function addNewPsy() {
 
 function showGrades(key) {
     let gradeTable = jq("#gradeTable");
-    jq('td').remove();
+    jq('#gradeTable td').remove();
 
     if (key) {
         if (key===lastKey) { reverse *= -1; }
@@ -141,7 +144,7 @@ function getGradeList() {
     jq.post(`/get_grade_list/${curPsy.login}`).done(function (gradesAndStats) {
         gradeList = gradesAndStats.grades;
         gradeStats = gradesAndStats.stats;
-        showStats(gradeStats)
+        showStats(gradeStats);
         showGrades();
     }).fail(function () { showMsg('Данные загрузить не удалось', "Err")
 
@@ -157,11 +160,17 @@ function setToDefault() {
     jq("#psyFormCount").val(curPsy.count);
     jq("#psyFormCheckDel").prop("checked", curPsy.pre_del);
 }
+function clearPsyForm() {
+    jq("#psyFormLogin").val("");
+    jq("#psyFormPas").val("");
+    jq("#psyFormIdent").val("");
+    jq("#psyFormCount").val("");
+}
+
 
 function showPsyInfo(psyIdx) {
     curPsy = psyList[psyIdx];
     setToDefault();
-
 
     jq("#psyTablePlace").hide();
     jq("#statsLinesPsyCount").removeClass("d-flex").hide();
@@ -169,15 +178,36 @@ function showPsyInfo(psyIdx) {
     jq("#gradeTablePlace").show();
     jq("#psyFormBtnDef").show();
     jq("#psyFormPlaceDel").show();
-    jq("#barBtnBack").show();
+    jq("#barBtnBack").click(function () { showAdminMainPage() }).show();
 
     jq("#psyFormTitle").text("Редактировать Психолога");
     jq("#statsCardTitle").text(`${curPsy.login} | Статистика`);
     jq("#psyFormBtnSave").val("Сохранить");
 
-    showStats(curPsy.counters)
+    showStats(curPsy.counters);
     getGradeList();
 
+}
 
+
+
+function showAdminMainPage() {
+    clearPsyForm();
+
+    jq("#psyTablePlace").show();
+    jq("#statsLinesPsyCount").addClass("d-flex").show();
+
+    jq("#gradeTablePlace").hide();
+    jq("#psyFormBtnDef").hide();
+    jq("#psyFormPlaceDel").hide();
+    jq("#barBtnBack").hide();
+
+    jq("#psyFormTitle").text("Добавить психолога");
+    jq("#statsCardTitle").text(`Полная статистика`);
+    jq("#psyFormBtnSave").val("Добавить психолога");
+    jq("#psyFormPas").val(preGeneratedPas);
+
+
+    showStats(stats);
 
 }
