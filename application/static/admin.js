@@ -6,6 +6,58 @@ let gradeList, gradeStats;
 let preGeneratedPas;
 
 
+function validateFormData(login, pas, ident, count) {
+    //alert(+validateText(login) + validateText(ident) + validateNum(count))
+    if (+validateText(login) + validatePas(pas) + validateText(ident) + validateNum(count) === 4) {
+        jq("#psyFormBtnSave").prop("disabled", false);
+    }
+    else {
+        jq("#psyFormBtnSave").prop("disabled", true);
+    }
+
+}
+
+
+function validateText(elem){
+    if(elem.val().match(/[^a-zA-Z0-9]/g) || !elem.val().length) {
+        elem.toggleClass("is-invalid", true);
+        jq(`#${elem.attr("id")}Msg`).text("Недопустимое значение");
+        return false;
+    }
+    elem.toggleClass("is-invalid", false);
+    return true;
+
+}
+function validatePas(elem){
+    if(elem.val().match(/[^a-zA-Z0-9!"#$%&'()*,./:;=?@_`{|}~]/g) || elem.val().length < 8) {
+        elem.toggleClass("is-invalid", true);
+        jq(`#${elem.attr("id")}Msg`).text("Недопустимое пароль. Он должен содержать не меннее 8 символов");
+        return false;
+    }
+    elem.toggleClass("is-invalid", false);
+    return true;
+
+}
+
+
+
+function validateNum(elem){
+    if(elem.val().length) {
+        elem.toggleClass("is-invalid", false);
+        fieldsStatus[elem.attr("id")] = true;
+        return true;
+
+    }
+    fieldsStatus[elem.attr("id")] = false;
+    elem.toggleClass("is-invalid", true);
+    jq(`#${elem.attr("id")}Msg`).text("Неверное значение");
+    return false;
+
+
+}
+
+
+
 function showMsg(msg, kind) {
     kind = "msg" + kind;
     let msgLine = jq("#msg");
@@ -191,6 +243,8 @@ function showPsyInfo(psyIdx) {
     //jq("#psyFormBtnSave").click(function () { alert("aaaaa") }).val("Сохранить");
     jq("#psyFormBtnSave").attr("onclick", "editPsy()").val("Сохранить");
 
+    jq("input").toggleClass("is-invalid", false);
+    jq("#psyFormBtnSave").prop("disabled", false);
     showStats(curPsy.counters);
     getGradeList();
 
@@ -214,7 +268,8 @@ function showAdminMainPage() {
     jq("#psyFormBtnSave").attr("onclick", "addNewPsy()").val("Добавить психолога");
     jq("#psyFormPas").val(preGeneratedPas);
 
-
+    jq("input").toggleClass("is-invalid", false);
+    jq("#psyFormBtnSave").prop("disabled", false);
     showStats(stats);
 
 }
