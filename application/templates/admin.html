@@ -37,23 +37,30 @@
                     <form id="addPsyForm">
 
                         <h5 id="psyFormTitle" class="card-title">Добавить психолога</h5>
+
+
                         <div class="form-group">
                             <label for="psyFormLogin">Логин</label>
                             <input class="form-control" id="psyFormLogin" type="text" name="login">
+                            <div id="psyFormLoginMsg" class="invalid-feedback">Такой логин уже используется</div>
                         </div>
+
                         <div class="form-group">
                             <label for="psyFormPas">Пароль</label>
-                            <input class="form-control" id="psyFormPas" type="text" name="password" value="{{ pre_generated_pas }}" required>
+                            <input class="form-control" id="psyFormPas" type="text" name="password" value="{{ pre_generated_pas }}">
                         </div>
 
                         <div class="form-group">
                             <label for="psyFormIdent">Идентификатор</label>
                             <input class="form-control" id="psyFormIdent" type="text" name="ident">
+                            <div id="psyFormIdentMsg" class="invalid-feedback">Такой идентификатор уже используется</div>
                         </div>
 
                         <div class="form-group col-4 px-0">
                             <label for="psyFormCount">Кол-во</label>
                             <input class="form-control" id="psyFormCount" type="number" name="count">
+                            <div id="psyFormCountMsg" class="invalid-feedback">Неверное значение</div>
+
                         </div>
 
                         <div class="form-group">
