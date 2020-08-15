@@ -42,13 +42,11 @@ function validatePas(elem){
 
 
 function validateNum(elem){
-    if(elem.val().length) {
+    if(elem.val().length && +elem.val() > 0) {
         elem.toggleClass("is-invalid", false);
-        fieldsStatus[elem.attr("id")] = true;
         return true;
 
     }
-    fieldsStatus[elem.attr("id")] = false;
     elem.toggleClass("is-invalid", true);
     jq(`#${elem.attr("id")}Msg`).text("Неверное значение");
     return false;
