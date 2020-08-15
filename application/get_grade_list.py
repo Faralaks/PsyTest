@@ -1,14 +1,13 @@
 from psytest_tools import get_user_by_login, get_grades_by_psy, b64enc, decrypt, b64dec
-from flask import render_template, redirect, url_for, session, request
+from flask import render_template, redirect, url_for, session, request, jsonify
 from application import decorators as decors
 from application import app
 
 
 
-@app.route('/psy_info/<login>/')
-@app.route('/psy_info/<login>/<sort_by>')
+@app.route('/get_grade_list/<login>', methods=['POST'])
 @decors.check_admin
-def psy_info(login, sort_by='create_date'):
+def get_grade_list(login):
     psy = get_user_by_login(login)
     counters = {'whole':0, 'not_yet':0, 'clear':0, 'danger':0, 'msg':0}
     for stats in psy['grades'].values():
@@ -18,5 +17,4 @@ def psy_info(login, sort_by='create_date'):
         counters['danger'] += stats.get('danger', 0)
         counters['msg'] += stats.get('msg', 0)
     session['psy_login'] = login
-    return render_template('psy_info.html', msg=request.args.get('msg'), logged=True, login=session['login'], psy=psy, counters=counters, grades=psy['grades'],
-                           back_url=url_for('admin'), dec=decrypt, b64enc=b64enc, b64dec=b64dec, title=psy['login']+' | Информация')
+    return jsonify({'stats':counters, 'grades':list(psy['grades'].items())})

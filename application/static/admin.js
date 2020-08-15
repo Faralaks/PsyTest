@@ -2,6 +2,7 @@ let psyList;
 let lastKey;
 let stats;
 let curPsy;
+let gradeList, gradeStats;
 
 function showMsg(msg, status) {
     status = "msg" + status;
@@ -68,8 +69,8 @@ function showPsy(key) {
 
     }
 
-
 }
+
 
 function getPsyList() {
     jq.ajaxSetup({timeout:10000});
@@ -78,7 +79,7 @@ function getPsyList() {
         stats = psysAndStats.stats;
         showPsy();
         showStats(stats)
-    }).fail(function () { showErrMsg('Данные загрузить не удалось')
+    }).fail(function () { showMsg('Данные загрузить не удалось', "Err")
 
     });
 }
@@ -93,6 +94,58 @@ function addNewPsy() {
 
     })
 }
+
+
+
+function showGrades(key) {
+    let gradeTable = jq("#gradeTable");
+    jq('td').remove();
+
+    if (key) {
+        if (key===lastKey) { reverse *= -1; }
+        else { reverse = 1; lastKey = key; }
+
+        psyList.sort(function (a, b) {
+        if (a[key] > b[key]) { return reverse; }
+        if (a[key] < b[key]) { return -1*reverse; }
+        return 0;
+        });
+    }
+
+
+
+
+    for (let i = 0; i < gradeList.length; i++) {
+        let trGrade = jq("<tr></tr>").append(jq(`<td>${atob(gradeList[i][0])}</td>`))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${gradeList[i][1].whole}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${gradeList[i][1].not_yet}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${gradeList[i][1].clear}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${gradeList[i][1].danger}</span>`)))
+            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showsyInfo(${i})" value="Просптреть"></td>`));
+
+        gradeTable.append(trGrade);
+
+    }
+
+}
+
+
+
+
+function getGradeList() {
+    jq.ajaxSetup({timeout:10000});
+    jq.post(`/get_grade_list/${curPsy.login}`).done(function (gradesAndStats) {
+        gradeList = gradesAndStats.grades;
+        gradeStats = gradesAndStats.stats;
+        console.log(gradeList);
+        showStats(gradeStats)
+        showGrades();
+    }).fail(function () { showMsg('Данные загрузить не удалось', "Err")
+
+
+    });
+}
+
 
 function setToDefault() {
     jq("#psyFormLogin").val(curPsy.login);
@@ -110,6 +163,7 @@ function showPsyInfo(psyIdx) {
     jq("#psyTablePlace").hide();
     jq("#statsLinesPsyCount").removeClass("d-flex").hide();
 
+    jq("#gradeTablePlace").show();
     jq("#psyFormBtnDef").show();
     jq("#psyFormPlaceDel").show();
     jq("#barBtnBack").show();
@@ -119,6 +173,7 @@ function showPsyInfo(psyIdx) {
     jq("#psyFormBtnSave").val("Сохранить");
 
     showStats(curPsy.counters)
+    getGradeList();
 
 
 

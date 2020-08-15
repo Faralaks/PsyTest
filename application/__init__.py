@@ -18,6 +18,6 @@ import application.login as login
 import application.logout as logout
 import application.messages as messages
 import application.psy as psy
-import application.psy_info as psy_info
+import application.get_grade_list as get_grade_list
 import application.remake as remake
 import application.testee as testee
