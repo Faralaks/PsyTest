@@ -119,7 +119,7 @@ function showGrades(key) {
         let trGrade = jq("<tr></tr>").append(jq(`<td>${atob(gradeList[i][0])}</td>`))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${gradeList[i][1].whole}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${gradeList[i][1].not_yet}</span>`)))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${gradeList[i][1].clear}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${gradeList[i][1].clear}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${gradeList[i][1].danger}</span>`)))
             .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showsyInfo(${i})" value="Просптреть"></td>`));
 
