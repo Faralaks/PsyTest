@@ -31,7 +31,7 @@ function validateText(elem){
 function validatePas(elem){
     if(elem.val().match(/[^a-zA-Z0-9!"#$%&'()*,./:;=?@_`{|}~]/g) || elem.val().length < 8) {
         elem.toggleClass("is-invalid", true);
-        jq(`#${elem.attr("id")}Msg`).text("Недопустимое пароль. Он должен содержать не меннее 8 символов");
+        jq(`#${elem.attr("id")}Msg`).text("Недопустимый пароль. Он должен содержать не меннее 8 символов");
         return false;
     }
     elem.toggleClass("is-invalid", false);
