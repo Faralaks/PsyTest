@@ -101,7 +101,6 @@ function editPsy() {
     jq.ajaxSetup({timeout:3000});
     jq.post(`/edit_psy/${curPsy.login}`, jq("#addPsyForm").serialize()).done(function (response) {
         showMsg(response.msg, response.kind);
-        if (response.status === "Suc") getPsyList();
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера, Психолог не добавлен", 'Err')
 
@@ -141,11 +140,8 @@ function showGrades(key) {
         }
         gradeTable.append(trGrade);
 
-
     }
-
 }
-
 
 
 
@@ -192,6 +188,7 @@ function showPsyInfo(psyIdx) {
 
     jq("#psyFormTitle").text("Редактировать Психолога");
     jq("#statsCardTitle").text(`${curPsy.login} | Статистика`);
+    //jq("#psyFormBtnSave").click(function () { alert("aaaaa") }).val("Сохранить");
     jq("#psyFormBtnSave").attr("onclick", "editPsy()").val("Сохранить");
 
     showStats(curPsy.counters);
