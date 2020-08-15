@@ -17,6 +17,6 @@ def add_psy():
         tests = [str(i) for i in range(1, 3) if form_get('t' + str(i), None) is not None]
         add(form('login'), form('password'), form('ident'), tests, form('count'), session['login'])
     except DuplicateKeyError as err:
-        return jsonify({'status':'Err', 'msg':'Такой %s уже существует'%err_decode[list(err.details['keyValue'].keys())[0]]})
-    #except: return jsonify({'status':'Err', 'msg':'Произошла неизвестная ошибка, если проблема не исчезнет, обратитесь к администратору!'})
-    return jsonify({'status':'Suc', 'msg':'Психолог успешно создан'})
+        return jsonify({'kind':'Err', 'msg':'Такой %s уже существует'%err_decode[list(err.details['keyValue'].keys())[0]]})
+    #except: return jsonify({'kind':'Err', 'msg':'Произошла неизвестная ошибка, если проблема не исчезнет, обратитесь к администратору!'})
+    return jsonify({'kind':'Suc', 'msg':'Психолог успешно создан'})

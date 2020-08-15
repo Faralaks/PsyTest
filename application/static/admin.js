@@ -4,11 +4,11 @@ let stats;
 let curPsy;
 let gradeList, gradeStats;
 
-function showMsg(msg, status) {
-    status = "msg" + status;
+function showMsg(msg, kind) {
+    kind = "msg" + kind;
     let msgLine = jq("#msg");
     msgLine.removeClass();
-    msgLine.text(msg).addClass(status).fadeIn(1000).delay(5000).fadeOut(1000);
+    msgLine.text(msg).addClass(kind).fadeIn(1000).delay(5000).fadeOut(1000);
 }
 
 function showStats(stats) {
@@ -87,7 +87,7 @@ function getPsyList() {
 function addNewPsy() {
     jq.ajaxSetup({timeout:3000});
     jq.post("/add_psy", jq("#addPsyForm").serialize()).done(function (response) {
-        showMsg(response.msg, response.status);
+        showMsg(response.msg, response.kind);
         if (response.status === "Suc") getPsyList();
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера, Психолог не добавлен", 'Err')
@@ -121,9 +121,13 @@ function showGrades(key) {
             .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${gradeList[i][1].not_yet}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${gradeList[i][1].clear}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${gradeList[i][1].danger}</span>`)))
-            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showsyInfo(${i})" value="Просптреть"></td>`));
-
+            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showsyInfo(${i})" value="Просптреть"></td>`))
+        if (gradeList[i][1].msg) {
+            trGrade.append(`<td><span class="btn btn-warning my-2 my-sm-0" title="В этом классе есть запросы на удаление результата">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;${gradeList[i][1].msg}</span></td>`);
+        }
         gradeTable.append(trGrade);
+
 
     }
 
@@ -137,7 +141,6 @@ function getGradeList() {
     jq.post(`/get_grade_list/${curPsy.login}`).done(function (gradesAndStats) {
         gradeList = gradesAndStats.grades;
         gradeStats = gradesAndStats.stats;
-        console.log(gradeList);
         showStats(gradeStats)
         showGrades();
     }).fail(function () { showMsg('Данные загрузить не удалось', "Err")
