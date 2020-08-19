@@ -257,6 +257,7 @@ function showPsyInfo(psyIdx) {
 
 function showAdminMainPage() {
     clearPsyForm();
+    curPsy = undefined;
 
     jq("#psyTablePlace").show();
     jq("#statsLinesPsyCount").addClass("d-flex").show();
