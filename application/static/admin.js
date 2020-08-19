@@ -137,11 +137,15 @@ function getPsyList() {
     });
 }
 
+
+
 function addNewPsy() {
     jq.ajaxSetup({timeout:3000});
     jq.post("/add_psy", jq("#addPsyForm").serialize()).done(function (response) {
         showMsg(response.msg, response.kind);
-        if (response.status === "Suc") getPsyList();
+        if (response.kind === "Suc") getPsyList();
+        clearPsyForm();
+        jq("#psyFormBtnSave").prop("disabled", true);
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера, Психолог не добавлен", 'Err')
 
@@ -215,6 +219,8 @@ function setToDefault() {
     jq("#psyFormIdent").val(curPsy.ident);
     jq("#psyFormCount").val(curPsy.count);
     jq("#psyFormCheckDel").prop("checked", curPsy.pre_del);
+    jq("#psyFormBtnSave").prop("disabled", true);
+
 }
 function clearPsyForm() {
     jq("#psyFormLogin").val("");
@@ -238,11 +244,10 @@ function showPsyInfo(psyIdx) {
 
     jq("#psyFormTitle").text("Редактировать Психолога");
     jq("#statsCardTitle").text(`${curPsy.login} | Статистика`);
-    //jq("#psyFormBtnSave").click(function () { alert("aaaaa") }).val("Сохранить");
     jq("#psyFormBtnSave").attr("onclick", "editPsy()").val("Сохранить");
 
     jq("input").toggleClass("is-invalid", false);
-    jq("#psyFormBtnSave").prop("disabled", false);
+    jq("#psyFormBtnSave").prop("disabled", true);
     showStats(curPsy.counters);
     getGradeList();
 
@@ -267,7 +272,16 @@ function showAdminMainPage() {
     jq("#psyFormPas").val(preGeneratedPas);
 
     jq("input").toggleClass("is-invalid", false);
-    jq("#psyFormBtnSave").prop("disabled", false);
+    jq("#psyFormBtnSave").prop("disabled", true);
     showStats(stats);
 
+
 }
+
+
+
+jq("#psyTablePlace").ready(function () {
+    getPsyList()
+
+});
+
