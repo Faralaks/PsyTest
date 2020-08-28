@@ -272,7 +272,7 @@ function showAdminMainPage() {
 
 }
 
-
+jq("#psyFormPas").ready(function () { jq("#psyFormPas").val(generatePas(12)) });
 
 jq("#psyTablePlace").ready(function () {
     getPsyList()
