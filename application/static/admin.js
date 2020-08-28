@@ -7,6 +7,25 @@ let preGeneratedPas;
 
 
 
+
+function setToDefault() {
+    jq("#psyFormLogin").val(curPsy.login);
+    jq("#psyFormPas").val(curPsy.pas);
+    jq("#psyFormIdent").val(curPsy.ident);
+    jq("#psyFormCount").val(curPsy.count);
+    jq("#psyFormCheckDel").prop("checked", curPsy.pre_del);
+}
+
+function saveCurPsy() {
+    curPsy.login = jq("#psyFormLogin").val();
+    curPsy.pas = jq("#psyFormPas").val();
+    curPsy.ident = jq("#psyFormIdent").val();
+    curPsy.count = jq("#psyFormCount").val();
+    curPsy.pre_del = jq("#psyFormCheckDel").prop("checked");
+}
+
+
+
 function validateFormData(login, pas, ident, count) {
     //alert(+validateText(login) + validateText(ident) + validateNum(count))
     if (+validateText(login) + validatePas(pas) + validateText(ident) + validateNum(count) === 4) {
@@ -149,7 +168,7 @@ function editPsy() {
     jq.ajaxSetup({timeout:3000});
     jq.post(`/edit_psy/${curPsy.login}`, jq("#addPsyForm").serialize()).done(function (response) {
         alert(response.kind);
-        showMsg(response.msg, response.kind,function () {curPsy.login = jq("#psyFormLogin").val() }, response.field);
+        showMsg(response.msg, response.kind,function () { saveCurPsy() }, response.field);
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
     })
@@ -207,17 +226,11 @@ function getGradeList() {
 }
 
 
-function setToDefault() {
-    jq("#psyFormLogin").val(curPsy.login);
-    jq("#psyFormPas").val(curPsy.pas);
-    jq("#psyFormIdent").val(curPsy.ident);
-    jq("#psyFormCount").val(curPsy.count);
-    jq("#psyFormCheckDel").prop("checked", curPsy.pre_del);
 
-}
+
 function clearPsyForm() {
     jq("#psyFormLogin").val("");
-    jq("#psyFormPas").val("");
+    jq("#psyFormPas").val(generatePas(12));
     jq("#psyFormIdent").val("");
     jq("#psyFormCount").val("");
 }
