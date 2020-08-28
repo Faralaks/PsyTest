@@ -6,6 +6,7 @@ let gradeList, gradeStats;
 let preGeneratedPas;
 
 
+
 function validateFormData(login, pas, ident, count) {
     //alert(+validateText(login) + validateText(ident) + validateNum(count))
     if (+validateText(login) + validatePas(pas) + validateText(ident) + validateNum(count) === 4) {
@@ -56,12 +57,7 @@ function validateNum(elem){
 
 
 
-function showMsg(msg, kind) {
-    kind = "msg" + kind;
-    let msgLine = jq("#msg");
-    msgLine.removeClass();
-    msgLine.text(msg).addClass(kind).fadeIn(1000).delay(5000).fadeOut(1000);
-}
+
 
 function showStats(stats) {
     jq('#stat_psy_count').text(stats.psy_count);
@@ -142,42 +138,20 @@ function getPsyList() {
 function addNewPsy() {
     jq.ajaxSetup({timeout:3000});
     jq.post("/add_psy", jq("#addPsyForm").serialize()).done(function (response) {
-        console.log(response);
-        if (response.field) {
-            let fieldCapitalized = response.field.replace(/(^|\s)\S/g, l => l.toUpperCase());
-            jq(`#psyForm${fieldCapitalized}`).toggleClass("is-invalid", true);
-            jq(`#psyForm${fieldCapitalized}Msg`).text(response.msg);
-            return;
-
-        }
-        if (response.kind === "Suc") {
-            clearPsyForm();
-            getPsyList();
-            jq("#psyFormBtnSave").prop("disabled", true);
-            jq("#psyFormSignSuc").fadeIn(1000).delay(3000).fadeOut(500);
-            return;
-        }
-        showMsg(response.msg, response.kind);
+        showMsg(response.msg, response.kind,function () { clearPsyForm(); getPsyList(); }, response.field);
     }).fail(function () {
-        showMsg("Превышено время ожидания или произошла ошибка на стороне сервера, Психолог не добавлен", 'Err')
-
+        showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
     })
 }
+
+
 function editPsy() {
     jq.ajaxSetup({timeout:3000});
     jq.post(`/edit_psy/${curPsy.login}`, jq("#addPsyForm").serialize()).done(function (response) {
-        if (response.field) {
-            let fieldCapitalized = response.field.replace(/(^|\s)\S/g, l => l.toUpperCase());
-            jq(`#psyForm${fieldCapitalized}`).toggleClass("is-invalid", true);
-            jq(`#psyForm${fieldCapitalized}Msg`).text(response.msg);
-            return;
-        }
-        jq("#psyFormSignSuc").fadeIn(1000).delay(3000).fadeOut(500);
-
-        //showMsg(response.msg, response.kind);
+        //alert(response.kind);
+        showMsg(response.msg, response.kind,function () {}, response.field);
     }).fail(function () {
-        showMsg("Превышено время ожидания или произошла ошибка на стороне сервера, Психолог не добавлен", 'Err')
-
+        showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
     })
 }
 

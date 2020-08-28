@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block scripts %}
+    <script src="{{ url_for('static', filename='universal.js') }}" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='admin.js') }}" type="text/javascript"></script>
 {% endblock %}
 {% block stylesheet %}
@@ -8,24 +9,6 @@
             cursor: pointer;
             text-decoration: underline;
         }
-
-        #msg {
-            padding: 0  7px 0 7px;
-            display: none;
-            border: 3px solid rgba(0, 0, 0, 0);
-            border-radius: 15px;
-        }
-
-        .msgSuc {
-            color: #ffffff;
-            background-color: rgb(38, 110, 0);
-        }
-
-        .msgErr {
-            color: #ffffff;
-            background-color: rgb(170, 1, 1);
-        }
-
     </style>
 {% endblock %}
 {% block body %}
@@ -36,7 +19,7 @@
                 <div class="card-body">
                     <form id="addPsyForm">
 
-                        <h5 id="psyFormTitle" class="card-title">Добавить психолога
+                        <h5 class="card-title"><span id="psyFormTitle">sДобавить психолога</span>
                             <span id="psyFormSignSuc" class="badge badge-pill badge-success pull-right" style="display: none">
                                     <i class="fa fa-check" aria-hidden="true"></i>
                                     Успешно
@@ -109,8 +92,8 @@
         <div class="col-md-6">
             <div class="card border-0 shadow mt-md-0 mt-2">
                 <div class="card-body">
-                    <h5 id="statsCardTitle" class="card-title">Полная статистика
-                        <span class="btn badge badge-pill btn-outline-primary pull-right mr-0" onclick="alert('Обновить')">
+                    <h5 class="card-title"><span id="statsCardTitle">Полная статистика</span>
+                        <span class="btn badge badge-pill btn-outline-primary pull-right mr-0" onclick="getPsyList()">
                             <i class="fa fa-refresh" aria-hidden="true"></i>
                             Обновить
                         </span>
@@ -128,7 +111,7 @@
     </div>
     <br>
 
-    <span id="msg"></span>
+    <span id="fatalMsg" class="badge badge-danger"></span>
 
     <div id="psyTablePlace">
         <h3 class="display-4 mt-5">Список психологов</h3>
