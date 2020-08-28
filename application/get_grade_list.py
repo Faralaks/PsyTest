@@ -10,7 +10,7 @@ from application import app
 def get_grade_list(login):
     psy = get_user_by_login(login)
     counters = {'whole':0, 'not_yet':0, 'clear':0, 'danger':0, 'msg':0}
-    for stats in psy['grades'].values():
+    for stats in psy.get('grades', {}).values():
         counters['whole'] += stats.get('whole', 0)
         counters['not_yet'] += stats.get('not_yet', 0)
         counters['clear'] += stats.get('clear', 0)

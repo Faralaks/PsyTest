@@ -142,10 +142,22 @@ function getPsyList() {
 function addNewPsy() {
     jq.ajaxSetup({timeout:3000});
     jq.post("/add_psy", jq("#addPsyForm").serialize()).done(function (response) {
+        console.log(response);
+        if (response.field) {
+            let fieldCapitalized = response.field.replace(/(^|\s)\S/g, l => l.toUpperCase());
+            jq(`#psyForm${fieldCapitalized}`).toggleClass("is-invalid", true);
+            jq(`#psyForm${fieldCapitalized}Msg`).text(response.msg);
+            return;
+
+        }
+        if (response.kind === "Suc") {
+            clearPsyForm();
+            getPsyList();
+            jq("#psyFormBtnSave").prop("disabled", true);
+            jq("#psyFormSignSuc").fadeIn(1000).delay(3000).fadeOut(500);
+            return;
+        }
         showMsg(response.msg, response.kind);
-        if (response.kind === "Suc") getPsyList();
-        clearPsyForm();
-        jq("#psyFormBtnSave").prop("disabled", true);
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера, Психолог не добавлен", 'Err')
 
@@ -154,7 +166,15 @@ function addNewPsy() {
 function editPsy() {
     jq.ajaxSetup({timeout:3000});
     jq.post(`/edit_psy/${curPsy.login}`, jq("#addPsyForm").serialize()).done(function (response) {
-        showMsg(response.msg, response.kind);
+        if (response.field) {
+            let fieldCapitalized = response.field.replace(/(^|\s)\S/g, l => l.toUpperCase());
+            jq(`#psyForm${fieldCapitalized}`).toggleClass("is-invalid", true);
+            jq(`#psyForm${fieldCapitalized}Msg`).text(response.msg);
+            return;
+        }
+        jq("#psyFormSignSuc").fadeIn(1000).delay(3000).fadeOut(500);
+
+        //showMsg(response.msg, response.kind);
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера, Психолог не добавлен", 'Err')
 
@@ -219,7 +239,6 @@ function setToDefault() {
     jq("#psyFormIdent").val(curPsy.ident);
     jq("#psyFormCount").val(curPsy.count);
     jq("#psyFormCheckDel").prop("checked", curPsy.pre_del);
-    jq("#psyFormBtnSave").prop("disabled", true);
 
 }
 function clearPsyForm() {
