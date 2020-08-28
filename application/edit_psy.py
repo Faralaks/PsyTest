@@ -15,9 +15,10 @@ def edit_psy(login):
     try:
         tests = [str(i) for i in range(1, 3) if form_get('t' + str(i), None) is not None]
         pre_del = now_stamp() + 259200 if form_get('del', None) == 'Yes' else None
+        vprint(request.form)
         update(login, form('login'), form('password'), form('ident'), tests, form('count'), pre_del)
     except DuplicateKeyError as err:
-        vprint()
+        vprint("duplic")
         field = list(err.details['keyValue'].keys())[0]
         return jsonify({'kind': 'DuplicatedField', 'field': field})
     # except: return jsonify({'kind':'Fatal', 'msg':'Произошла неизвестная ошибка, если проблема повториться, обратитесь к администратору!'})

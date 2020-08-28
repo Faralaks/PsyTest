@@ -148,8 +148,8 @@ function addNewPsy() {
 function editPsy() {
     jq.ajaxSetup({timeout:3000});
     jq.post(`/edit_psy/${curPsy.login}`, jq("#addPsyForm").serialize()).done(function (response) {
-        //alert(response.kind);
-        showMsg(response.msg, response.kind,function () {}, response.field);
+        alert(response.kind);
+        showMsg(response.msg, response.kind,function () {curPsy.login = jq("#psyFormLogin").val() }, response.field);
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
     })
