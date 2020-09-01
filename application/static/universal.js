@@ -33,3 +33,10 @@ function generatePas(len){
     }
     return pas;
 }
+
+
+function stamp2str(timestamp){
+  let data = new Date(timestamp * 1000);
+  return data.toISOString().replace("T", "<br>").substr(0, 19);
+  l
+}

@@ -79,6 +79,7 @@ function validateNum(elem){
 
 
 function showStats(stats) {
+    jq("#loadingIcon").show();
     jq('#stat_psy_count').text(stats.psy_count);
     jq('#stat_whole').text(stats.whole);
     jq('#stat_not_yet').text(stats.not_yet);
@@ -86,41 +87,54 @@ function showStats(stats) {
     jq('#stat_danger').text(stats.danger);
     if (stats.msg)  {
         jq('#stat_msg').text(stats.msg);
-        jq('#statsLinesMsg').addClass('d-flex').show()
+        jq('#statsLinesMsg').toggleClass('d-flex', true)
     }
     else {
-        jq('#statsLinesMsg').removeClass('d-flex').hide()
+        jq('#statsLinesMsg').toggleClass('d-flex', false)
     }
+    jq("#loadingIcon").hide();
 
 }
 
 function showPsy(key) {
-    preGeneratedPas = jq("#psyFormPas").val();
     let psyTable = jq("#psyTable");
     jq('td').remove();
 
     if (key) {
-        if (key===lastKey) { reverse *= -1; }
+        if (key === lastKey) { reverse *= -1; }
         else { reverse = 1; lastKey = key; }
 
         psyList.sort(function (a, b) {
-        if (a[key] > b[key]) { return reverse; }
-        if (a[key] < b[key]) { return -1*reverse; }
-        return 0;
+            if (a[key] > b[key]) { return reverse; }
+            if (a[key] < b[key]) { return -1*reverse; }
+            return 0;
         });
     }
 
 
 
+    let grades, grade;
+    let fullCounter = { psy_count: psyList.length, whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
 
     for (let i = 0; i < psyList.length; i++) {
+        let gradeCounter = { whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
+        grades = psyList[i].grades;
+
+        for (let name in grades) {
+            grade = grades[name];
+            gradeCounter.whole += grade.whole || 0;
+            gradeCounter.not_yet += grade.not_yet || 0;
+            gradeCounter.clear += grade.clear || 0;
+            gradeCounter.danger += grade.danger || 0;
+            gradeCounter.msg += grade.msg || 0;
+        }
         let ownStats = `
-            <span class="badge badge-light badge-pill" title="Количество испытуемых">${ psyList[i].counters.whole?psyList[i].counters.whole:0}</span>
-            <span class="badge badge-secondary badge-pill" title="Еще не протестировано">${ psyList[i].counters.not_yet?psyList[i].counters.not_yet:0 }</span>
-            <span class="badge badge-success badge-pill" title="Вне групп риска">${ psyList[i].counters.clear?psyList[i].counters.clear:0 }</span>
-            <span class="badge badge-danger badge-pill" title="В группах риска">${ psyList[i].counters.danger?psyList[i].counters.danger:0 }</span>`;
-        if (psyList[i].counters.msg) {
-            ownStats += `<span class="badge badge-warning badge-pill" title="Сообщения об удалении">${psyList[i].counters.msg}</span>`
+            <span class="badge badge-light badge-pill" title="Количество испытуемых">${ gradeCounter.whole }</span>
+            <span class="badge badge-secondary badge-pill" title="Еще не протестировано">${ gradeCounter.not_yet }</span>
+            <span class="badge badge-success badge-pill" title="Вне групп риска">${ gradeCounter.clear }</span>
+            <span class="badge badge-danger badge-pill" title="В группах риска">${ gradeCounter.danger }</span>`;
+        if (gradeCounter.msg) {
+            ownStats += `<span class="badge badge-warning badge-pill" title="Сообщения об удалении">${gradeCounter.msg}</span>`
         }
         let trPsy = jq("<tr></tr>")
             .append(jq(`<td>${psyList[i].ident}</td>`))
@@ -129,28 +143,32 @@ function showPsy(key) {
             .append(jq(`<td>${psyList[i].count}</td>`))
             .append(jq(`<td>${ownStats}</td>`))
             .append(jq(`<td>${psyList[i].tests}</td>`))
-            .append(jq(`<td>${psyList[i].create_date.replace(' ', '<br>')}</td>`))
+            .append(jq(`<td>${ stamp2str(psyList[i].create_date) }</td>`))
             .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showPsyInfo(${i})" value="Подробнее"></td>`));
         if (psyList[i].pre_del) trPsy.append(jq(`<td><i class="fa fa-trash" aria-hidden="true" title="Будет удален менее чем через ${Math.ceil((psyList[i].pre_del - (Date.now() / 1000 | 0))/3600)} ч."></i></td>`));
 
         psyTable.append(trPsy);
+
+        fullCounter.whole += gradeCounter.whole;
+        fullCounter.not_yet += gradeCounter.not_yet;
+        fullCounter.clear += gradeCounter.clear;
+        fullCounter.danger += gradeCounter.danger;
+        fullCounter.msg += gradeCounter.msg;
+
+        showStats(fullCounter);
 
     }
 
 }
 
 
-function getPsyList() {
+function getPsyList(reloadTable= false) {
+    jq("#loadingIcon").show();
     jq.ajaxSetup({timeout:10000});
     jq.post("/api/get_psy_list").done(function (response) {
-        console.log(response);
-        //psyList = psysAndStats.psyList;
-        //stats = psysAndStats.stats;
-        //showPsy();
-        //showStats(stats)
-    }).fail(function () { showMsg('Данные загрузить не удалось', "Err")
-
-    });
+        psyList = response.psyList;
+        if (reloadTable) showPsy()
+    }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err") });
 }
 
 
@@ -289,7 +307,8 @@ function showAdminMainPage() {
 jq("#psyFormPas").ready(function () { jq("#psyFormPas").val(generatePas(12)) });
 
 jq("#psyTablePlace").ready(function () {
-    getPsyList()
+    getPsyList(true);
+
 
 });
 

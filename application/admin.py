@@ -14,5 +14,5 @@ def admin():
 @app.route('/api/get_psy_list', methods=['POST'])
 @decors.check_admin
 def get_psy_list():
-        return fixed_jsonify(list(get_all_psys()))
+        return fixed_jsonify(psyList=list(get_all_psys()))
 
