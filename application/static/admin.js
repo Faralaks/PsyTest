@@ -142,11 +142,12 @@ function showPsy(key) {
 
 function getPsyList() {
     jq.ajaxSetup({timeout:10000});
-    jq.post("/admin").done(function (psysAndStats) {
-        psyList = psysAndStats.psys;
-        stats = psysAndStats.stats;
-        showPsy();
-        showStats(stats)
+    jq.post("/api/get_psy_list").done(function (response) {
+        console.log(response);
+        //psyList = psysAndStats.psyList;
+        //stats = psysAndStats.stats;
+        //showPsy();
+        //showStats(stats)
     }).fail(function () { showMsg('Данные загрузить не удалось', "Err")
 
     });
