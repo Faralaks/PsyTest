@@ -8,9 +8,8 @@ from psytest_tools import vprint
 form = lambda key: request.form[key]
 form_get = lambda key, ret: request.form.get(key, ret)
 
-err_decode = {'ident':'Идентификатор', 'login':'Логин'}
 
-@app.route('/add_psy', methods=['POST'])
+@app.route('/api/add_psy', methods=['POST'])
 @decors.check_admin
 def add_psy():
     try:

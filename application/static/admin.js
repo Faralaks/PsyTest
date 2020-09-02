@@ -175,8 +175,8 @@ function getPsyList(reloadTable= false) {
 
 function addNewPsy() {
     jq.ajaxSetup({timeout:3000});
-    jq.post("/add_psy", jq("#addPsyForm").serialize()).done(function (response) {
-        showMsg(response.msg, response.kind,function () { clearPsyForm(); getPsyList(); }, response.field);
+    jq.post("/api/add_psy", jq("#addPsyForm").serialize()).done(function (response) {
+        showMsg(response.msg, response.kind,function () { clearPsyForm(); getPsyList(true); }, response.field);
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
     })
