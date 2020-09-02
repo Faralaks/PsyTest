@@ -13,4 +13,4 @@ def get_grade_list():
     if form_get('psyLogin', None) is None:
         return unk_err('Не был получен Логин психолога')
 
-    return jsonify(kind='Good', gradeList=get_user_by_login(form('psyLogin')).get('grades', []))
+    return jsonify(kind='Good', gradeList=list(get_user_by_login(form('psyLogin')).get('grades', {}).items()))

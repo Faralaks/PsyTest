@@ -1,10 +1,11 @@
 let psyList;
 let lastKey;
-let stats;
 let curPsy;
 let gradeList;
 let preGeneratedPas;
 let gradeCounters = {};
+let fullCounter;
+
 
 
 
@@ -112,9 +113,8 @@ function showPsy(key) {
         });
     }
 
-
+    fullCounter = { psy_count: psyList.length, whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
     let grades, grade;
-    let fullCounter = { psy_count: psyList.length, whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
 
     for (let i = 0; i < psyList.length; i++) {
         let gradeCounter = { whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
@@ -203,22 +203,37 @@ function editPsy() {
 function showGrades(key) {
     let gradeTable = jq("#gradeTable");
     jq('#gradeTable td').remove();
-
     if (key) {
         if (key===lastKey) { reverse *= -1; }
         else { reverse = 1; lastKey = key; }
-
-        psyList.sort(function (a, b) {
-        if (a[key] > b[key]) { return reverse; }
-        if (a[key] < b[key]) { return -1*reverse; }
-        return 0;
-        });
+        if (key === "name") {
+            if (reverse < 0) gradeList = gradeList.sort().reverse();
+            else gradeList = gradeList.sort();
+        }
+        else {
+            gradeList.sort(function (a, b) {
+                if ((a[1][key] || 0) > (b[1][key] || 0)) {
+                    return reverse;
+                }
+                if ((a[1][key] || 0) < (b[1][key] || 0)) {
+                    return -1 * reverse;
+                }
+                return 0;
+            });
+        }
     }
 
-    for (let name in gradeList) {
-        if (!gradeList.hasOwnProperty(name)) continue;
-        let grade = gradeList[name];
-        let trGrade = jq("<tr></tr>").append(jq(`<td>${atob(name)}</td>`))
+    let gradeCounter = { whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
+
+    for (let i = 0; i < gradeList.length; i++) {
+        let grade = gradeList[i][1];
+        gradeCounter.whole += grade.whole || 0;
+        gradeCounter.not_yet += grade.not_yet || 0;
+        gradeCounter.clear += grade.clear || 0;
+        gradeCounter.danger += grade.danger || 0;
+        gradeCounter.msg += grade.msg || 0;
+
+        let trGrade = jq("<tr></tr>").append(jq(`<td>${atob(gradeList[i][0])}</td>`))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${grade.whole || 0}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${grade.not_yet || 0}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${grade.clear || 0}</span>`)))
@@ -229,8 +244,9 @@ function showGrades(key) {
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;${grade.msg}</span></td>`);
         }
         gradeTable.append(trGrade);
-
     }
+    showStats(gradeCounter);
+    gradeCounters[curPsy.login] = gradeCounter;
 }
 
 
@@ -242,6 +258,7 @@ function getGradeList(reloadTable = false) {
         showMsg(response.msg, response.kind,function () {
             gradeList = response.gradeList;
             console.log(gradeList);
+
             if (reloadTable) showGrades()
         });
     }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err")
@@ -258,6 +275,7 @@ function clearPsyForm() {
     jq("#psyFormPas").val(generatePas(12));
     jq("#psyFormIdent").val("");
     jq("#psyFormCount").val("");
+    jq("input").prop("checked", false)
 }
 
 
@@ -276,6 +294,7 @@ function showPsyInfo(psyIdx) {
     jq("#psyFormTitle").text("Редактировать Психолога");
     jq("#statsCardTitle").text(`${curPsy.login} | Статистика`);
     jq("#psyFormBtnSave").attr("onclick", "editPsy()").val("Сохранить");
+    jq("#statsCardBtnRefresh").attr("onclick", "getGradeList(true)");
 
     jq("input").toggleClass("is-invalid", false);
     jq("#psyFormBtnSave").prop("disabled", true);
@@ -302,15 +321,15 @@ function showAdminMainPage() {
     jq("#statsCardTitle").text(`Полная статистика`);
     jq("#psyFormBtnSave").attr("onclick", "addNewPsy()").val("Добавить психолога");
     jq("#psyFormPas").val(preGeneratedPas);
+    jq("#statsCardBtnRefresh").attr("onclick", "getPsyList(true)");
 
     jq("input").toggleClass("is-invalid", false);
     jq("#psyFormBtnSave").prop("disabled", true);
-    showStats(stats);
+    showStats(fullCounter);
 
 
 }
 
-jq("#psyFormPas").ready(function () { jq("#psyFormPas").val(generatePas(12)) });
 
 jq("#psyTablePlace").ready(function () {
     getPsyList(true);
