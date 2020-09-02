@@ -10,7 +10,8 @@ def duplicate_key_err(err):
     return jsonify({'kind': 'DuplicatedField', 'field': field})
 
 
-def unk_err():
-    return jsonify({'kind': 'Fatal', 'msg': 'Произошла неизвестная ошибка, если проблема повториться, обратитесь к администратору!'})
+def unk_err(msg=None):
+    if msg: return jsonify(kind='Fatal', msg=msg)
+    return jsonify(msg='Произошла неизвестная ошибка, если проблема повториться, обратитесь к администратору!')
 
 

@@ -1,22 +1,16 @@
-from psytest_tools import get_user_by_login, get_grades_by_psy, b64enc, decrypt, b64dec
+from psytest_tools import get_user_by_login, get_grades_by_psy, b64enc, decrypt, b64dec, vprint
 from flask import render_template, redirect, url_for, session, request, jsonify
 from application import decorators as decors
 from application import app
+from std_response import unk_err
 
 form = lambda key: request.form[key]
 form_get = lambda key, ret: request.form.get(key, ret)
 
-@app.route('/get_grade_list/', methods=['POST'])
+@app.route('/api/get_grade_list', methods=['POST'])
 @decors.check_admin
 def get_grade_list():
+    if form_get('psyLogin', None) is None:
+        return unk_err('Не был получен Логин психолога')
 
-    psy = get_user_by_login(login)
-    counters = {'whole':0, 'not_yet':0, 'clear':0, 'danger':0, 'msg':0}
-    for stats in psy.get('grades', {}).values():
-        counters['whole'] += stats.get('whole', 0)
-        counters['not_yet'] += stats.get('not_yet', 0)
-        counters['clear'] += stats.get('clear', 0)
-        counters['danger'] += stats.get('danger', 0)
-        counters['msg'] += stats.get('msg', 0)
-    session['psy_login'] = login
-    return jsonify({'stats':counters, 'grades':list(psy['grades'].items())})
+    return jsonify(kind='Good', gradeList=get_user_by_login(form('psyLogin')).get('grades', []))

@@ -8,6 +8,7 @@ let shuffledAlf = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', '
 
 function showMsg(msg, kind,  sucFunc=function () {}, field="") {
     switch (kind) {
+        case "Good":  sucFunc(); return;
         case "Suc":
             jq("#psyFormBtnSave").prop("disabled", true);
             jq("#psyFormSignSuc").fadeIn(1000).delay(3000).fadeOut(500);
@@ -18,8 +19,11 @@ function showMsg(msg, kind,  sucFunc=function () {}, field="") {
             jq(`#psyForm${capitalizedField}`).toggleClass("is-invalid", true);
             jq(`#psyForm${capitalizedField}Msg`).text(`Такой ${fieldNamesDecode[capitalizedField]} уже существует`);
             return;
+        case "Fatal":
+            jq("#fatalMsg").text("Ошибка: "+msg).fadeIn(700).delay(6000).fadeOut(4000);
+            return;
         default:
-            jq("#fatalMsg").text(msg?msg:"Произошла неизвестная ошибка").fadeIn(700).delay(6000).fadeOut(4000);
+            jq("#fatalMsg").text("Произошла неизвестная ошибка").fadeIn(700).delay(6000).fadeOut(4000);
     }
 
 }

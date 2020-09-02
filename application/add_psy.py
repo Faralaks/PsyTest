@@ -7,7 +7,6 @@ from application import app
 from psytest_tools import vprint
 
 form = lambda key: request.form[key]
-form_get = lambda key, ret: request.form.get(key, ret)
 
 
 @app.route('/api/add_psy', methods=['POST'])

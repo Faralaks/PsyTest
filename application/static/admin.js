@@ -2,8 +2,9 @@ let psyList;
 let lastKey;
 let stats;
 let curPsy;
-let gradeList, gradeStats;
+let gradeList;
 let preGeneratedPas;
+let gradeCounters = {};
 
 
 
@@ -112,7 +113,6 @@ function showPsy(key) {
     }
 
 
-
     let grades, grade;
     let fullCounter = { psy_count: psyList.length, whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
 
@@ -121,6 +121,7 @@ function showPsy(key) {
         grades = psyList[i].grades;
 
         for (let name in grades) {
+            if (!grades.hasOwnProperty(name)) continue;
             grade = grades[name];
             gradeCounter.whole += grade.whole || 0;
             gradeCounter.not_yet += grade.not_yet || 0;
@@ -128,6 +129,8 @@ function showPsy(key) {
             gradeCounter.danger += grade.danger || 0;
             gradeCounter.msg += grade.msg || 0;
         }
+        gradeCounters[psyList[i].login] = gradeCounter;
+
         let ownStats = `
             <span class="badge badge-light badge-pill" title="Количество испытуемых">${ gradeCounter.whole }</span>
             <span class="badge badge-secondary badge-pill" title="Еще не протестировано">${ gradeCounter.not_yet }</span>
@@ -155,9 +158,9 @@ function showPsy(key) {
         fullCounter.danger += gradeCounter.danger;
         fullCounter.msg += gradeCounter.msg;
 
-        showStats(fullCounter);
-
     }
+    showStats(fullCounter);
+
 
 }
 
@@ -166,8 +169,10 @@ function getPsyList(reloadTable= false) {
     jq("#loadingIcon").show();
     jq.ajaxSetup({timeout:10000});
     jq.post("/api/get_psy_list").done(function (response) {
-        psyList = response.psyList;
-        if (reloadTable) showPsy()
+        showMsg(response.msg, response.kind,function () {
+            psyList = response.psyList;
+            if (reloadTable) showPsy()
+        });
     }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err") });
 }
 
@@ -210,19 +215,18 @@ function showGrades(key) {
         });
     }
 
-
-
-
-    for (let i = 0; i < gradeList.length; i++) {
-        let trGrade = jq("<tr></tr>").append(jq(`<td>${atob(gradeList[i][0])}</td>`))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${gradeList[i][1].whole?gradeList[i][1].whole:0}</span>`)))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${gradeList[i][1].not_yet?gradeList[i][1].not_yet:0}</span>`)))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${gradeList[i][1].clear?gradeList[i][1].clear:0}</span>`)))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${gradeList[i][1].danger?gradeList[i][1].danger:0}</span>`)))
-            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showsyInfo(${i})" value="Просптреть"></td>`))
-        if (gradeList[i][1].msg) {
+    for (let name in gradeList) {
+        if (!gradeList.hasOwnProperty(name)) continue;
+        let grade = gradeList[name];
+        let trGrade = jq("<tr></tr>").append(jq(`<td>${atob(name)}</td>`))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${grade.whole || 0}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${grade.not_yet || 0}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${grade.clear || 0}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${grade.danger || 0}</span>`)))
+            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="" value="Просптреть"></td>`));
+        if (grade.msg) {
             trGrade.append(`<td><span class="btn btn-warning my-2 my-sm-0" title="В этом классе есть запросы на удаление результата">
-                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;${gradeList[i][1].msg}</span></td>`);
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;${grade.msg}</span></td>`);
         }
         gradeTable.append(trGrade);
 
@@ -231,14 +235,16 @@ function showGrades(key) {
 
 
 
-function getGradeList() {
+function getGradeList(reloadTable = false) {
+    jq("#loadingIcon").show();
     jq.ajaxSetup({timeout:10000});
-    jq.post(`/get_grade_list/${curPsy.login}`).done(function (gradesAndStats) {
-        gradeList = gradesAndStats.grades;
-        gradeStats = gradesAndStats.stats;
-        showStats(gradeStats);
-        showGrades();
-    }).fail(function () { showMsg('Данные загрузить не удалось', "Err")
+    jq.post("/api/get_grade_list", { psyLogin: curPsy.login}).done(function (response) {
+        showMsg(response.msg, response.kind,function () {
+            gradeList = response.gradeList;
+            console.log(gradeList);
+            if (reloadTable) showGrades()
+        });
+    }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err")
 
 
     });
@@ -273,8 +279,8 @@ function showPsyInfo(psyIdx) {
 
     jq("input").toggleClass("is-invalid", false);
     jq("#psyFormBtnSave").prop("disabled", true);
-    showStats(curPsy.counters);
-    getGradeList();
+    showStats(gradeCounters[curPsy.login]);
+    getGradeList(true);
 
 }
 
