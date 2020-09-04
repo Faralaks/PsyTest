@@ -7,6 +7,7 @@ from application import app
 from psytest_tools import vprint
 
 form = lambda key: request.form[key]
+form_get = lambda key, ret: request.form.get(key, ret)
 
 
 @app.route('/api/add_psy', methods=['POST'])
@@ -17,6 +18,6 @@ def add_psy():
         add(form('login'), form('password'), form('ident'), tests, form('count'), session['login'])
     except DuplicateKeyError as err:
         return duplicate_key_err(err)
-    except: return unk_err()
+    except: return unk_err("Неизвестная при попытке добавить психолога!")
 
     return success()

@@ -5,6 +5,7 @@ let gradeList;
 let preGeneratedPas;
 let gradeCounters = {};
 let fullCounter;
+let needToReload = false;
 
 
 
@@ -16,6 +17,11 @@ function setToDefault() {
     jq("#psyFormIdent").val(curPsy.ident);
     jq("#psyFormCount").val(curPsy.count);
     jq("#psyFormCheckDel").prop("checked", curPsy.pre_del);
+    jq("input").prop("checked", false);
+    curPsy.tests.forEach(function (testNumber) {
+        jq("#test"+testNumber).prop("checked", true)
+
+    })
 }
 
 function saveCurPsy() {
@@ -24,13 +30,14 @@ function saveCurPsy() {
     curPsy.ident = jq("#psyFormIdent").val();
     curPsy.count = jq("#psyFormCount").val();
     curPsy.pre_del = jq("#psyFormCheckDel").prop("checked");
+    curPsy.tests = [];
+    jq('input:checkbox:checked').each(function() { curPsy.tests.push(this.value); });
 }
 
 
 
 function validateFormData(login, pas, ident, count) {
-    //alert(+validateText(login) + validateText(ident) + validateNum(count))
-    if (+validateText(login) + validatePas(pas) + validateText(ident) + validateNum(count) === 4) {
+    if (+validateText(login || jq("#psyFormLogin")) + validatePas(pas || jq("#psyFormPas")) + validateText(ident  || jq("#psyFormIdent")) + validateNum(count  || jq("#psyFormCount")) === 4) {
         jq("#psyFormBtnSave").prop("disabled", false);
     }
     else {
@@ -75,8 +82,6 @@ function validateNum(elem){
 
 
 }
-
-
 
 
 
@@ -191,8 +196,7 @@ function addNewPsy() {
 function editPsy() {
     jq.ajaxSetup({timeout:3000});
     jq.post(`/edit_psy/${curPsy.login}`, jq("#addPsyForm").serialize()).done(function (response) {
-        alert(response.kind);
-        showMsg(response.msg, response.kind,function () { saveCurPsy() }, response.field);
+        showMsg(response.msg, response.kind,function () { saveCurPsy(); needToReload = true; }, response.field);
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
     })
@@ -257,8 +261,6 @@ function getGradeList(reloadTable = false) {
     jq.post("/api/get_grade_list", { psyLogin: curPsy.login}).done(function (response) {
         showMsg(response.msg, response.kind,function () {
             gradeList = response.gradeList;
-            console.log(gradeList);
-
             if (reloadTable) showGrades()
         });
     }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err")
@@ -275,7 +277,7 @@ function clearPsyForm() {
     jq("#psyFormPas").val(generatePas(12));
     jq("#psyFormIdent").val("");
     jq("#psyFormCount").val("");
-    jq("input").prop("checked", false)
+    jq(".testCheckbox").prop("checked", false)
 }
 
 
@@ -309,7 +311,10 @@ function showAdminMainPage() {
     clearPsyForm();
     curPsy = undefined;
 
+    if (needToReload) getPsyList(true);
+
     jq("#psyTablePlace").show();
+
     jq("#statsLinesPsyCount").addClass("d-flex").show();
 
     jq("#gradeTablePlace").hide();
