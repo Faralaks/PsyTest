@@ -194,8 +194,10 @@ function addNewPsy() {
 
 
 function editPsy() {
+    let addPsyFormData = jq('#addPsyForm').serializeArray();
+    addPsyFormData.push({name: 'curLogin', value: curPsy.login});
     jq.ajaxSetup({timeout:3000});
-    jq.post(`/edit_psy/${curPsy.login}`, jq("#addPsyForm").serialize()).done(function (response) {
+    jq.post("/api/edit_psy",  addPsyFormData).done(function (response) {
         showMsg(response.msg, response.kind,function () { saveCurPsy(); needToReload = true; }, response.field);
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
