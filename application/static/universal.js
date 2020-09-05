@@ -40,7 +40,7 @@ function generatePas(len){
 
 
 function stamp2str(timestamp){
-  let data = new Date(timestamp * 1000);
-  return data.toISOString().replace("T", "<br>").substr(0, 19);
+  let date = new Date(timestamp * 1000);
+  return date.toLocaleString().replace(", ", "<br>");
   l
 }

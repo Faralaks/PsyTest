@@ -31,7 +31,7 @@ function saveCurPsy() {
     curPsy.count = jq("#psyFormCount").val();
     curPsy.pre_del = jq("#psyFormCheckDel").prop("checked");
     curPsy.tests = [];
-    jq('input:checkbox:checked').each(function() { curPsy.tests.push(this.value); });
+    jq('.testCheckbox:checked').each(function() { curPsy.tests.push(this.value); });
 }
 
 
@@ -277,7 +277,7 @@ function clearPsyForm() {
     jq("#psyFormPas").val(generatePas(12));
     jq("#psyFormIdent").val("");
     jq("#psyFormCount").val("");
-    jq(".testCheckbox").prop("checked", false)
+    jq(".testCheckbox:checked").prop("checked", false)
 }
 
 
