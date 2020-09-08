@@ -181,6 +181,19 @@ function addNewPsy() {
 }
 
 
+
+function acceptDel(testeeLogin, btn) {
+    jq.ajaxSetup({timeout:3000});
+    jq.post("/api/accept_del", {testeeLogin: testeeLogin}).done(function (response) {
+        showMsg(response.msg, response.kind, function () {
+            jq(btn).hide()
+        });
+    }).fail(function () {
+        showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
+    })
+}
+
+
 function editPsy() {
     let addPsyFormData = jq('#addPsyForm').serializeArray();
     addPsyFormData.push({name: 'curLogin', value: curPsy.login});
@@ -253,6 +266,8 @@ function getGradeList(reloadTable = false) {
 }
 
 
+
+
 function showTestees(key) {
     let testeeTable = jq("#testeeTable");
     jq('#testeeTable td').remove();
@@ -267,8 +282,22 @@ function showTestees(key) {
             .append(jq(`<td>${stamp2str(testee.create_date)}</td>`));
 
         if (testee.msg) {
-            trTestee.append(`<td><span class="btn btn-warning my-2 my-sm-0" title="Нажмите, для просмотра сообщения об удалении">
-                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span></td>`);
+            trTestee.append(`<td>
+            <div class="btn-group" id="delBtn${i}">
+                    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-warning my-2 my-sm-0" title="Нажмите, для просмотра сообщения об удалении">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    </span>
+                    <div class="dropdown-menu">
+                        <div class="card border-0 shadow" id="show_msg_card">
+                            <div class="card-body">
+                                <h5 class="card-title">Причина удаления</h5>
+                                <p class="d-flex">${b64dec(testee.msg)}</p>
+                                <input type="button" class="btn btn-primary mr-5 ml-5" value="Подтвердить удаление" onclick="acceptDel('${testee.login}', delBtn${i})">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>`);
         }
         testeeTable.append(trTestee);
     }

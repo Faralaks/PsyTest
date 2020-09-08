@@ -5,6 +5,7 @@ app = Flask(__name__)
 app.config.from_object('config')
 mongo_connect = PyMongo(app)
 
+import application.accept_del as accept_del
 import application.add_psy as add_psy
 import application.add_testee as add_testee
 import application.admin as admin

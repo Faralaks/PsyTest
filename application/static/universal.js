@@ -68,3 +68,11 @@ function stamp2str(timestamp){
   return date.toLocaleString().replace(", ", "<br>");
   l
 }
+
+function b64enc(text) {
+	return window.btoa(unescape(encodeURIComponent(text)));
+}
+
+function b64dec(text) {
+	return decodeURIComponent(escape(window.atob(text)));
+}

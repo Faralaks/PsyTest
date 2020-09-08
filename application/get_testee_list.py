@@ -19,4 +19,5 @@ def get_testee_list():
 
     if grade is None: return unk_err('Не было получено название класса')
     if login is None: return unk_err('Не был получен логин психолога')
+
     return fixed_jsonify(kind='Good', testeeList=list(get_testees_by_grade(login, grade)))
