@@ -138,12 +138,32 @@
             <table id="gradeTable" class="table text-center">
                 <thead>
                 <tr>
-                    <th class="sortKey" onclick="showGrades('name')" scope="col"><a>Класс</a></th>
-                    <th class="sortKey" onclick="showGrades('whole')" scope="col"><a>Общее Кол-во</a></th>
-                    <th class="sortKey" onclick="showGrades('not_yet')" scope="col"><a>Нет результата</a></th>
-                    <th class="sortKey" onclick="showGrades('clear')" scope="col"><a>Не рискуют</a></th>
-                    <th class="sortKey" onclick="showGrades('danger')" scope="col"><a>Рискуют</a></th>
+                    <th class="sortKey" onclick="showGrades('name')">Класс</th>
+                    <th class="sortKey" onclick="showGrades('whole')">Общее Кол-во</th>
+                    <th class="sortKey" onclick="showGrades('not_yet')">Нет результата</th>
+                    <th class="sortKey" onclick="showGrades('clear')">Не рискуют</th>
+                    <th class="sortKey" onclick="showGrades('danger')">Рискуют</th>
                 </tr>
                 </thead>
+            </table>
+        </div>
     </div>
+
+    <div id="testeeTablePlace" style="display: none">
+        <h3 id="testeeTableTitle" class="display-4 mt-5">Список испытуемых <span id="gradeName"></span></h3>
+        <div class="table-responsive">
+            <table id="testeeTable" class="table text-center">
+                <thead>
+                    <tr>
+                        <th class="sortKey" onclick="showTestees('result')">Результат</th>
+                        <th class="sortKey" onclick="showTestees('login')">Логин</th>
+                        <th>Пароль</th>
+                        <th class="sortKey" onclick="showTestees('create_date')">Дата создания</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+
 {% endblock %}

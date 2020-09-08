@@ -140,7 +140,7 @@ function showPsy(key) {
             .append(jq(`<td>${ownStats}</td>`))
             .append(jq(`<td>${psyList[i].tests}</td>`))
             .append(jq(`<td>${ stamp2str(psyList[i].create_date) }</td>`))
-            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showPsyInfo(${i})" value="Подробнее"></td>`));
+            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showPsyInfoPage(${i})" value="Подробнее"></td>`));
         if (psyList[i].pre_del) trPsy.append(jq(`<td><i class="fa fa-trash" aria-hidden="true" title="Будет удален менее чем через ${Math.ceil((psyList[i].pre_del - (Date.now() / 1000 | 0))/3600)} ч."></i></td>`));
 
         psyTable.append(trPsy);
@@ -209,12 +209,12 @@ function showGrades(key) {
         gradeCounter.danger += grade.danger;
         gradeCounter.msg += grade.msg;
 
-        let trGrade = jq("<tr></tr>").append(jq(`<td>${atob(grade.name)}</td>`))
+        let trGrade = jq("<tr></tr>").append(jq(`<td>${grade.dec_name}</td>`))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${grade.whole}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${grade.not_yet}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${grade.clear}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${grade.danger}</span>`)))
-            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showGradePage()" value="Просмотреть"></td>`));
+            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showGradePage(${i})" value="Просмотреть"></td>`));
         if (grade.msg) {
             trGrade.append(`<td><span class="btn btn-warning my-2 my-sm-0" title="В этом классе есть запросы на удаление результата">
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;${grade.msg}</span></td>`);
@@ -232,11 +232,12 @@ function getGradeList(reloadTable = false) {
     jq.ajaxSetup({timeout:10000});
     jq.post("/api/get_grade_list", { psyLogin: curPsy.login}).done(function (response) {
         showMsg(response.msg, response.kind,function () {
-            gradeList = []
+            gradeList = [];
             for (let name in response.gradeList) {
                 if (!response.gradeList.hasOwnProperty(name)) continue;
                 gradeList.push({
                     name: name,
+                    dec_name: atob(name),
                     whole: response.gradeList[name].whole || 0,
                     not_yet: response.gradeList[name].not_yet || 0,
                     clear: response.gradeList[name].clear || 0,
@@ -252,12 +253,37 @@ function getGradeList(reloadTable = false) {
 }
 
 
+function showTestees(key) {
+    let testeeTable = jq("#testeeTable");
+    jq('#testeeTable td').remove();
+    sort(testeeList, key);
+
+    for (let i = 0; i < testeeList.length; i++) {
+        let testee = testeeList[i];
+        let trTestee = jq("<tr></tr>")
+            .append(jq(`<td><span class="badge badge-${resultDecode[testee.result][1]} badge-pill">${testee.result}</span></td>`))
+            .append(jq(`<td>${testee.login}</td>`))
+            .append(jq(`<td>${testee.pas}</td>`))
+            .append(jq(`<td>${stamp2str(testee.create_date)}</td>`));
+
+        if (testee.msg) {
+            trTestee.append(`<td><span class="btn btn-warning my-2 my-sm-0" title="Нажмите, для просмотра сообщения об удалении">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span></td>`);
+        }
+        testeeTable.append(trTestee);
+    }
+    jq("#loadingIcon").hide();
+
+
+}
+
 
 function getTesteeList(reloadTable= false) {
     jq("#loadingIcon").show();
     jq.ajaxSetup({timeout:10000});
-    jq.post("/api/get_testee_list", {psyLogin: curPsy.login}).done(function (response) {
-        console.log(response)
+    jq.post("/api/get_testee_list", {psyLogin: curPsy.login, grade: curGrade.dec_name}).done(function (response) {
+        testeeList = response.testeeList
+        if (reloadTable) showTestees()
     }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err") });
 }
 
@@ -274,17 +300,21 @@ function clearPsyForm() {
 }
 
 
-function showPsyInfo(psyIdx) {
-    curPsy = psyList[psyIdx];
+function showPsyInfoPage(psyIdx) {
+    if (curGrade) { curGrade = undefined; jq("#add_psy_card").slideToggle();}
+    else curPsy = psyList[psyIdx];
+
     setToDefault();
 
     jq("#psyTablePlace").hide();
+    jq("#testeeTablePlace").hide();
+
     jq("#statsLinesPsyCount").removeClass("d-flex").hide();
 
     jq("#gradeTablePlace").show();
     jq("#psyFormBtnDef").show();
     jq("#psyFormPlaceDel").show();
-    jq("#barBtnBack").click(function () { showAdminMainPage() }).show();
+    jq("#barBtnBack").attr("onclick", "showAdminMainPage()").show();
 
     jq("#psyFormTitle").text("Редактировать Психолога");
     jq("#statsCardTitle").text(`${curPsy.login} | Статистика`);
@@ -330,23 +360,19 @@ function showAdminMainPage() {
 
 function showGradePage(gradeIdx) {
     curGrade = gradeList[gradeIdx];
-    jq("#add_psy_card").slideToggle(true)
+    jq("#add_psy_card").slideToggle();
 
+    jq("#gradeTablePlace").hide();
 
-    jq("#gradeTablePlace").show();
-    jq("#psyFormBtnDef").show();
-    jq("#psyFormPlaceDel").show();
-    jq("#barBtnBack").click(function () { showAdminMainPage() }).show();
+    jq("#testeeTablePlace").show();
+    jq("#barBtnBack").attr("onclick", "showPsyInfoPage()");
+    jq("#gradeName").text(curGrade.dec_name);
 
-    jq("#psyFormTitle").text("Редактировать Психолога");
-    jq("#statsCardTitle").text(`${curPsy.login} | Статистика`);
-    jq("#psyFormBtnSave").attr("onclick", "editPsy()").val("Сохранить");
-    jq("#statsCardBtnRefresh").attr("onclick", "getGradeList(true)");
+    jq("#statsCardTitle").text(`${curGrade.name} | Статистика`);
+    jq("#statsCardBtnRefresh").attr("onclick", "getTesteeList(true)");
 
-    jq("input").toggleClass("is-invalid", false);
-    jq("#psyFormBtnSave").prop("disabled", true);
-    showStats(gradeCounters[curPsy.login]);
-    getGradeList(true);
+    showStats(curGrade);
+    getTesteeList(true);
 
 }
 
