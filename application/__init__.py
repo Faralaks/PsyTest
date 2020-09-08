@@ -19,5 +19,6 @@ import application.logout as logout
 import application.messages as messages
 import application.psy as psy
 import application.get_grade_list as get_grade_list
+import application.get_testee_list as get_testee_list
 import application.remake as remake
 import application.testee as testee

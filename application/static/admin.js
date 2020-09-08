@@ -1,7 +1,6 @@
-let psyList;
+let psyList, gradeList;
 let lastKey;
-let curPsy;
-let gradeList;
+let curPsy, curGrade;
 let preGeneratedPas;
 let gradeCounters = {};
 let fullCounter;
@@ -244,7 +243,7 @@ function showGrades(key) {
             .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${grade.not_yet || 0}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${grade.clear || 0}</span>`)))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${grade.danger || 0}</span>`)))
-            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="" value="Просптреть"></td>`));
+            .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showGradePage()" value="Просмотреть"></td>`));
         if (grade.msg) {
             trGrade.append(`<td><span class="btn btn-warning my-2 my-sm-0" title="В этом классе есть запросы на удаление результата">
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;${grade.msg}</span></td>`);
@@ -270,6 +269,17 @@ function getGradeList(reloadTable = false) {
 
     });
 }
+
+
+
+function getTesteeList(reloadTable= false) {
+    jq("#loadingIcon").show();
+    jq.ajaxSetup({timeout:10000});
+    jq.post("/api/get_testee_list", {psyLogin: curPsy.login}).done(function (response) {
+        console.log(response)
+    }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err") });
+}
+
 
 
 
@@ -308,7 +318,6 @@ function showPsyInfo(psyIdx) {
 }
 
 
-
 function showAdminMainPage() {
     clearPsyForm();
     curPsy = undefined;
@@ -334,6 +343,29 @@ function showAdminMainPage() {
     jq("#psyFormBtnSave").prop("disabled", true);
     showStats(fullCounter);
 
+
+}
+
+
+function showGradePage(gradeIdx) {
+    curGrade = gradeList[gradeIdx];
+    jq("#add_psy_card").slideToggle(true)
+
+
+    jq("#gradeTablePlace").show();
+    jq("#psyFormBtnDef").show();
+    jq("#psyFormPlaceDel").show();
+    jq("#barBtnBack").click(function () { showAdminMainPage() }).show();
+
+    jq("#psyFormTitle").text("Редактировать Психолога");
+    jq("#statsCardTitle").text(`${curPsy.login} | Статистика`);
+    jq("#psyFormBtnSave").attr("onclick", "editPsy()").val("Сохранить");
+    jq("#statsCardBtnRefresh").attr("onclick", "getGradeList(true)");
+
+    jq("input").toggleClass("is-invalid", false);
+    jq("#psyFormBtnSave").prop("disabled", true);
+    showStats(gradeCounters[curPsy.login]);
+    getGradeList(true);
 
 }
 
