@@ -368,7 +368,7 @@ function showGradePage(gradeIdx) {
     jq("#barBtnBack").attr("onclick", "showPsyInfoPage()");
     jq("#gradeName").text(curGrade.dec_name);
 
-    jq("#statsCardTitle").text(`${curGrade.name} | Статистика`);
+    jq("#statsCardTitle").text(`${curGrade.dec_name} | Статистика`);
     jq("#statsCardBtnRefresh").attr("onclick", "getTesteeList(true)");
 
     showStats(curGrade);
