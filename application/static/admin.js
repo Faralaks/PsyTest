@@ -1,5 +1,4 @@
-let psyList, gradeList;
-let lastKey;
+let psyList, gradeList, testeeList;
 let curPsy, curGrade;
 let preGeneratedPas;
 let gradeCounters = {};
@@ -105,17 +104,7 @@ function showStats(stats) {
 function showPsy(key) {
     let psyTable = jq("#psyTable");
     jq('td').remove();
-
-    if (key) {
-        if (key === lastKey) { reverse *= -1; }
-        else { reverse = 1; lastKey = key; }
-
-        psyList.sort(function (a, b) {
-            if (a[key] > b[key]) { return reverse; }
-            if (a[key] < b[key]) { return -1*reverse; }
-            return 0;
-        });
-    }
+    sort(psyList, key);
 
     fullCounter = { psy_count: psyList.length, whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
     let grades, grade;
@@ -208,41 +197,23 @@ function editPsy() {
 function showGrades(key) {
     let gradeTable = jq("#gradeTable");
     jq('#gradeTable td').remove();
-    if (key) {
-        if (key===lastKey) { reverse *= -1; }
-        else { reverse = 1; lastKey = key; }
-        if (key === "name") {
-            if (reverse < 0) gradeList = gradeList.sort().reverse();
-            else gradeList = gradeList.sort();
-        }
-        else {
-            gradeList.sort(function (a, b) {
-                if ((a[1][key] || 0) > (b[1][key] || 0)) {
-                    return reverse;
-                }
-                if ((a[1][key] || 0) < (b[1][key] || 0)) {
-                    return -1 * reverse;
-                }
-                return 0;
-            });
-        }
-    }
+    sort(gradeList, key);
 
     let gradeCounter = { whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
 
     for (let i = 0; i < gradeList.length; i++) {
-        let grade = gradeList[i][1];
-        gradeCounter.whole += grade.whole || 0;
-        gradeCounter.not_yet += grade.not_yet || 0;
-        gradeCounter.clear += grade.clear || 0;
-        gradeCounter.danger += grade.danger || 0;
-        gradeCounter.msg += grade.msg || 0;
+        let grade = gradeList[i];
+        gradeCounter.whole += grade.whole;
+        gradeCounter.not_yet += grade.not_yet;
+        gradeCounter.clear += grade.clear;
+        gradeCounter.danger += grade.danger;
+        gradeCounter.msg += grade.msg;
 
-        let trGrade = jq("<tr></tr>").append(jq(`<td>${atob(gradeList[i][0])}</td>`))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${grade.whole || 0}</span>`)))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${grade.not_yet || 0}</span>`)))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${grade.clear || 0}</span>`)))
-            .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${grade.danger || 0}</span>`)))
+        let trGrade = jq("<tr></tr>").append(jq(`<td>${atob(grade.name)}</td>`))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${grade.whole}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-secondary badge-pill">${grade.not_yet}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-success badge-pill">${grade.clear}</span>`)))
+            .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${grade.danger}</span>`)))
             .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showGradePage()" value="Просмотреть"></td>`));
         if (grade.msg) {
             trGrade.append(`<td><span class="btn btn-warning my-2 my-sm-0" title="В этом классе есть запросы на удаление результата">
@@ -261,7 +232,17 @@ function getGradeList(reloadTable = false) {
     jq.ajaxSetup({timeout:10000});
     jq.post("/api/get_grade_list", { psyLogin: curPsy.login}).done(function (response) {
         showMsg(response.msg, response.kind,function () {
-            gradeList = response.gradeList;
+            gradeList = []
+            for (let name in response.gradeList) {
+                if (!response.gradeList.hasOwnProperty(name)) continue;
+                gradeList.push({
+                    name: name,
+                    whole: response.gradeList[name].whole || 0,
+                    not_yet: response.gradeList[name].not_yet || 0,
+                    clear: response.gradeList[name].clear || 0,
+                    danger: response.gradeList[name].danger || 0,
+                    msg: response.gradeList[name].msg || 0})
+            }
             if (reloadTable) showGrades()
         });
     }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err")

@@ -1,3 +1,5 @@
+let lastKey;
+
 let fieldNamesDecode = {
     Login: "Логин",
     Ident: "Идентификатор"
@@ -25,6 +27,22 @@ function showMsg(msg, kind,  sucFunc=function () {}, field="") {
         default:
             jq("#fatalMsg").text("Произошла неизвестная ошибка").fadeIn(700).delay(6000).fadeOut(4000);
     }
+
+}
+
+
+function sort(list, key) {
+    if (key) {
+        if (key === lastKey) { reverse *= -1; }
+        else { reverse = 1; lastKey = key; }
+
+        list.sort(function (a, b) {
+            if (a[key] > b[key]) { return reverse; }
+            if (a[key] < b[key]) { return -1*reverse; }
+            return 0;
+        });
+    }
+    return list;
 
 }
 
