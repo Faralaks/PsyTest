@@ -1,4 +1,5 @@
 let lastKey;
+let nextTime = 0;
 
 let fieldNamesDecode = {
     Login: "Логин",
@@ -75,4 +76,19 @@ function b64enc(text) {
 
 function b64dec(text) {
 	return decodeURIComponent(escape(window.atob(text)));
+}
+
+function copyText(el) {
+    var $tmp = $("<textarea>");
+    $("body").append($tmp);
+    $tmp.val($(el).text()).select();
+    document.execCommand("copy");
+    $tmp.remove();
+}
+
+function rareCall(func, delay=1500) {
+    if (nextTime < Date.now()) {
+        func();
+        nextTime = Date.now() + delay;
+    }
 }

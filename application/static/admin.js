@@ -1,12 +1,11 @@
 let psyList, gradeList, testeeList;
 let curPsy, curGrade;
-let preGeneratedPas;
 let gradeCounters = {};
 let fullCounter;
 let needToReload = false;
 
 
-
+function download() { alert("Эта функция пока недоступна") }
 
 
 function setToDefault() {
@@ -34,16 +33,9 @@ function saveCurPsy() {
 
 
 
-function validateFormData(login, pas, ident, count) {
-    if (+validateText(login || jq("#psyFormLogin")) + validatePas(pas || jq("#psyFormPas")) + validateText(ident  || jq("#psyFormIdent")) + validateNum(count  || jq("#psyFormCount")) === 4) {
-        jq("#psyFormBtnSave").prop("disabled", false);
-    }
-    else {
-        jq("#psyFormBtnSave").prop("disabled", true);
-    }
-
+function validateFormData(login=jq("#psyFormLogin"), pas=jq("#psyFormPas"), ident=jq("#psyFormIdent"), count=jq("#psyFormCount")) {
+    jq("#psyFormBtnSave").prop("disabled", !(+validateText(login) + validatePas(pas) + validateText(ident) + validateNum(count) === 4));
 }
-
 
 function validateText(elem){
     if(elem.val().match(/[^a-zA-Z0-9]/g) || !elem.val().length) {
@@ -56,7 +48,7 @@ function validateText(elem){
 
 }
 function validatePas(elem){
-    if(elem.val().match(/[^a-zA-Z0-9!"#$%&'()*,./:;=?@_`{|}~]/g) || elem.val().length < 8) {
+    if(elem.val().match(/[^a-zA-Z0-9!"#$%&'()*,./:;=?@_`{|}~]/g) || elem.val().length < 9) {
         elem.toggleClass("is-invalid", true);
         jq(`#${elem.attr("id")}Msg`).text("Недопустимый пароль. Он должен содержать не меннее 8 символов");
         return false;
@@ -65,9 +57,6 @@ function validatePas(elem){
     return true;
 
 }
-
-
-
 function validateNum(elem){
     if(elem.val().length && +elem.val() > 0) {
         elem.toggleClass("is-invalid", false);
@@ -134,8 +123,8 @@ function showPsy(key) {
         }
         let trPsy = jq("<tr></tr>")
             .append(jq(`<td>${psyList[i].ident}</td>`))
-            .append(jq(`<td>${psyList[i].login}</td>`))
-            .append(jq(`<td>${psyList[i].pas}</td>`))
+            .append(jq(`<td>${psyList[i].login}</td>`).click(function () { copyText(this) }))
+            .append(jq(`<td>${psyList[i].pas}</td>`).click(function () { copyText(this) }))
             .append(jq(`<td>${psyList[i].count}</td>`))
             .append(jq(`<td>${ownStats}</td>`))
             .append(jq(`<td>${psyList[i].tests}</td>`))
@@ -158,7 +147,7 @@ function showPsy(key) {
 }
 
 
-function getPsyList(reloadTable= false) {
+function getPsyList(reloadTable= true) {
     jq("#loadingIcon").show();
     jq.ajaxSetup({timeout:10000});
     jq.post("/api/get_psy_list").done(function (response) {
@@ -186,7 +175,10 @@ function acceptDel(testeeLogin, btn) {
     jq.ajaxSetup({timeout:3000});
     jq.post("/api/accept_del", {testeeLogin: testeeLogin}).done(function (response) {
         showMsg(response.msg, response.kind, function () {
-            jq(btn).hide()
+            jq(btn).hide();
+            gradeCounters[curPsy.login].msg -= 1;
+            jq("#stat_msg").text(gradeCounters[curPsy.login].msg);
+            if (gradeCounters[curPsy.login].msg === 0) jq("#statsLinesMsg").toggleClass("d-flex", false).hide();
         });
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
@@ -240,7 +232,7 @@ function showGrades(key) {
 
 
 
-function getGradeList(reloadTable = false) {
+function getGradeList(reloadTable = true) {
     jq("#loadingIcon").show();
     jq.ajaxSetup({timeout:10000});
     jq.post("/api/get_grade_list", { psyLogin: curPsy.login}).done(function (response) {
@@ -273,15 +265,20 @@ function showTestees(key) {
     jq('#testeeTable td').remove();
     sort(testeeList, key);
 
+    let gradeCounter = { whole: testeeList.length, not_yet: 0, clear: 0, danger: 0, msg: 0 };
+
     for (let i = 0; i < testeeList.length; i++) {
         let testee = testeeList[i];
+        gradeCounter[resultDecode[testee.result][0]] += 1;
+
         let trTestee = jq("<tr></tr>")
             .append(jq(`<td><span class="badge badge-${resultDecode[testee.result][1]} badge-pill">${testee.result}</span></td>`))
-            .append(jq(`<td>${testee.login}</td>`))
-            .append(jq(`<td>${testee.pas}</td>`))
+            .append(jq(`<td>${testee.login}</td>`).click(function () { copyText(this) }))
+            .append(jq(`<td>${testee.pas}</td>`).click(function () { copyText(this) }))
             .append(jq(`<td>${stamp2str(testee.create_date)}</td>`));
 
         if (testee.msg) {
+            gradeCounter.msg += 1;
             trTestee.append(`<td>
             <div class="btn-group" id="delBtn${i}" >
                     <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-warning my-2 my-sm-0" title="Нажмите, для просмотра сообщения об удалении">
@@ -301,13 +298,13 @@ function showTestees(key) {
         }
         testeeTable.append(trTestee);
     }
-    jq("#loadingIcon").hide();
-
+    showStats(gradeCounter);
+    gradeCounters[curPsy.login] = gradeCounter;
 
 }
 
 
-function getTesteeList(reloadTable= false) {
+function getTesteeList(reloadTable= true) {
     jq("#loadingIcon").show();
     jq.ajaxSetup({timeout:10000});
     jq.post("/api/get_testee_list", {psyLogin: curPsy.login, grade: curGrade.dec_name}).done(function (response) {
@@ -315,8 +312,6 @@ function getTesteeList(reloadTable= false) {
         if (reloadTable) showTestees()
     }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err") });
 }
-
-
 
 
 
@@ -330,30 +325,28 @@ function clearPsyForm() {
 
 
 function showPsyInfoPage(psyIdx) {
-    if (curGrade) { curGrade = undefined; jq("#add_psy_card").slideToggle();}
+    if (curGrade) { curGrade = undefined; jq("#add_psy_card").slideToggle(); jq("#testeeTablePlace").hide(); }
     else curPsy = psyList[psyIdx];
 
     setToDefault();
 
     jq("#psyTablePlace").hide();
-    jq("#testeeTablePlace").hide();
-
     jq("#statsLinesPsyCount").removeClass("d-flex").hide();
 
     jq("#gradeTablePlace").show();
     jq("#psyFormBtnDef").show();
     jq("#psyFormPlaceDel").show();
-    jq("#barBtnBack").attr("onclick", "showAdminMainPage()").show();
+    jq("#barBtnBack").off("click").click(showAdminMainPage).show();
 
     jq("#psyFormTitle").text("Редактировать Психолога");
     jq("#statsCardTitle").text(`${curPsy.login} | Статистика`);
-    jq("#psyFormBtnSave").attr("onclick", "editPsy()").val("Сохранить");
-    jq("#statsCardBtnRefresh").attr("onclick", "getGradeList(true)");
+    jq("#psyFormBtnSave").off("click").click(function () { rareCall(editPsy) }).val("Сохранить");
+    jq("#statsCardBtnRefresh").off("click").click(function () { rareCall(getGradeList) });
 
     jq("input").toggleClass("is-invalid", false);
     jq("#psyFormBtnSave").prop("disabled", true);
     showStats(gradeCounters[curPsy.login]);
-    getGradeList(true);
+    getGradeList();
 
 }
 
@@ -362,10 +355,7 @@ function showAdminMainPage() {
     clearPsyForm();
     curPsy = undefined;
 
-    if (needToReload) getPsyList(true);
-
     jq("#psyTablePlace").show();
-
     jq("#statsLinesPsyCount").addClass("d-flex").show();
 
     jq("#gradeTablePlace").hide();
@@ -375,14 +365,15 @@ function showAdminMainPage() {
 
     jq("#psyFormTitle").text("Добавить психолога");
     jq("#statsCardTitle").text(`Полная статистика`);
-    jq("#psyFormBtnSave").attr("onclick", "addNewPsy()").val("Добавить психолога");
-    jq("#psyFormPas").val(preGeneratedPas);
-    jq("#statsCardBtnRefresh").attr("onclick", "getPsyList(true)");
+
+    jq("#psyFormBtnSave").off("click").click(function () { rareCall(addNewPsy) }).val("Добавить психолога");
+    jq("#statsCardBtnRefresh").off("click").click(function () { rareCall(getPsyList) });
 
     jq("input").toggleClass("is-invalid", false);
     jq("#psyFormBtnSave").prop("disabled", true);
-    showStats(fullCounter);
 
+    showStats(fullCounter);
+    if (needToReload) { getPsyList(); needToReload = false}
 
 }
 
@@ -394,21 +385,25 @@ function showGradePage(gradeIdx) {
     jq("#gradeTablePlace").hide();
 
     jq("#testeeTablePlace").show();
-    jq("#barBtnBack").attr("onclick", "showPsyInfoPage()");
+        jq("#barBtnBack").off("click").click(showPsyInfoPage);
+
     jq("#gradeName").text(curGrade.dec_name);
 
     jq("#statsCardTitle").text(`${curGrade.dec_name} | Статистика`);
-    jq("#statsCardBtnRefresh").attr("onclick", "getTesteeList(true)");
+    jq("#statsCardBtnRefresh").off("click").click(function () { rareCall(getTesteeList) });
 
     showStats(curGrade);
-    getTesteeList(true);
+    getTesteeList();
+    needToReload = true;
 
 }
 
 
-jq("#psyTablePlace").ready(function () {
-    getPsyList(true);
+jq("#psyTablePlace").ready(getPsyList);
+jq("#psyFormBtnSave").ready(function () { jq("#psyFormBtnSave").click(addNewPsy) });
+jq("#statsCardBtnRefresh").ready(function () { jq("#statsCardBtnRefresh").click(function () { rareCall(getPsyList) }) });
+jq("#statsCardBtnDownload").ready(function () { jq("#statsCardBtnDownload").click(function () { rareCall(download) }) });
 
 
-});
+
 
