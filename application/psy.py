@@ -6,16 +6,7 @@ from application import app
 
 
 
-@app.route('/psy/')
-@app.route('/psy/<sort_by>')
+@app.route('/psy')
 @decors.check_psy
-def psy(sort_by='result'):
-    user = get_user_by_login(session['login'])
-    counters = {'whole':0, 'not_yet':0, 'clear':0, 'danger':0}
-    for stats in user['grades'].values():
-        counters['whole'] += stats.get('whole', 0)
-        counters['not_yet'] += stats.get('not_yet', 0)
-        counters['clear'] += stats.get('clear', 0)
-        counters['danger'] += stats.get('danger', 0)
-    return render_template('psy.html', logged=True, login=session['login'], status='psy', count=user['count'], grades=user['grades'],
-                           counters=counters, b64enc=b64enc, b64dec=b64dec, cur_url=url_for('psy'), title='Психолог')
+def psy():
+    return render_template('psy.html', login=session['login'])

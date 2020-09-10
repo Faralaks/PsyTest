@@ -19,10 +19,11 @@ function showMsg(msg, kind,  sucFunc=function () {}, field="") {
     switch (kind) {
         case "Good":  sucFunc(); return;
         case "Suc":
-            jq("#psyFormBtnSave").prop("disabled", true);
-            jq("#psyFormSignSuc").fadeIn(1000).delay(3000).fadeOut(500);
+            jq("#formBtn").prop("disabled", true);
+            jq("#formSignSuc").fadeIn(1000).delay(3000).fadeOut(500);
             sucFunc();
             return;
+
         case "DuplicatedField":
             let capitalizedField = field.replace(/(^|\s)\S/g, l => l.toUpperCase());
             jq(`#psyForm${capitalizedField}`).toggleClass("is-invalid", true);
@@ -91,4 +92,41 @@ function rareCall(func, delay=1500) {
         func();
         nextTime = Date.now() + delay;
     }
+}
+
+function showStats(stats) {
+    if (stats.psyCount !== undefined)  {
+        jq('#stat_psy_count').text(stats.psyCount);
+        jq('#statsLinesPsyCount').toggleClass('d-none', false).toggleClass('d-flex', true)
+    }
+    else {
+        jq('#statsLinesPsyCount').toggleClass('d-flex', false).toggleClass('d-none', true)
+    }
+    if (stats.gradeCount !== undefined)  {
+        jq('#stat_grade_count').text(stats.gradeCount);
+        jq('#statsLinesGradeCount').toggleClass('d-none', false).toggleClass('d-flex', true)
+    }
+    else {
+        jq('#statsLinesGradeCount').toggleClass('d-flex', false).toggleClass('d-none', true)
+    }
+    jq("#loadingIcon").show();
+    jq('#stat_psy_count').text(stats.psy_count);
+    jq('#stat_whole').text(stats.whole);
+    jq('#stat_not_yet').text(stats.not_yet);
+    jq('#stat_clear').text(stats.clear);
+    jq('#stat_danger').text(stats.danger);
+    if (stats.msg)  {
+        jq('#stat_msg').text(stats.msg);
+        jq('#statsLinesMsg').toggleClass('d-flex', true)
+    }
+    else {
+        jq('#statsLinesMsg').toggleClass('d-flex', false)
+    }
+    jq("#loadingIcon").hide();
+
+}
+
+function setLogin(login="") {
+    jq("#loginPlace").text(", " + login)
+
 }

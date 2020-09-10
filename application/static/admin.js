@@ -9,6 +9,7 @@ function download() { alert("Эта функция пока недоступна
 
 
 function setToDefault() {
+    jq("#psyFormBtnSave").prop("disabled", true);
     jq("#psyFormLogin").val(curPsy.login);
     jq("#psyFormPas").val(curPsy.pas);
     jq("#psyFormIdent").val(curPsy.ident);
@@ -71,31 +72,12 @@ function validateNum(elem){
 }
 
 
-
-function showStats(stats) {
-    jq("#loadingIcon").show();
-    jq('#stat_psy_count').text(stats.psy_count);
-    jq('#stat_whole').text(stats.whole);
-    jq('#stat_not_yet').text(stats.not_yet);
-    jq('#stat_clear').text(stats.clear);
-    jq('#stat_danger').text(stats.danger);
-    if (stats.msg)  {
-        jq('#stat_msg').text(stats.msg);
-        jq('#statsLinesMsg').toggleClass('d-flex', true)
-    }
-    else {
-        jq('#statsLinesMsg').toggleClass('d-flex', false)
-    }
-    jq("#loadingIcon").hide();
-
-}
-
 function showPsy(key) {
     let psyTable = jq("#psyTable");
     jq('td').remove();
     sort(psyList, key);
 
-    fullCounter = { psy_count: psyList.length, whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
+    fullCounter = { psyCount: psyList.length, whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
     let grades, grade;
 
     for (let i = 0; i < psyList.length; i++) {
@@ -204,7 +186,7 @@ function showGrades(key) {
     jq('#gradeTable td').remove();
     sort(gradeList, key);
 
-    let gradeCounter = { whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
+    let gradeCounter = { gradeCount: gradeList.length, whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
 
     for (let i = 0; i < gradeList.length; i++) {
         let grade = gradeList[i];
@@ -316,6 +298,7 @@ function getTesteeList(reloadTable= true) {
 
 
 function clearPsyForm() {
+    jq("#psyFormBtnSave").prop("disabled", true);
     jq("#psyFormLogin").val("");
     jq("#psyFormPas").val(generatePas(12));
     jq("#psyFormIdent").val("");
