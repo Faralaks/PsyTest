@@ -13,5 +13,4 @@ def get_user_data():
     login = form('login') if form_get('login', None) and session.get('status') == 'admin' else session.get('login', None)
     if login is None:
         return unk_err('Не был получен Логин пользователя')
-    vprint(login)
     return fixed_jsonify(kind='Good', userData=get_user_by_login(login))

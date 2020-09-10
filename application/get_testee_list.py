@@ -15,7 +15,6 @@ form_get = lambda key, ret: request.form.get(key, ret)
 def get_testee_list():
     grade = form_get('grade', None)
     login = form_get('psyLogin', None) if session['status'] == 'admin' else session['login']
-    vprint(login)
 
     if grade is None: return unk_err('Не было получено название класса')
     if login is None: return unk_err('Не был получен логин психолога')
