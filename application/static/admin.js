@@ -378,7 +378,6 @@ function showGradePage(gradeIdx) {
     showStats(curGrade);
     getTesteeList();
     needToReload = true;
-
 }
 
 

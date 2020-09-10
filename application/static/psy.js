@@ -46,8 +46,10 @@ function renderGradeList(list) {
 
 function clearTesteeForm() {
     jq("#addFormBtnAdd").prop("disabled", true);
-    jq("#addFormName").val("");
+    if (!curGrade) jq("#addFormName").val("");
     jq("#addFormCount").val("");
+    jq("input").toggleClass("is-invalid", false);
+
 }
 
 
@@ -84,11 +86,11 @@ function showTestees(key) {
     jq('#testeeTable td').remove();
     sort(testeeList, key);
 
-    let psyCounter = { whole: testeeList.length, not_yet: 0, clear: 0, danger: 0, msg: 0 };
+    let gradeCounter = { whole: testeeList.length, not_yet: 0, clear: 0, danger: 0 };
 
     for (let i = 0; i < testeeList.length; i++) {
         let testee = testeeList[i];
-        psyCounter[resultDecode[testee.result][0]] += 1;
+        gradeCounter[resultDecode[testee.result][0]] += 1;
 
         let trTestee = jq("<tr></tr>")
             .append(jq(`<td><span class="badge badge-${resultDecode[testee.result][1]} badge-pill">${testee.result}</span></td>`))
@@ -96,29 +98,32 @@ function showTestees(key) {
             .append(jq(`<td>${testee.pas}</td>`).click(function () { copyText(this) }))
             .append(jq(`<td>${stamp2str(testee.create_date)}</td>`));
 
-        if (testee.msg) {
-            psyCounter.msg += 1;
+        if (testee.result !== "Нет результата") {
             trTestee.append(`<td>
             <div class="btn-group" id="delBtn${i}" >
-                    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-warning my-2 my-sm-0" title="Нажмите, для просмотра сообщения об удалении">
-                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-outline-danger my-2 my-sm-0" title="Нажмите, для просмотра сообщения об удалении">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
                     </span>
                     <div class="dropdown-menu">
-                        <div class="card border-0 shadow" id="show_msg_card">
+                         <div class="card border-0 shadow" id="del_result_comment">
                             <div class="card-body">
-                                <h5 class="card-title">Причина удаления</h5>
-                                <p>${b64dec(testee.msg)}</p>
-                                <input type="button" class="btn btn-primary mr-5 ml-5" value="Подтвердить удаление" onclick="acceptDel('${testee.login}', delBtn${i})">
+                                <form method="post" action="{{ url_for('del_result', grade=name[0], login=testee_login, prev_res=prev_res) }}">
+                                    <h5 class="card-title">Введите причину удаления результата испытуемого</h5>
+                                    <div class="form-group">
+                                        <textarea style="width: 600px" class="form-control" rows="5" required maxlength="500" aria-describedby="stopLen" name="reason"></textarea>
+                                        <small id="stopLen" class="form-text text-muted">Не более 500 символов</small>
+                                    </div>
+                                    <div class="form-group"><input type="submit" class="btn btn-danger" value="Удалить"></div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                </div>
+               </div>
             </div>
         </td>`);
         }
         testeeTable.append(trTestee);
     }
-    showStats(psyCounter);
-    psyCounters[curPsy.login] = psyCounter;
+    showStats(gradeCounter);
 
 }
 
@@ -139,7 +144,7 @@ function getUserData() {
     jq.ajaxSetup({timeout:2000});
     jq.post("/api/get_user_data").done(function (response) {
         curPsy = response.userData;
-        setLogin(curPsy.login, gradeList)
+        setLogin(curPsy.login, gradeList);
         jq("#countPlace").text(curPsy.count);
         jq("#addFormCount").prop("max", curPsy.count);
         renderGradeList(curPsy.grades);
@@ -151,10 +156,37 @@ function getUserData() {
 function addTestees() {
     jq.ajaxSetup({timeout:3000});
     jq.post("/api/add_testees", jq("#addTesteesForm").serialize()).done(function (response) {
-        showMsg(response.msg, response.kind,function () { clearTesteeForm(); getUserData(); });
+        showMsg(response.msg, response.kind, function () {
+            if (!curGrade) { getUserData(); return }
+            curPsy.count -= +jq("#addFormCount").val();
+            jq("#countPlace").text(curPsy.count);
+            jq("#addFormCount").prop("max", curPsy.count);
+            clearTesteeForm();
+            getTesteeList() });
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
     })
+}
+
+
+
+function showGradePage(gradeIdx) {
+    clearTesteeForm();
+    curGrade = gradeList[gradeIdx];
+    jq("#addFormName").prop("readonly", true).val(curGrade.dec_name);
+
+    jq("#gradeTablePlace").hide();
+
+    jq("#testeeTablePlace").show();
+    jq("#barBtnBack").off("click").click();
+
+    jq("#gradeName").text(curGrade.dec_name);
+
+    jq("#statsCardTitle").text(`${curGrade.dec_name} | Статистика`);
+    jq("#statsCardBtnRefresh").off("click").click(function () { rareCall(getTesteeList) });
+
+    showStats(curGrade);
+    getTesteeList();
 }
 
 
