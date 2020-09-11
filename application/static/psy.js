@@ -46,10 +46,11 @@ function renderGradeList(list) {
 
 function clearTesteeForm() {
     jq("#addFormBtnAdd").prop("disabled", true);
-    if (!curGrade) jq("#addFormName").val("");
+    alert(curGrade)
+    if (!curGrade) jq("#addFormName").prop("readonly", false).val("");
+    else jq("#addFormName").prop("readonly", true).val(curGrade.dec_name);
     jq("#addFormCount").val("");
     jq("input").toggleClass("is-invalid", false);
-
 }
 
 
@@ -89,7 +90,8 @@ function deleteResult(testeeIdx, btn) {
             jq("#stat_"+resultDecode[testee.result][0]).text(gradeCounter[resultDecode[testee.result][0]]);
             gradeCounter.not_yet += 1;
             jq("#stat_not_yet").text(gradeCounter.not_yet);
-            jq("#resultPlace"+testeeIdx).text("Нет результата").toggleClass("badge-"+resultDecode[testee.result][1], false).toggleClass("badge-secondary", true);
+            testeeList[testeeIdx].result = "Нет результата"
+            jq("#resultPlace"+testeeIdx).text(testeeList[testeeIdx].result).toggleClass("badge-"+resultDecode[testee.result][1], false).toggleClass("badge-secondary", true);
         });
     }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err") });
 }
@@ -105,7 +107,6 @@ function showTestees(key) {
     for (let i = 0; i < testeeList.length; i++) {
         let testee = testeeList[i];
         gradeCounter[resultDecode[testee.result][0]] += 1;
-
         let trTestee = jq("<tr></tr>")
             .append(jq(`<td><span id="resultPlace${i}" class="badge badge-${resultDecode[testee.result][1]} badge-pill">${testee.result}</span></td>`))
             .append(jq(`<td>${testee.login}</td>`).click(function () { copyText(this) }))
@@ -119,19 +120,16 @@ function showTestees(key) {
                             <i class="fa fa-trash" aria-hidden="true"></i>
                     </span>
                     <div class="dropdown-menu">
-                         <div class="card border-0 shadow" id="del_result_comment">
+                        <div class="card border-0 shadow" id="show_msg_card">
                             <div class="card-body">
-                                <form method="post" action="{{ url_for('del_result', grade=name[0], login=testee_login, prev_res=prev_res) }}">
-                                    <h5 class="card-title">Введите причину удаления результата испытуемого ${testee.login} из ${curGrade.dec_name}</h5>
-                                    <div class="form-group">
-                                        <textarea id="delReasonField" style="width: 600px" class="form-control" rows="2" required maxlength="500" aria-describedby="stopLen" name="reason"></textarea>
-                                        <small id="stopLen" class="form-text text-muted">Не более 500 символов</small>
-                                    </div>
-                                    <input type="button" class="btn btn-danger" value="Удалить" onclick="deleteResult('${i}', delBtn${i})">
-                                </form>
-                            </div>
+                            <h5 class="card-title">Введите причину удаления результата испытуемого ${testee.login} из ${curGrade.dec_name}</h5>
+                            <textarea id="delReasonField" style="width: 600px" class="form-control" rows="2" required maxlength="500" aria-describedby="stopLen" name="reason"></textarea>
+                            <small id="stopLen" class="form-text text-muted">Не более 500 символов</small>
+                            <br>
+                            <input type="button" class="btn btn-danger" value="Удалить" onclick="deleteResult('${i}', delBtn${i})">
                         </div>
-               </div>
+                    </div>
+                </div>
             </div>
         </td>`);
         }
@@ -185,14 +183,12 @@ function addTestees() {
 
 
 function showGradePage(gradeIdx) {
-    clearTesteeForm();
     curGrade = gradeList[gradeIdx];
-    jq("#addFormName").prop("readonly", true).val(curGrade.dec_name);
-
+    clearTesteeForm();
     jq("#gradeTablePlace").hide();
 
     jq("#testeeTablePlace").show();
-    jq("#barBtnBack").off("click").click();
+    jq("#barBtnBack").off("click").click(showPsyMainPage).show();
 
     jq("#gradeName").text(curGrade.dec_name);
 
@@ -202,6 +198,28 @@ function showGradePage(gradeIdx) {
     showStats(curGrade);
     getTesteeList();
 }
+
+
+function showPsyMainPage() {
+    curGrade = undefined;
+    testeeList = undefined;
+    gradeCounter = undefined;
+    clearTesteeForm();
+
+    jq("#gradeTablePlace").show();
+
+    jq("#testeeTablePlace").hide();
+    jq("#barBtnBack").off("click").hide();
+
+    jq("#statsCardTitle").text("Общая статистика");
+    jq("#statsCardBtnRefresh").off("click").click(function () { rareCall(getUserData) });
+
+    showStats(psyCounter);
+    getUserData();
+}
+
+
+
 
 
 jq("#gradeTablePlace").ready(function () { getUserData() });

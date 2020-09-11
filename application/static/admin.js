@@ -203,7 +203,7 @@ function showGrades(key) {
             .append(jq("<td></td>").append(jq(`<span class="badge badge-danger badge-pill">${grade.danger}</span>`)))
             .append(jq(`<td><input type="button" class="btn btn-primary" onclick="showGradePage(${i})" value="Просмотреть"></td>`));
         if (grade.msg) {
-            trGrade.append(`<td><span class="btn btn-warning my-2 my-sm-0" title="В этом классе есть запросы на удаление результата">
+            trGrade.append(`<td><span class="btn btn-warning my-2 my-sm-0" style="cursor: default" title="В этом классе есть запросы на удаление результата">
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;${grade.msg}</span></td>`);
         }
         gradeTable.append(trGrade);
@@ -259,7 +259,7 @@ function showTestees(key) {
             .append(jq(`<td>${testee.pas}</td>`).click(function () { copyText(this) }))
             .append(jq(`<td>${stamp2str(testee.create_date)}</td>`));
 
-        if (testee.msg) {
+        if (testee.msg !== null) {
             gradeCounter.msg += 1;
             trTestee.append(`<td>
             <div class="btn-group" id="delBtn${i}" >
