@@ -270,8 +270,9 @@ function showTestees(key) {
                         <div class="card border-0 shadow" id="show_msg_card">
                             <div class="card-body">
                                 <h5 class="card-title">Причина удаления</h5>
-                                <p>${b64dec(testee.msg)}</p>
-                                <input type="button" class="btn btn-primary mr-5 ml-5" value="Подтвердить удаление" onclick="acceptDel('${testee.login}', delBtn${i})">
+                                <textarea readonly style="width: 600px" class="form-control" rows="2" required maxlength="500" aria-describedby="stopLen" name="reason">${b64dec(testee.msg)}</textarea>
+                                <br>
+                                <input type="button" class="btn btn-primary mr-1" value="Подтвердить удаление" onclick="acceptDel('${testee.login}', delBtn${i})">
                         </div>
                     </div>
                 </div>

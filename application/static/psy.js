@@ -1,6 +1,6 @@
 let curPsy, curGrade;
 let gradeList, testeeList;
-let psyCounter;
+let psyCounter, gradeCounter;
 
 function download() { alert("Эта функция пока недоступна") }
 
@@ -58,7 +58,7 @@ function showGrades(key) {
     jq('#gradeTable td').remove();
     sort(gradeList, key);
 
-    psyCounter = { gradeCount: gradeList.length, whole: 0, not_yet: 0, clear: 0, danger: 0, msg: 0 };
+    psyCounter = { gradeCount: gradeList.length, whole: 0, not_yet: 0, clear: 0, danger: 0};
 
     for (let i = 0; i < gradeList.length; i++) {
         let grade = gradeList[i];
@@ -66,7 +66,6 @@ function showGrades(key) {
         psyCounter.not_yet += grade.not_yet;
         psyCounter.clear += grade.clear;
         psyCounter.danger += grade.danger;
-        psyCounter.msg += grade.msg;
 
         let trGrade = jq("<tr></tr>").append(jq(`<td>${grade.dec_name}</td>`))
             .append(jq("<td></td>").append(jq(`<span class="badge badge-Light badge-pill">${grade.whole}</span>`)))
@@ -80,20 +79,35 @@ function showGrades(key) {
 }
 
 
+function deleteResult(testeeIdx, btn) {
+    let testee = testeeList[testeeIdx];
+    jq.ajaxSetup({timeout:2000});
+    jq.post("/api/del_result", {testeeLogin: testee.login, prevRes: testee.result, reason: jq("#delReasonField").val(), grade: curGrade.dec_name}).done(function (response) {
+        showMsg(response.msg, response.kind, function () {
+            jq(btn).hide();
+            gradeCounter[resultDecode[testee.result][0]] -= 1;
+            jq("#stat_"+resultDecode[testee.result][0]).text(gradeCounter[resultDecode[testee.result][0]]);
+            gradeCounter.not_yet += 1;
+            jq("#stat_not_yet").text(gradeCounter.not_yet);
+            jq("#resultPlace"+testeeIdx).text("Нет результата").toggleClass("badge-"+resultDecode[testee.result][1], false).toggleClass("badge-secondary", true);
+        });
+    }).fail(function () { jq("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err") });
+}
+
 
 function showTestees(key) {
     let testeeTable = jq("#testeeTable");
     jq('#testeeTable td').remove();
     sort(testeeList, key);
 
-    let gradeCounter = { whole: testeeList.length, not_yet: 0, clear: 0, danger: 0 };
+    gradeCounter = { whole: testeeList.length, not_yet: 0, clear: 0, danger: 0 };
 
     for (let i = 0; i < testeeList.length; i++) {
         let testee = testeeList[i];
         gradeCounter[resultDecode[testee.result][0]] += 1;
 
         let trTestee = jq("<tr></tr>")
-            .append(jq(`<td><span class="badge badge-${resultDecode[testee.result][1]} badge-pill">${testee.result}</span></td>`))
+            .append(jq(`<td><span id="resultPlace${i}" class="badge badge-${resultDecode[testee.result][1]} badge-pill">${testee.result}</span></td>`))
             .append(jq(`<td>${testee.login}</td>`).click(function () { copyText(this) }))
             .append(jq(`<td>${testee.pas}</td>`).click(function () { copyText(this) }))
             .append(jq(`<td>${stamp2str(testee.create_date)}</td>`));
@@ -101,19 +115,19 @@ function showTestees(key) {
         if (testee.result !== "Нет результата") {
             trTestee.append(`<td>
             <div class="btn-group" id="delBtn${i}" >
-                    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-outline-danger my-2 my-sm-0" title="Нажмите, для просмотра сообщения об удалении">
+                    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-outline-danger my-2 my-sm-0" title="Нажмите, чтобы удалить результат">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                     </span>
                     <div class="dropdown-menu">
                          <div class="card border-0 shadow" id="del_result_comment">
                             <div class="card-body">
                                 <form method="post" action="{{ url_for('del_result', grade=name[0], login=testee_login, prev_res=prev_res) }}">
-                                    <h5 class="card-title">Введите причину удаления результата испытуемого</h5>
+                                    <h5 class="card-title">Введите причину удаления результата испытуемого ${testee.login} из ${curGrade.dec_name}</h5>
                                     <div class="form-group">
-                                        <textarea style="width: 600px" class="form-control" rows="5" required maxlength="500" aria-describedby="stopLen" name="reason"></textarea>
+                                        <textarea id="delReasonField" style="width: 600px" class="form-control" rows="2" required maxlength="500" aria-describedby="stopLen" name="reason"></textarea>
                                         <small id="stopLen" class="form-text text-muted">Не более 500 символов</small>
                                     </div>
-                                    <div class="form-group"><input type="submit" class="btn btn-danger" value="Удалить"></div>
+                                    <input type="button" class="btn btn-danger" value="Удалить" onclick="deleteResult('${i}', delBtn${i})">
                                 </form>
                             </div>
                         </div>
