@@ -1,5 +1,5 @@
 let curPsy, curGrade;
-let gradeList, testeeList;
+let gradeList, testeeList, nameList;
 let psyCounter, gradeCounter;
 
 function download() { alert("Эта функция пока недоступна") }
@@ -30,10 +30,23 @@ function validateNum(elem){
 
 }
 
+function addHelperLines() {
+    let value = jq(this).val().toLowerCase();
+    jq("#helperList").empty();
+    for (let i = 0; i < nameList.length; i++) {
+        if (i > 3) break;
+        if (nameList[i].toLowerCase().indexOf(value) === -1) continue;
+        jq("#helperList").append(jq(`<span  class="list-group-item list-group-item-action list-group-item-light" onclick="if (!curGrade) addFormName.value = this.textContent">${nameList[i]}</span>`))
+    }
+}
+
+
 function renderGradeList(list) {
     gradeList = [];
+    nameList = [];
     for (let name in list) {
         if (!list.hasOwnProperty(name)) continue;
+        nameList.push(atob(name));
         gradeList.push({name: name,
         dec_name: atob(name),
         whole: list[name].whole || 0,
@@ -42,11 +55,11 @@ function renderGradeList(list) {
         danger: list[name].danger || 0,
         msg: list[name].msg || 0})
     }
+    nameList.sort();
 }
 
 function clearTesteeForm() {
     jq("#addFormBtnAdd").prop("disabled", true);
-    alert(curGrade)
     if (!curGrade) jq("#addFormName").prop("readonly", false).val("");
     else jq("#addFormName").prop("readonly", true).val(curGrade.dec_name);
     jq("#addFormCount").val("");
@@ -225,3 +238,4 @@ function showPsyMainPage() {
 jq("#gradeTablePlace").ready(function () { getUserData() });
 jq("#statsCardBtnRefresh").ready(function () { jq("#statsCardBtnRefresh").click(function () { rareCall(getUserData) }) });
 jq("#statsCardBtnDownload").ready(function () { jq("#statsCardBtnDownload").click(function () { rareCall(download) }) });
+jq("#helperList").ready(function() { jq("#addFormName").on("input", addHelperLines); });

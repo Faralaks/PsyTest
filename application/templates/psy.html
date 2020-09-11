@@ -31,10 +31,16 @@
                             Доступно <span id="countPlace"></span>
                         </h5>
 
-                        <div class="form-group">
+                        <div class="form-group dropdown">
                             <label for="addFormName">Класс</label>
-                            <input class="form-control" id="addFormName" type="text" name="grade"  oninput="validateFormData()">
+                            <input class="form-control dropdown-toggle" data-toggle="dropdown" id="addFormName" type="text" name="grade"  oninput="validateFormData()">
                             <div id="addFormNameMsg" class="invalid-feedback"></div>
+                            <div id="helperLinesPlace" class="dropdown-menu">
+                                <div class="list-group" id="helperList"></div>
+                            </div>
+
+
+
                         </div>
                         <div class="form-group">
                             <label for="addFormCount">Количество</label>
