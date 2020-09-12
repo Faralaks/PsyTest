@@ -20,6 +20,6 @@ def edit_psy():
         update(login, form('login'), form('password'), form('ident'), tests, form('count'), pre_del)
     except DuplicateKeyError as err:
         return duplicate_key_err(err)
-    #except: return unk_err("Неизвестная ошибка при попытке редактирования данных психолога!")
+    except: return unk_err("Неизвестная ошибка при попытке редактирования данных психолога!")
 
     return success()

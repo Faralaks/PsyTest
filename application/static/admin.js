@@ -224,7 +224,7 @@ function getGradeList(reloadTable = true) {
                 if (!response.gradeList.hasOwnProperty(name)) continue;
                 gradeList.push({
                     name: name,
-                    dec_name: atob(name),
+                    dec_name: b64dec(name),
                     whole: response.gradeList[name].whole || 0,
                     not_yet: response.gradeList[name].not_yet || 0,
                     clear: response.gradeList[name].clear || 0,

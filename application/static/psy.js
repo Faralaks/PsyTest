@@ -46,9 +46,9 @@ function renderGradeList(list) {
     nameList = [];
     for (let name in list) {
         if (!list.hasOwnProperty(name)) continue;
-        nameList.push(atob(name));
+        nameList.push(b64dec(name));
         gradeList.push({name: name,
-        dec_name: atob(name),
+        dec_name: b64dec(name),
         whole: list[name].whole || 0,
         not_yet: list[name].not_yet || 0,
         clear: list[name].clear || 0,

@@ -13,11 +13,9 @@ import application.decorators as decorators
 import application.del_result as del_result
 import application.download as download
 import application.edit_psy as edit_psy
-import application.grade as grade
 import application.index as index
 import application.login as login
 import application.logout as logout
-import application.messages as messages
 import application.psy as psy
 import application.get_grade_list as get_grade_list
 import application.get_psy_list as get_psy_list
