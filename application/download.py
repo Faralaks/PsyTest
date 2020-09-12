@@ -6,8 +6,10 @@ from os import path
 from openpyxl import Workbook
 import docx
 
+from std_response import err
 
-
+form = lambda key: request.form[key]
+form_get = lambda key, ret: request.form.get(key, ret)
 
 @app.route('/download/<name>/<target>')
 @decors.check_admin_or_psy
@@ -15,6 +17,11 @@ def download(name, target):
     dec_name = b64dec(name)
     psy_login = session['login']
     if session['status'] == 'admin': psy_login= session['psy_login']
+
+    if target is None: return err('Не была получена Цель сохранения')
+    if dec_name is None: return err('Не был получен Класс испытуемого')
+
+
 
     if target == 'not_yet':
         testees = tuple(get_testees_by_grade_not_yet(psy_login, dec_name))
