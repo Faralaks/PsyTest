@@ -128,23 +128,29 @@ function showTestees(key) {
 
         if (testee.result !== "Нет результата") {
             trTestee.append(`<td>
-            <div class="btn-group" id="delBtn${i}" >
-                    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-outline-danger my-2 my-sm-0" title="Нажмите, чтобы удалить результат">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                    </span>
-                    <div class="dropdown-menu">
-                        <div class="card border-0 shadow" id="show_msg_card">
-                            <div class="card-body">
-                            <h5 class="card-title">Введите причину удаления результата испытуемого ${testee.login} из ${curGrade.dec_name}</h5>
-                            <textarea id="delReasonField" style="width: 600px" class="form-control" rows="2" required maxlength="500" aria-describedby="stopLen" name="reason"></textarea>
-                            <small id="stopLen" class="form-text text-muted">Не более 500 символов</small>
-                            <br>
-                            <input type="button" class="btn btn-danger" value="Удалить" onclick="deleteResult('${i}', delBtn${i})">
+                <div class="btn-group" id="delBtn${i}" >
+                        <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-outline-danger my-2 my-sm-0" title="Нажмите, чтобы удалить результат">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                        </span>
+                        <div class="dropdown-menu">
+                            <div class="card border-0 shadow" id="show_msg_card">
+                                <div class="card-body">
+                                <h5 class="card-title">Введите причину удаления результата испытуемого ${testee.login} из ${curGrade.dec_name}</h5>
+                                <textarea id="delReasonField" style="width: 600px" class="form-control" rows="2" required maxlength="500" aria-describedby="stopLen" name="reason"></textarea>
+                                <small id="stopLen" class="form-text text-muted">Не более 500 символов</small>
+                                <br>
+                                <input type="button" class="btn btn-danger" value="Удалить" onclick="deleteResult('${i}', delBtn${i})">
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </td>`);
+                </div></td>`);
+        }
+        if (testee.msg !== null) {
+            trTestee.append(`<td>
+                <span  title="Этот результат был удален">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </span>
+            </td>`)
         }
         testeeTable.append(trTestee);
     }
