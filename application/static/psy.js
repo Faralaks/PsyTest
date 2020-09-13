@@ -30,6 +30,9 @@ function validateNum(elem){
 
 }
 
+
+
+
 function addHelperLines() {
     let value = jq(this).val().toLowerCase();
     jq("#helperList").empty();
@@ -213,7 +216,7 @@ function showGradePage(gradeIdx) {
 
     jq("#statsCardTitle").text(`${curGrade.dec_name} | Статистика`);
     jq("#statsCardBtnRefresh").off("click").click(function () { rareCall(getTesteeList) });
-
+    setDownloadLinks(curGrade.dec_name);
     showStats(curGrade);
     getTesteeList();
 }
@@ -232,7 +235,7 @@ function showPsyMainPage() {
 
     jq("#statsCardTitle").text("Общая статистика");
     jq("#statsCardBtnRefresh").off("click").click(function () { rareCall(getUserData) });
-
+    setDownloadLinks();
     showStats(psyCounter);
     getUserData();
 }
@@ -243,5 +246,5 @@ function showPsyMainPage() {
 
 jq("#gradeTablePlace").ready(function () { getUserData() });
 jq("#statsCardBtnRefresh").ready(function () { jq("#statsCardBtnRefresh").click(function () { rareCall(getUserData) }) });
-jq("#statsCardBtnDownload").ready(function () { jq("#statsCardBtnDownload").click(function () { rareCall(download) }) });
 jq("#helperList").ready(function() { jq("#addFormName").on("input", addHelperLines); });
+jq("#statsCardBtnDownload").ready(function () { setDownloadLinks() });

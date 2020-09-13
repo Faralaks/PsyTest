@@ -14,4 +14,8 @@ def err(msg=None):
     if msg: return jsonify(kind='Fatal', msg=msg)
     return jsonify(msg='Произошла неизвестная ошибка, если проблема повториться, обратитесь к администратору!')
 
+def err_in_html(msg=None):
+    if msg: return '<h1>%s</h1>'%msg
+    return '<h1>Проищошла неизвестная ошибка на стороне сервера</h1>'
+
 

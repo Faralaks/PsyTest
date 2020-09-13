@@ -62,10 +62,17 @@
                     <div class="card-title"><h5 id="statsCardTitle">Общая статистика</h5>
                         <div style="display: inline-block" class="pull-right">
                             <i id="loadingIcon" class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>
-                            <span id="statsCardBtnDownload" class="btn badge badge-pill btn-outline-success mr-1">
+                            <span id="statsCardBtnDownload" class="btn badge badge-pill btn-outline-success mr-1 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
                                 Скачать
                             </span>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a id="downloadDocx" class="dropdown-item" download>
+                                        <i class="fa fa-key" aria-hidden="true"></i>&nbsp;&nbsp;Логины и пароли</a>
+                                <a id="downloadXlsx" class="dropdown-item" download>
+                                    <i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;Результаты</a>
+                            </div>
+
                             <span id="statsCardBtnRefresh" class="btn badge badge-pill btn-outline-success mr-0">
                                 <i class="fa fa-refresh" aria-hidden="true"></i>
                                 Обновить

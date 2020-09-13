@@ -1,49 +1,54 @@
-from psytest_tools import b64dec, decrypt, get_testees_by_grade_not_yet, make_filename, get_testees_by_grade_done, stamp2str
-from application import app
+from psytest_tools import b64dec, decrypt, get_testees_by_grade_not_yet, make_filename, get_testees_by_grade_done, stamp2str, vprint
+from application import app, mongo_connect
 from application import decorators as decors
 from flask import session, render_template, url_for, redirect, send_file
 from os import path
-from openpyxl import Workbook
-import docx
+from openpyxl import Workbook, load_workbook
+from openpyxl.styles import Font
+from io import  BytesIO
 
-from std_response import err
+from std_response import err, err_in_html
 
 form = lambda key: request.form[key]
 form_get = lambda key, ret: request.form.get(key, ret)
 
-@app.route('/download/<name>/<target>')
+req = {'status': 'testee', 'pre_del': None}
+
+
+@app.route('/download/<psy_login>/<grade>/<target>')
 @decors.check_admin_or_psy
-def download(name, target):
-    dec_name = b64dec(name)
-    psy_login = session['login']
-    if session['status'] == 'admin': psy_login= session['psy_login']
+def download(psy_login, grade, target):
 
-    if target is None: return err('Не была получена Цель сохранения')
-    if dec_name is None: return err('Не был получен Класс испытуемого')
+    if session['status'] != 'admin': psy_login= session['login']
+    if psy_login != '-':  req['added_by'] = psy_login
 
+    if grade != '-': req['grade'] = grade
 
-
-    if target == 'not_yet':
-        testees = tuple(get_testees_by_grade_not_yet(psy_login, dec_name))
-        doc = docx.Document()
-        table = doc.add_table(rows=len(testees), cols=3)
-        table.style = 'Table Grid'
-        for row, testee in enumerate(testees):
-            table.cell(row, 0).text = testee['login']
-            table.cell(row, 1).text = decrypt(testee['pas'])
-            table.cell(row, 2).text = '\n\n'
-        filename = path.join(app.config['DOCKS_FOLDER'], make_filename(psy_login, 'docx'))
-        doc.save(filename)
-        return send_file(filename, cache_timeout=0, as_attachment=True)
-
-    if target == 'done':
-        testees = tuple(get_testees_by_grade_done(psy_login, dec_name))
-        wb = Workbook()
-        ws = wb.active
-        ws.append(['Результат', 'Логин', 'Класс', 'Пройденные тесты', 'Дата создания'])
+    users = mongo_connect.db.users
+    vprint(grade, psy_login, target)
+    if target == 'not_yet' and grade != '-':
+        stream = BytesIO()
+        req['result'] = 'Нет результата'
+        testees = users.find(req, {'_id':-1, 'login':1, 'pas':1})
+        xlsx = load_workbook(app.config['NOT_YET_XLSX_TEMPLATE'])
+        sheet = xlsx.worksheets[0]
         for testee in testees:
-            ws.append([testee['result'], testee['login'], testee['grade'], ' '.join(testee['tests']), stamp2str(testee['create_date'])])
-        filename = path.join(app.config['DOCKS_FOLDER'], make_filename(psy_login, 'xlsx'))
-        wb.save(filename)
-        wb.close()
-        return send_file(filename, cache_timeout=0, as_attachment=True)
+            sheet.append([testee['login'], decrypt(testee['pas'])])
+
+    elif target == 'done':
+        stream = BytesIO()
+        req['result'] = {'$ne': 'Нет результата'}
+        testees = users.find(req, {'_id':-1, 'login':1, 'grade':1, 'tests':1, 'create_date':1, 'result':1})
+        xlsx = Workbook()
+        sheet = xlsx.active
+        sheet.append(['Результат', 'Логин', 'Класс', 'Пройденные тесты', 'Дата создания'])
+        for testee in testees:
+            sheet.append([testee['result'], testee['login'], testee['grade'], ' '.join(testee['tests']), stamp2str(testee['create_date'])])
+
+    else:
+        return err_in_html('Получена некорректная цель')
+
+    xlsx.save(stream)
+    xlsx.close()
+    stream.seek(0)
+    return send_file(stream, cache_timeout=0, as_attachment=True, attachment_filename=make_filename(psy_login, 'xlsx'))

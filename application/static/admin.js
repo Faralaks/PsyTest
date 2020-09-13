@@ -327,6 +327,8 @@ function showPsyInfoPage(psyIdx) {
     jq("#psyFormBtnSave").off("click").click(function () { rareCall(editPsy) }).val("Сохранить");
     jq("#statsCardBtnRefresh").off("click").click(function () { rareCall(getGradeList) });
 
+    setDownloadLinks("-", curPsy.login);
+
     jq("input").toggleClass("is-invalid", false);
     jq("#psyFormBtnSave").prop("disabled", true);
     showStats(gradeCounters[curPsy.login]);
@@ -355,6 +357,7 @@ function showAdminMainPage() {
 
     jq("input").toggleClass("is-invalid", false);
     jq("#psyFormBtnSave").prop("disabled", true);
+        setDownloadLinks();
 
     showStats(fullCounter);
     if (needToReload) { getPsyList(); needToReload = false}
@@ -375,7 +378,7 @@ function showGradePage(gradeIdx) {
 
     jq("#statsCardTitle").text(`${curGrade.dec_name} | Статистика`);
     jq("#statsCardBtnRefresh").off("click").click(function () { rareCall(getTesteeList) });
-
+    setDownloadLinks(curGrade.dec_name, curPsy.login);
     showStats(curGrade);
     getTesteeList();
     needToReload = true;
@@ -385,7 +388,7 @@ function showGradePage(gradeIdx) {
 jq("#psyTablePlace").ready(getPsyList);
 jq("#psyFormBtnSave").ready(function () { jq("#psyFormBtnSave").click(addNewPsy) });
 jq("#statsCardBtnRefresh").ready(function () { jq("#statsCardBtnRefresh").click(function () { rareCall(getPsyList) }) });
-jq("#statsCardBtnDownload").ready(function () { jq("#statsCardBtnDownload").click(function () { rareCall(download) }) });
+jq("#statsCardBtnDownload").ready(function () { setDownloadLinks() });
 
 
 

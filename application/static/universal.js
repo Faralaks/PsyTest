@@ -127,5 +127,10 @@ function showStats(stats) {
 
 function setLogin(login="") {
     jq("#loginPlace").text(", " + login)
+}
 
+function setDownloadLinks(grade="-", psy_login="-") {
+    if (grade === "-") { jq("#downloadDocx").hide(); }
+    else { jq("#downloadDocx").attr("href", `/download/${psy_login}/${grade}/not_yet`).show(); }
+    jq("#downloadXlsx").attr("href", `/download/${psy_login}/${grade}/done`);
 }
