@@ -12,12 +12,11 @@ from std_response import err, err_in_html
 form = lambda key: request.form[key]
 form_get = lambda key, ret: request.form.get(key, ret)
 
-req = {'status': 'testee', 'pre_del': None}
-
 
 @app.route('/download/<psy_login>/<grade>/<target>')
 @decors.check_admin_or_psy
 def download(psy_login, grade, target):
+    req = {'status': 'testee', 'pre_del': None}
 
     if session['status'] != 'admin': psy_login= session['login']
     if psy_login != '-':  req['added_by'] = psy_login
@@ -25,7 +24,7 @@ def download(psy_login, grade, target):
     if grade != '-': req['grade'] = grade
 
     users = mongo_connect.db.users
-    vprint(grade, psy_login, target)
+    vprint(grade, psy_login, target, req.get('grade'), grade != '-', [grade])
     if target == 'not_yet' and grade != '-':
         stream = BytesIO()
         req['result'] = 'Нет результата'
