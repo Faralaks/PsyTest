@@ -7,7 +7,10 @@
 
 from bson.objectid import ObjectId as obj_id
 from string import ascii_letters, digits
-from application import mongo_connect
+
+from flask.json import dumps
+
+from application import mongo_connect, app as current_app
 from Crypto.Cipher import AES
 from random import randint
 import datetime as dt
@@ -36,8 +39,8 @@ def now():
 
 def make_filename(login: str, ext: str):
     """Принимает логин пользователя. Возвращает имя для файла основываясь на логине пользователя,
-    текущей дате и значению после точки в текущей временной метске."""
-    return '%s_%s_%s.%s'%(login, dt.date.today().strftime('%Y-%m-%d'), str(now().timestamp()).split('.')[1], ext)
+    текущей дате и заданном расширении."""
+    return '%s_%s_.%s'%(login, dt.date.today().strftime('%Y-%m-%d'), ext)
 
 
 # Функции шифрования/дешифрования (ECB AES), кодирования/декодирования (base64) и генерации паролей
@@ -248,4 +251,43 @@ def del_danger_res(testee_login: str, psy_login: str, grade: str, msg: str):
     inc_grade_danger(psy_login, grade, -1)
     inc_grade_msg(psy_login, grade)
     users.update_one({'login': str(testee_login).capitalize()}, {'$set': {'result': 'Нет результата', 'msg': b64enc(msg[:501]), 'step':'deleted'}})
+
+
+
+def fixed_jsonify(*args, **kwargs):
+    """
+        This function from flask.json
+        ~~~~~~~~~~
+        :copyright: 2010 Pallets
+        :license: BSD-3-Clause
+    """
+
+    def serialization_fixer(data):
+        if isinstance(data, bytes):
+            return str(decrypt(data))
+        elif isinstance(data, obj_id):
+            return str(data)
+        else:
+            type_name = data.__class__.__name__
+            raise TypeError(f"Object of type '{type_name}' is not JSON serializable")
+
+    indent = None
+    separators = (",", ":")
+
+    if current_app.config["JSONIFY_PRETTYPRINT_REGULAR"] or current_app.debug:
+        indent = 2
+        separators = (", ", ": ")
+
+    if args and kwargs:
+        raise TypeError("jsonify() behavior undefined when passed both args and kwargs")
+    elif len(args) == 1:  # single args are passed directly to dumps()
+        data = args[0]
+    else:
+        data = args or kwargs
+
+    return current_app.response_class(
+        dumps(data, indent=indent, separators=separators, default=serialization_fixer,) + "\n",
+        mimetype=current_app.config["JSONIFY_MIMETYPE"],
+
+    )
 

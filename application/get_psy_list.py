@@ -5,7 +5,8 @@ from application import app
 
 
 
-@app.route('/admin')
+@app.route('/api/get_psy_list', methods=['POST'])
 @decors.check_admin
-def admin():
-    return render_template('admin.html', login=session['login'])
+def get_psy_list():
+        return fixed_jsonify(kind='Good', psyList=list(get_all_psys()))
+

@@ -1,20 +1,29 @@
 from application import app
-from flask import render_template, session, request, url_for, redirect
+from flask import render_template, session, request, url_for, redirect, jsonify
 from application import decorators as decors
-from psytest_tools import b64dec, del_danger_res, del_clear_res
+from psytest_tools import b64dec, del_danger_res, del_clear_res, vprint
+from std_response import err
 
+form = lambda key: request.form[key]
+form_get = lambda key, ret: request.form.get(key, ret)
 
-@app.route('/del_result/<grade>/<login>/<prev_res>', methods=['GET', 'POST'])
+del_res_type_decode = {'Не рискует': del_clear_res, 'Рискует': del_danger_res}
+
+@app.route('/api/del_result', methods=['POST'])
 @decors.check_psy
-def del_result(grade, login, prev_res):
-    if request.method == 'GET':
-        return render_template('del_result.html', logged=session.get('login', False), login=session['login'], name=(grade, b64dec(grade)),
-                               testee_login=login, back_url=url_for('grade', name=grade), prev_res=prev_res, title='Удаление результата')
-    elif request.method == 'POST':
-        if prev_res == 'clear':
-            del_clear_res(login, session['login'], b64dec(grade), request.form['reason'])
-        elif prev_res == 'danger':
-            del_danger_res(login, session['login'], b64dec(grade), request.form['reason'])
-        else: return '<h1>Ошибка при изменении статистики. Не верный параметр адресной строки</h1>'
-        return redirect(url_for('grade', name=grade))
-    return redirect(url_for('grade', name=grade))
+def del_result():
+    prev_res = form_get('prevRes', None)
+    login = form_get('testeeLogin', None)
+    grade = form_get('grade', None)
+    reason = form_get('reason', None)
+
+    if del_res_type_decode.get(prev_res, None) is None: return err('Не был получен корректный предыдущий Результат испытуемого')
+    if login is None: return err('Не был получен Логин Испытуемого')
+    if grade is None: return err('Не был получен Класс испытуемого')
+    if reason is None: return err('Не была получена Причина удаления испытуемого')
+
+    try:
+        del_res_type_decode[prev_res](login, session['login'], grade, reason)
+        return jsonify(kind='Good')
+    except:
+        err('Возникла ошибка при удалении результата')
