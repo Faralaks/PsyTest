@@ -1,9 +1,10 @@
-from psytest_tools import get_user_by_login, get_grades_by_psy, b64enc, b64dec
-from flask import render_template, redirect, url_for, session
+from flask import render_template, session
 from application import decorators as decors
 from application import app
+from flask import render_template, session
 
-
+from application import app
+from application import decorators as decors
 
 
 @app.route('/psy')

@@ -1,8 +1,8 @@
-from flask import session, redirect, url_for, g, session
-from bson.objectid import ObjectId as obj_id
 from functools import wraps
-from psytest_tools import check_session
 
+from flask import redirect, url_for, session
+
+from psytest_tools import check_session
 
 
 def check_admin(fn):

@@ -1,7 +1,8 @@
+from flask import session, request, jsonify
+
 from application import app
-from flask import render_template, session, request, url_for, redirect, jsonify
 from application import decorators as decors
-from psytest_tools import b64dec, del_danger_res, del_clear_res, vprint
+from psytest_tools import del_danger_res, del_clear_res
 from std_response import err
 
 form = lambda key: request.form[key]

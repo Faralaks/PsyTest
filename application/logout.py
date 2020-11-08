@@ -1,8 +1,6 @@
+from flask import redirect, url_for, session
+
 from application import app
-from flask import Blueprint, render_template, redirect, url_for, session
-from psytest_tools import *
-
-
 
 
 @app.route('/logout')

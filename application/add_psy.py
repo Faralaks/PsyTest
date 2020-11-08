@@ -1,10 +1,9 @@
-from flask import redirect, url_for, session, request, jsonify
+from flask import session, request, jsonify
 from pymongo.errors import DuplicateKeyError
 from application import decorators as decors
-from std_response import duplicate_key_err, success, err
+from std_response import duplicate_key_err, success, err as er
 from psytest_tools import add_psy as add
 from application import app
-from psytest_tools import vprint
 
 form = lambda key: request.form[key]
 form_get = lambda key, ret: request.form.get(key, ret)
@@ -18,6 +17,6 @@ def add_psy():
         add(form('login'), form('password'), form('ident'), tests, form('count'), session['login'])
     except DuplicateKeyError as err:
         return duplicate_key_err(err)
-    except: return err("Неизвестная при попытке добавить психолога!")
+    except: return er("Неизвестная при попытке добавить психолога!")
 
     return success()

@@ -1,13 +1,12 @@
-from psytest_tools import b64dec, decrypt, get_testees_by_grade_not_yet, make_filename, get_testees_by_grade_done, stamp2str, vprint
+from io import BytesIO
+
+from flask import session, send_file
+from openpyxl import Workbook, load_workbook
+
 from application import app, mongo_connect
 from application import decorators as decors
-from flask import session, render_template, url_for, redirect, send_file
-from os import path
-from openpyxl import Workbook, load_workbook
-from openpyxl.styles import Font
-from io import  BytesIO
-
-from std_response import err, err_in_html
+from psytest_tools import decrypt, make_filename, stamp2str
+from std_response import err_in_html
 
 form = lambda key: request.form[key]
 form_get = lambda key, ret: request.form.get(key, ret)
@@ -24,7 +23,6 @@ def download(psy_login, grade, target):
     if grade != '-': req['grade'] = grade
 
     users = mongo_connect.db.users
-    vprint(grade, psy_login, target, req.get('grade'), grade != '-', [grade])
     if target == 'not_yet' and grade != '-':
         stream = BytesIO()
         req['result'] = 'Нет результата'

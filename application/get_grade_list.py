@@ -1,7 +1,8 @@
-from psytest_tools import get_user_by_login, get_grades_by_psy, b64enc, decrypt, b64dec, vprint
-from flask import render_template, redirect, url_for, session, request, jsonify
-from application import decorators as decors
+from flask import request, jsonify
+
 from application import app
+from application import decorators as decors
+from psytest_tools import get_user_by_login
 from std_response import err
 
 form = lambda key: request.form[key]

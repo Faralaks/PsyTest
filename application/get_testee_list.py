@@ -1,10 +1,9 @@
-import time
+from flask import session, request
 
-from psytest_tools import get_testees_by_grade, get_user_by_login, decrypt, stamp2str, get_grades_by_psy, vprint, fixed_jsonify
 from application import app
 from application import decorators as decors
-from flask import session,  request
-from std_response import success, duplicate_key_err, err
+from psytest_tools import get_testees_by_grade, fixed_jsonify
+from std_response import err
 
 form = lambda key: request.form[key]
 form_get = lambda key, ret: request.form.get(key, ret)

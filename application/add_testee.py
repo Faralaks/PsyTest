@@ -1,5 +1,5 @@
 from psytest_tools import  get_user_by_login, b64dec
-from flask import redirect, url_for, session, request
+from flask import redirect, session, request
 from psytest_tools import add_testees  as add
 from application import decorators as decors
 from application import app

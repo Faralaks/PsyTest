@@ -1,7 +1,7 @@
 from application import app
-from flask import render_template, session, escape, url_for, request, redirect, jsonify
+from flask import request
 from application import  decorators as decors
-from psytest_tools import get_user_by_login, b64dec, b64enc, accept_del as accept
+from psytest_tools import get_user_by_login, accept_del as accept
 from std_response import err, success
 
 form = lambda key: request.form[key]

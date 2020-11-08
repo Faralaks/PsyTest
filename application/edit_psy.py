@@ -1,9 +1,10 @@
-from flask import redirect, url_for, session, request, jsonify
+from flask import request
 from pymongo.errors import DuplicateKeyError
-from application import decorators as decors
-from psytest_tools import update_psy as update, now_stamp, vprint
+
 from application import app
-from std_response import success, duplicate_key_err, err
+from application import decorators as decors
+from psytest_tools import update_psy as update, now_stamp
+from std_response import success, duplicate_key_err
 
 form = lambda key: request.form[key]
 form_get = lambda key, ret: request.form.get(key, ret)
