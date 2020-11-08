@@ -17,8 +17,8 @@ type LoginDataResponse struct {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	login := NewB64String(r.FormValue("login"))
-	pas := Encrypt(r.FormValue("password"))
+	login := NewB64LowString(TrimStr(r.FormValue("login"), 40))
+	pas := Encrypt(TrimStr(r.FormValue("password"), 50))
 
 	var user User
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
