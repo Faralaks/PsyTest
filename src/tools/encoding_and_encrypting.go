@@ -5,8 +5,8 @@ import (
 )
 
 func Encrypt(text string) string {
-	nonce := make([]byte, gcm.NonceSize())
-	return B64Enc(string(gcm.Seal(nonce, nonce, []byte(text), nil)))
+	nonce := make([]byte, Config.Gcm.NonceSize())
+	return B64Enc(string(Config.Gcm.Seal(nonce, nonce, []byte(text), nil)))
 }
 
 func Decrypt(srcPas string) (string, error) {
@@ -15,9 +15,9 @@ func Decrypt(srcPas string) (string, error) {
 		return "", err
 	}
 	pas := []byte(srcPas)
-	nonceSize := gcm.NonceSize()
+	nonceSize := Config.Gcm.NonceSize()
 	nonce, pas := pas[:nonceSize], pas[nonceSize:]
-	text, err := gcm.Open(nil, nonce, pas, nil)
+	text, err := Config.Gcm.Open(nil, nonce, pas, nil)
 	if err != nil {
 		return "", err
 	}

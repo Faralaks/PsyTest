@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"crypto/cipher"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -8,7 +9,19 @@ import (
 	"strings"
 )
 
-var CurPath string
+type configType struct {
+	CurPath       string
+	Port          string
+	Address       string
+	Gcm           cipher.AEAD
+	PasSecret     []byte
+	AccessSecret  []byte
+	RefreshSecret []byte
+	MongoUrl      string
+}
+
+var configData map[string]string
+var Config = configType{}
 
 var FeedBack chan interface{}
 var feedCounter = 0
@@ -36,7 +49,6 @@ func VPrint(lines ...interface{}) {
 const FatalKind = "Fatal"
 const ReloginKind = "Relogin"
 const BadAuthKind = "BadAuth"
-const GoodKind = "Good"
 const SucKind = "Suc"
 const BadUpdateKind = "BadUpdate"
 const DuplicateKeyKind = "DuplicatedField"

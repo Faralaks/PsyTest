@@ -14,10 +14,9 @@ import (
 )
 
 func main() {
-
 	r := mux.NewRouter()
 
-	fs := http.FileServer(http.Dir(CurPath + "/public"))
+	fs := http.FileServer(http.Dir(Config.CurPath + "/public"))
 	r.PathPrefix("/js/").Handler(fs)
 	r.Path("/favicon.ico").Handler(fs)
 
@@ -40,7 +39,7 @@ func main() {
 
 	r.HandleFunc("/remake", remakeDb).Methods("GET")
 	r.HandleFunc("/logout", logOut).Methods("GET")
-	_ = http.ListenAndServe(":80", handlers.LoggingHandler(os.Stdout, r))
+	_ = http.ListenAndServe(Config.Address+":"+Config.Port, handlers.LoggingHandler(os.Stdout, r))
 }
 
 var logOut = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -1,0 +1,8 @@
+{
+    "port":"80",
+    "address":"",
+    "curPath":".",
+    "pasSecret":"passphrasewhichneedstobe32bytes!",
+    "accessSecret":"access",
+    "refreshSecret":"refresh"
+}

@@ -43,7 +43,7 @@ func CreateTokens(uid string, status string) (string, string, error) {
 	atClaims["status"] = atd.Status
 	atClaims["exp"] = atd.CreatedAt.Add(time.Hour * 10).Unix()
 	at := jwt.NewWithClaims(jwt.SigningMethodHS512, atClaims)
-	signedAt, err := at.SignedString(accessSecret)
+	signedAt, err := at.SignedString(Config.AccessSecret)
 	if err != nil {
 		return "", "", err
 	}
@@ -60,7 +60,7 @@ func CreateTokens(uid string, status string) (string, string, error) {
 	rtClaims["status"] = rtd.Status
 	rtClaims["exp"] = rtd.CreatedAt.Add(time.Hour * 10).Unix()
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS512, rtClaims)
-	signedRt, err := rt.SignedString(refreshSecret)
+	signedRt, err := rt.SignedString(Config.RefreshSecret)
 	if err != nil {
 		return "", "", err
 	}
@@ -77,7 +77,7 @@ func ExtractAt(tokenString string) (jwt.MapClaims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return accessSecret, nil
+		return Config.AccessSecret, nil
 	})
 	if err != nil {
 		return nil, err
@@ -94,7 +94,7 @@ func ExtractRt(tokenString string) (jwt.MapClaims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return refreshSecret, nil
+		return Config.RefreshSecret, nil
 	})
 	if err != nil {
 		return nil, err
