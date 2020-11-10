@@ -1,6 +1,12 @@
 {
     "port":"80",
     "address":"",
+    "mongoUrl":"mongodb://127.0.0.1:27017",
+    "dbName":"psytest",
+    "usersColName":"users",
+    "tokensColName":"tokens",
+    "resultsColName":"results",
+    "statusColName":"stats",
     "curPath":".",
     "pasSecret":"passphrasewhichneedstobe32bytes!",
     "accessSecret":"access",

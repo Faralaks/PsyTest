@@ -2,7 +2,6 @@ package hendlers
 
 import (
 	"context"
-	. "db"
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"go.mongodb.org/mongo-driver/bson"

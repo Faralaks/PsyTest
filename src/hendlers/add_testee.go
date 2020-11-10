@@ -2,7 +2,6 @@ package hendlers
 
 import (
 	"context"
-	. "db"
 	"encoding/json"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"

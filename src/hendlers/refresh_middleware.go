@@ -2,7 +2,6 @@ package hendlers
 
 import (
 	"context"
-	"db"
 	"go.mongodb.org/mongo-driver/bson"
 	"net/http"
 	"time"
@@ -21,10 +20,10 @@ func RefreshMiddleware(cookieRt *http.Cookie, w http.ResponseWriter, r *http.Req
 	uuid := claims["uuid"].(string)
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	//println(uuid)
-	err = db.TokensCol.FindOne(ctx, bson.M{"_id": uuid}).Decode(&rtd)
+	err = TokensCol.FindOne(ctx, bson.M{"_id": uuid}).Decode(&rtd)
 	if err != nil {
 		ctx, _ = context.WithTimeout(context.Background(), 7*time.Second)
-		_, _ = db.TokensCol.DeleteMany(ctx, bson.M{"owner": claims["owner"].(string)})
+		_, _ = TokensCol.DeleteMany(ctx, bson.M{"owner": claims["owner"].(string)})
 
 		http.SetCookie(w, &http.Cookie{Name: "AccessToken", HttpOnly: true, MaxAge: -1})
 		http.SetCookie(w, &http.Cookie{Name: "RefreshToken", HttpOnly: true, MaxAge: -1})
@@ -33,7 +32,7 @@ func RefreshMiddleware(cookieRt *http.Cookie, w http.ResponseWriter, r *http.Req
 		return
 	}
 	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
-	_, err = db.TokensCol.DeleteOne(ctx, bson.M{"_id": uuid})
+	_, err = TokensCol.DeleteOne(ctx, bson.M{"_id": uuid})
 	if err != nil {
 		println("\n", err.Error(), "\n\n")
 	}

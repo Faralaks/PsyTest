@@ -2,7 +2,6 @@ package hendlers
 
 import (
 	"context"
-	. "db"
 	"go.mongodb.org/mongo-driver/bson"
 	p "go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
@@ -41,7 +40,6 @@ var Edit_psy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 	newData := bson.M{"login": newLogin, "pas": newPas, "available": newAvailable, "tests": newTests}
 	if curPsy.DeleteDate.IsZero() && deleteFlag {
-		VPrint("if curPsy.DeleteDate.IsZero() && deleteFlag {")
 		newData["deleteDate"] = time.Now()
 
 		ctx, _ = context.WithTimeout(context.Background(), 3*time.Second)
@@ -54,7 +52,6 @@ var Edit_psy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		go MoveTesteesByOwnerToArchive(psyUid.Hex())
 
 	} else if !curPsy.DeleteDate.IsZero() && !deleteFlag {
-		VPrint("} else if !curPsy.DeleteDate.IsZero() && !deleteFlag {")
 		ctx, _ = context.WithTimeout(context.Background(), 3*time.Second)
 		_, err = UsersCol.UpdateOne(ctx, curPsyFilter, bson.D{{"$set", newData}, {"$unset", bson.M{"deleteDate": 1}}})
 		if err != nil {
@@ -65,7 +62,6 @@ var Edit_psy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		go MoveTesteesByOwnerFromArchive(psyUid.Hex())
 
 	} else {
-		VPrint("else")
 		ctx, _ = context.WithTimeout(context.Background(), 3*time.Second)
 		_, err = UsersCol.UpdateOne(ctx, curPsyFilter, bson.D{{"$set", newData}})
 		if err != nil {

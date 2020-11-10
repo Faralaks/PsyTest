@@ -1,9 +1,12 @@
 package tools
 
 import (
+	"context"
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/json"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"io/ioutil"
 	"os"
 	"runtime"
@@ -14,7 +17,7 @@ func init() {
 	var err error
 	go ReadFeedBack()
 	FeedBack = make(chan interface{})
-	FeedBack <- "FeedBack is ready!"
+	FeedBack <- "FeedBack is Ready!"
 
 	folder := "."
 	if runtime.GOOS != "darwin" {
@@ -41,7 +44,35 @@ func init() {
 	Config.Port = configData["port"]
 	Config.Address = configData["address"]
 	Config.CurPath = configData["curPath"]
-	FeedBack <- "Config is ready"
+	Config.MongoUrl = configData["mongoUrl"]
+	Config.DbName = configData["dbName"]
+	Config.UsersColName = configData["usersColName"]
+	Config.TokensColName = configData["tokensColName"]
+	FeedBack <- "Config is Ready!"
+
+	client, err := mongo.NewClient(options.Client().ApplyURI(Config.MongoUrl))
+	if err != nil {
+		VPrint(err.Error())
+		panic(err)
+	}
+
+	err = client.Connect(context.TODO())
+	if err != nil {
+		VPrint(err.Error())
+		panic(err)
+	}
+
+	err = client.Ping(context.TODO(), nil)
+	if err != nil {
+		VPrint(err.Error())
+		panic(err)
+	}
+
+	Client = client
+	TokensCol = Client.Database(Config.DbName).Collection(Config.TokensColName)
+	UsersCol = Client.Database(Config.DbName).Collection(Config.UsersColName)
+
+	FeedBack <- "MongoDB is Ready!"
 
 	c, err := aes.NewCipher(Config.PasSecret)
 	if err != nil {
@@ -53,6 +84,6 @@ func init() {
 		VPrint(err.Error())
 		panic(err)
 	}
-	FeedBack <- "Crypto is ready!"
+	FeedBack <- "Crypto is Ready!"
 
 }

@@ -2,7 +2,6 @@ package hendlers
 
 import (
 	"context"
-	. "db"
 	"go.mongodb.org/mongo-driver/bson"
 	p "go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"

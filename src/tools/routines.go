@@ -2,7 +2,6 @@ package tools
 
 import (
 	"context"
-	. "db"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"time"

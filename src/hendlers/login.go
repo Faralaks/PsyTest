@@ -2,7 +2,6 @@ package hendlers
 
 import (
 	"context"
-	"db"
 	"encoding/json"
 	"go.mongodb.org/mongo-driver/bson"
 	"net/http"
@@ -23,7 +22,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var user User
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
-	err := db.UsersCol.FindOne(ctx, bson.M{"login": login, "pas": pas}).Decode(&user)
+	err := UsersCol.FindOne(ctx, bson.M{"login": login, "pas": pas}).Decode(&user)
 	if err != nil {
 		JsonMsg{Kind: BadAuthKind}.SendMsg(w)
 		return

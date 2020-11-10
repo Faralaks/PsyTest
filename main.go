@@ -1,7 +1,6 @@
 package main
 
 import (
-	"db"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -51,8 +50,8 @@ var logOut = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 })
 
 var remakeDb = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	db.UsersCol.DeleteMany(context.TODO(), bson.M{})
-	db.TokensCol.DeleteMany(context.TODO(), bson.M{})
+	UsersCol.DeleteMany(context.TODO(), bson.M{})
+	TokensCol.DeleteMany(context.TODO(), bson.M{})
 	u := User{
 		Uid:          p.NewObjectID(),
 		Login:        NewB64String("master"),
@@ -62,7 +61,7 @@ var remakeDb = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		Owner:        "Faralaks",
 		ModifiedDate: CurUtcStamp(),
 	}
-	db.UsersCol.InsertOne(context.TODO(), u)
+	UsersCol.InsertOne(context.TODO(), u)
 
 	_ = Psy{
 		Uid:          p.NewObjectID(),
@@ -78,9 +77,8 @@ var remakeDb = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ModifiedDate: CurUtcStamp(),
 	}
 
-	//db.UsersCol.InsertOne(context.TODO(), p)
-	//_, _ = fmt.Fprint(w, `<a href="/logout" style="font-size: 5em">BACKBACKBACKBACKBACKBACKBACKBACK</a>`)
+	//UsersCol.InsertOne(context.TODO(), p)
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-	http.Redirect(w, r, "/", 301)
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 
 })

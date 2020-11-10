@@ -4,24 +4,34 @@ import (
 	"crypto/cipher"
 	"encoding/json"
 	"fmt"
+	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
 	"strings"
 )
 
 type configType struct {
-	CurPath       string
-	Port          string
-	Address       string
-	Gcm           cipher.AEAD
-	PasSecret     []byte
-	AccessSecret  []byte
-	RefreshSecret []byte
-	MongoUrl      string
+	CurPath        string
+	Port           string
+	Address        string
+	Gcm            cipher.AEAD
+	PasSecret      []byte
+	AccessSecret   []byte
+	RefreshSecret  []byte
+	MongoUrl       string
+	DbName         string
+	UsersColName   string
+	TokensColName  string
+	ResultsColName string
+	StatsColName   string
 }
 
 var configData map[string]string
 var Config = configType{}
+
+var Client *mongo.Client
+var TokensCol *mongo.Collection
+var UsersCol *mongo.Collection
 
 var FeedBack chan interface{}
 var feedCounter = 0
