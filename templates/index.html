@@ -13,6 +13,11 @@
             $("#loginErr").text("Произошла неизвестная ошибка").show();
         })
     }
+    $("#indexPasswordField").ready(function () {$("#indexPasswordField").keyup(function(event){
+        if(event.key === "Enter"){
+            sendLoginData()
+        }
+    })});
     </script>
 {{end}}
 {{define "styles"}}{{end}}
