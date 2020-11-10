@@ -14,6 +14,8 @@ const NotYetResult = -1
 const ClearResult = 0
 const DangerResult = 1
 
+var ZeroDate = "0001-01-01T00:00:00Z"
+
 
 let shuffledAlf = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!',  ';', '%', ':',  '@', '(', ')', '_', '=']
                                 .sort(function(){ return Math.random() - 0.5; }).join("");
@@ -184,10 +186,7 @@ function confPas(pas, conf) {
 function sendNewData() {
     $.ajaxSetup({timeout:2000});
     $.post("/api/edit_user_data", $("#newPasForm").serialize()).done(function (response) {
-        showMsg(response.msg, response.kind, function () {
-
-
-        })}).fail(function () {
+        showMsg(response.msg, response.kind)}).fail(function () {
         showMsg('Неизвестная ошибка во время запроса, возможно, соединение с сервером потеряно.', "Fatal")
     });
 }

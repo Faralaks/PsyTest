@@ -20,7 +20,7 @@ function setToDefault() {
         $("#test"+testNumber).prop("checked", true)
     })
 
-    $("#psyFormCheckDel").prop("checked", !curPsy.pre_del || curPsy.pre_del !== "0001-01-01T00:00:00Z");
+    $("#psyFormCheckDel").prop("checked", curPsy.pre_del !== ZeroDate);
 
 }
 
@@ -115,7 +115,7 @@ function showPsy(key) {
             .append($(`<td title="${psyList[i].tests.join(", ")}">${psyList[i].tests.length}</td>`))
             .append($(`<td>${ stamp2str(psyList[i].create_date) }</td>`))
             .append($(`<td><input type="button" class="btn btn-primary" onclick="showPsyInfoPage(${i})" value="Подробнее"></td>`));
-        if (!psyList[i].pre_del || psyList[i].pre_del.toString() !== "0001-01-01T00:00:00Z") trPsy.append($(`<td><i class="fa fa-trash" aria-hidden="true" title="Будет удален менее чем через ${Math.ceil((psyList[i].pre_del - (Date.now() / 1000 | 0))/3600)} ч."></i></td>`));
+        if (psyList[i].pre_del !== ZeroDate) trPsy.append($(`<td><i class="fa fa-trash" aria-hidden="true" title="Будет удален менее чем через 72 часа"></i></td>`));
 
         psyTable.append(trPsy);
 
