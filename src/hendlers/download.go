@@ -44,7 +44,7 @@ var Download = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		}
 		defer cur.Close(context.TODO())
 
-		file, err = excelize.OpenFile("not_yet_template.xlsx")
+		file, err = excelize.OpenFile(CurPath + "/not_yet_template.xlsx")
 		if err != nil {
 			JsonMsg{Kind: FatalKind, Msg: "Не удалось открыть заготовку not_yet_template.xlsx | " + err.Error()}.SendMsg(w)
 			return
@@ -92,7 +92,7 @@ var Download = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		}
 		defer cur.Close(context.TODO())
 
-		file, err = excelize.OpenFile("done_template.xlsx")
+		file, err = excelize.OpenFile(CurPath + "/done_template.xlsx")
 		if err != nil {
 			JsonMsg{Kind: FatalKind, Msg: "Не удалось открыть заготовку done_template.xlsx | " + err.Error()}.SendMsg(w)
 			return

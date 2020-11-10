@@ -17,7 +17,7 @@ func main() {
 
 	r := mux.NewRouter()
 
-	fs := http.FileServer(http.Dir("./public"))
+	fs := http.FileServer(http.Dir(CurPath + "/public"))
 	r.PathPrefix("/js/").Handler(fs)
 	r.Path("/favicon.ico").Handler(fs)
 

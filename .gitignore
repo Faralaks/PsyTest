@@ -2,7 +2,7 @@
 .idea/
 .vscode/
 logs/
-*.a
+*?.a
 # My GO executable files
 *_run
 # Binaries for programs and plugins

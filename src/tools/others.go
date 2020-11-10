@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+var CurPath string
+
 var FeedBack chan interface{}
 var feedCounter = 0
 
@@ -15,13 +17,6 @@ func ReadFeedBack() {
 	for {
 		fmt.Printf("%v\n", <-FeedBack)
 	}
-}
-
-func init() {
-	go ReadFeedBack()
-	FeedBack = make(chan interface{})
-	FeedBack <- "FeedBack is ready!"
-
 }
 
 func VPrint(lines ...interface{}) {

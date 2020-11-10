@@ -1,27 +1,8 @@
 package tools
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
 	"encoding/base64"
-	"fmt"
-	"log"
 )
-
-func init() {
-	var err error
-	c, err := aes.NewCipher(pasSecret)
-	if err != nil {
-		log.Println(err)
-		panic(err)
-	}
-	gcm, err = cipher.NewGCM(c)
-	if err != nil {
-		log.Println(err)
-		panic(err)
-	}
-	fmt.Println("Crypto is ready!")
-}
 
 func Encrypt(text string) string {
 	nonce := make([]byte, gcm.NonceSize())
