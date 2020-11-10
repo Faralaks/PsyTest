@@ -22,7 +22,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var user User
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
-	err := UsersCol.FindOne(ctx, bson.M{"login": login, "pas": pas}).Decode(&user)
+	err := UsersCol.FindOne(ctx, bson.M{"login": login, "pas": pas, "deleteDate": bson.D{{"$exists", false}}}).Decode(&user)
 	if err != nil {
 		JsonMsg{Kind: BadAuthKind}.SendMsg(w)
 		return
