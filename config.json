@@ -11,6 +11,6 @@
     "pasSecret":"passphrasewhichneedstobe32bytes!",
     "accessSecret":"access",
     "refreshSecret":"refresh",
-    "atLifeTime": 5,
-    "rtLifeTime": 60
+    "atLifeTime": "5",
+    "rtLifeTime": "60"
 }
