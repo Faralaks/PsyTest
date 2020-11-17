@@ -18,6 +18,8 @@ type configType struct {
 	PasSecret      []byte
 	AccessSecret   []byte
 	RefreshSecret  []byte
+	ATLifeTime     int
+	RTLifeTime     int
 	MongoUrl       string
 	DbName         string
 	UsersColName   string
