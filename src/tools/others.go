@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type configType struct {
@@ -18,8 +19,8 @@ type configType struct {
 	PasSecret      []byte
 	AccessSecret   []byte
 	RefreshSecret  []byte
-	ATLifeTime     int
-	RTLifeTime     int
+	ATLifeTime     time.Duration
+	RTLifeTime     time.Duration
 	MongoUrl       string
 	DbName         string
 	UsersColName   string

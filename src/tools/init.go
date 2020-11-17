@@ -12,6 +12,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func init() {
@@ -39,16 +40,19 @@ func init() {
 		panic(err.Error())
 	}
 
-	Config.ATLifeTime, err = strconv.Atoi(configData["atLifeTime"])
+	atLifeTime, err := strconv.Atoi(configData["atLifeTime"])
 	if err != nil {
 		VPrint("Введено некорректное время жизни atLifeTime |", err.Error())
 		panic(err)
 	}
-	Config.RTLifeTime, err = strconv.Atoi(configData["rtLifeTime"])
+	Config.ATLifeTime = time.Duration(atLifeTime)
+
+	rtLifeTime, err := (strconv.Atoi(configData["rtLifeTime"]))
 	if err != nil {
 		VPrint("Введено некорректное время жизни rtLifeTime |", err.Error())
 		panic(err)
 	}
+	Config.RTLifeTime = time.Duration(rtLifeTime)
 
 	Config.AccessSecret = []byte(configData["accessSecret"])
 	Config.RefreshSecret = []byte(configData["refreshSecret"])
