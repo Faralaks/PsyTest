@@ -10,5 +10,7 @@
     "curPath":".",
     "pasSecret":"passphrasewhichneedstobe32bytes!",
     "accessSecret":"access",
-    "refreshSecret":"refresh"
+    "refreshSecret":"refresh",
+    "atLifeTime": 5,
+    "rtLifeTime": 60
 }

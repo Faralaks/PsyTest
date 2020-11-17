@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -36,6 +37,17 @@ func init() {
 	if err != nil {
 		VPrint("PANIC!!!  Ошибка при декодировании JSON-конфига |" + err.Error())
 		panic(err.Error())
+	}
+
+	Config.ATLifeTime, err = strconv.Atoi(configData["atLifeTime"])
+	if err != nil {
+		VPrint("Введено некорректное время жизни atLifeTime |", err.Error())
+		panic(err)
+	}
+	Config.RTLifeTime, err = strconv.Atoi(configData["rtLifeTime"])
+	if err != nil {
+		VPrint("Введено некорректное время жизни rtLifeTime |", err.Error())
+		panic(err)
 	}
 
 	Config.AccessSecret = []byte(configData["accessSecret"])
