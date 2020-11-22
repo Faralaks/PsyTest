@@ -81,7 +81,7 @@ func (jm JsonMsg) SendMsg(w http.ResponseWriter) {
 	}
 }
 
-func Contains(elem string, list []string) bool {
+func _(elem string, list []string) bool {
 	for _, e := range list {
 		if elem == e {
 			return true

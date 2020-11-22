@@ -46,8 +46,7 @@ func RefreshMiddleware(cookieRt *http.Cookie, allowList *[]string, w http.Respon
 		return
 	}
 
-	r.Header.Set("status", claims["status"].(string))
-	r.Header.Set("owner", claims["owner"].(string))
+	SetUserDataHeaders(claims["status"].(string), claims["owner"].(string), r)
 
 	next.ServeHTTP(w, r)
 

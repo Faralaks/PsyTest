@@ -28,8 +28,7 @@ func AuthMiddleware(next http.Handler, allowList *[]string) http.Handler {
 			return
 		}
 
-		r.Header.Set("status", claims["status"].(string))
-		r.Header.Set("owner", claims["owner"].(string))
+		SetUserDataHeaders(claims["status"].(string), claims["owner"].(string), r)
 
 		next.ServeHTTP(w, r)
 
