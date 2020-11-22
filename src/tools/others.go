@@ -103,6 +103,16 @@ func GeneratePas() string {
 	return "pas"
 }
 
+func IsAllowed(status string, allowList *[]string) bool {
+	for _, allow := range *allowList {
+		if status == allow {
+			return true
+		}
+	}
+	return false
+
+}
+
 func SetLoginCookies(w http.ResponseWriter, newAt, newRt string) {
 	http.SetCookie(w, &http.Cookie{Name: "AccessToken", Value: newAt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.ATLifeTime)})
 	http.SetCookie(w, &http.Cookie{Name: "RefreshToken", Value: newRt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.RTLifeTime)})
