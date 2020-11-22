@@ -41,13 +41,14 @@ func RefreshMiddleware(cookieRt *http.Cookie, allowList *[]string, w http.Respon
 	}
 	SetLoginCookies(w, newAt, newRt)
 
-	for _, status := range *allowList {
-		if status == rtd.Status {
-			r.Header.Set("status", claims["status"].(string))
-			r.Header.Set("owner", claims["owner"].(string))
-
-			next.ServeHTTP(w, r)
-			return
-		}
+	if !IsAllowed(rtd.Status, allowList) {
+		JsonMsg{Kind: ReloginKind, Msg: "Отказано в доступе"}.SendMsg(w)
+		return
 	}
+
+	r.Header.Set("status", claims["status"].(string))
+	r.Header.Set("owner", claims["owner"].(string))
+
+	next.ServeHTTP(w, r)
+
 }
