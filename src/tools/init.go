@@ -45,14 +45,14 @@ func init() {
 		VPrint("Введено некорректное время жизни atLifeTime |", err.Error())
 		panic(err)
 	}
-	Config.ATLifeTime = time.Duration(atLifeTime)
+	Config.ATLifeTime = time.Duration(atLifeTime) * time.Minute
 
 	rtLifeTime, err := (strconv.Atoi(configData["rtLifeTime"]))
 	if err != nil {
 		VPrint("Введено некорректное время жизни rtLifeTime |", err.Error())
 		panic(err)
 	}
-	Config.RTLifeTime = time.Duration(rtLifeTime)
+	Config.RTLifeTime = time.Duration(rtLifeTime) * time.Minute
 
 	Config.AccessSecret = []byte(configData["accessSecret"])
 	Config.RefreshSecret = []byte(configData["refreshSecret"])

@@ -41,7 +41,7 @@ function showMsg(msg, kind,  sucFunc=function () {}, field="") {
             return;
         case "Relogin":
             alert("Ваша сессия истекла, необзодимо войти повторно.")
-            document.location.replace("/logout");
+            document.location.replace("/");
             return;
 
         default:
@@ -185,7 +185,7 @@ function confPas(pas, conf) {
 
 function sendNewData() {
     $.ajaxSetup({timeout:2000});
-    $.post("/api/edit_user_data", $("#newPasForm").serialize()).done(function (response) {
+    $.post("/edit_user_data", $("#newPasForm").serialize()).done(function (response) {
         showMsg(response.msg, response.kind)}).fail(function () {
         showMsg('Неизвестная ошибка во время запроса, возможно, соединение с сервером потеряно.', "Fatal")
     });

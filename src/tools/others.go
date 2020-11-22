@@ -102,3 +102,8 @@ func TrimStr(str string, l int) string {
 func GeneratePas() string {
 	return "pas"
 }
+
+func DeleteCookie(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{Name: "AccessToken", HttpOnly: true, MaxAge: -1})
+	http.SetCookie(w, &http.Cookie{Name: "RefreshToken", HttpOnly: true, MaxAge: -1})
+}
