@@ -103,7 +103,12 @@ func GeneratePas() string {
 	return "pas"
 }
 
-func DeleteCookie(w http.ResponseWriter) {
+func SetLoginCookies(w http.ResponseWriter, newAt, newRt string) {
+	http.SetCookie(w, &http.Cookie{Name: "AccessToken", Value: newAt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.ATLifeTime)})
+	http.SetCookie(w, &http.Cookie{Name: "RefreshToken", Value: newRt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.RTLifeTime)})
+}
+
+func DeleteLoginCookies(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{Name: "AccessToken", HttpOnly: true, MaxAge: -1})
 	http.SetCookie(w, &http.Cookie{Name: "RefreshToken", HttpOnly: true, MaxAge: -1})
 }

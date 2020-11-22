@@ -23,7 +23,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 	err := UsersCol.FindOne(ctx, bson.M{"login": login, "pas": pas, "deleteDate": bson.D{{"$exists", false}}}).Decode(&user)
 	if err != nil {
-		DeleteCookie(w)
+		DeleteLoginCookies(w)
 		JsonMsg{Kind: BadAuthKind}.SendMsg(w)
 		return
 	}

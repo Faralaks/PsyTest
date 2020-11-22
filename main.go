@@ -42,7 +42,7 @@ func main() {
 }
 
 var logOut = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	DeleteCookie(w)
+	DeleteLoginCookies(w)
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 	http.Redirect(w, r, "/", 301)
 

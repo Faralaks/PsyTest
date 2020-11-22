@@ -23,7 +23,7 @@ func RefreshMiddleware(cookieRt *http.Cookie, allowList *[]string, w http.Respon
 		ctx, _ = context.WithTimeout(context.Background(), 7*time.Second)
 		_, _ = TokensCol.DeleteMany(ctx, bson.M{"owner": claims["owner"].(string)})
 
-		DeleteCookie(w)
+		DeleteLoginCookies(w)
 
 		JsonMsg{Kind: ReloginKind, Msg: "Скомпрометирован ключ обновления или ключ обновления истек | " + err.Error()}.SendMsg(w)
 		return
