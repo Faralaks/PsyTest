@@ -33,8 +33,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		JsonMsg{Kind: FatalKind, Msg: "Не удалось создать токены | " + err.Error()}.SendMsg(w)
 		return
 	}
-	http.SetCookie(w, &http.Cookie{Name: "AccessToken", Value: signedAt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.ATLifeTime)})
-	http.SetCookie(w, &http.Cookie{Name: "RefreshToken", Value: signedRt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.RTLifeTime)})
+	SetLoginCookies(w, signedAt, signedRt)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

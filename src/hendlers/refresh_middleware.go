@@ -39,8 +39,7 @@ func RefreshMiddleware(cookieRt *http.Cookie, allowList *[]string, w http.Respon
 		JsonMsg{Kind: ReloginKind, Msg: "Не удалось создать новые токены | " + err.Error()}.SendMsg(w)
 		return
 	}
-	http.SetCookie(w, &http.Cookie{Name: "AccessToken", Value: newAt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.ATLifeTime)})
-	http.SetCookie(w, &http.Cookie{Name: "RefreshToken", Value: newRt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.RTLifeTime)})
+	SetLoginCookies(w, newAt, newRt)
 
 	for _, status := range *allowList {
 		if status == rtd.Status {
