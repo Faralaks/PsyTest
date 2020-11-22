@@ -131,10 +131,11 @@ function showPsy(key) {
 }
 
 
-function getPsyList(reloadTable= true) {
+function getPsyList(reloadTable= true, reloadMyData = false) {
     $("#loadingIcon").show();
     $.ajaxSetup({timeout:10000});
-    $.get("/api/get_psy_list").done(function (response) {
+    $.get("/get_psy_list").done(function (response) {
+        if (reloadMyData) getMyData()
         showMsg(response.msg, response.kind,function () {
             psyList = response.psyList;
             if (reloadTable) showPsy()
@@ -146,7 +147,7 @@ function getPsyList(reloadTable= true) {
 
 function addNewPsy() {
     $.ajaxSetup({timeout:3000});
-    $.post("/api/add_psy", $("#addPsyForm").serialize()).done(function (response) {
+    $.post("/add_psy", $("#addPsyForm").serialize()).done(function (response) {
         showMsg(response.msg, response.kind,function () { clearPsyForm(); getPsyList(true); }, response.field);
     }).fail(function () {
         showMsg("Превышено время ожидания или произошла ошибка на стороне сервера! Операция не выполнена");
@@ -157,7 +158,7 @@ function addNewPsy() {
 
 function acceptDel(testeeUid, btn) {
     $.ajaxSetup({timeout:3000});
-    $.post("/api/accept_del", {testeeUid: testeeUid}).done(function (response) {
+    $.post("/accept_del", {testeeUid: testeeUid}).done(function (response) {
         showMsg(response.msg, response.kind, function () {
             $(btn).toggleClass("invisAction", true);
             gradeCounters[curPsy.uid].msg -= 1;
@@ -174,7 +175,7 @@ function editPsy() {
     let addPsyFormData = $('#addPsyForm').serializeArray();
     addPsyFormData.push({name: 'psyUid', value: curPsy.uid});
     $.ajaxSetup({timeout:3000});
-    $.post("/api/edit_psy",  addPsyFormData).done(function (response) {
+    $.post("/edit_psy",  addPsyFormData).done(function (response) {
         showMsg(response.msg, response.kind,function () {
             $("#psyFormBtnSave").prop("disabled", true);
             needToReload = true;
@@ -223,7 +224,7 @@ function showGrades(key) {
 function getGradeList(reloadTable = true) {
     $("#loadingIcon").show();
     $.ajaxSetup({timeout:10000});
-    $.get("/api/get_user_data", { psyUid: curPsy.uid}).done(function (response) {
+    $.get("/get_user_data", { psyUid: curPsy.uid}).done(function (response) {
         showMsg(response.msg, response.kind,function () {
             gradeList = [];
             if (response.userData && $("#psyFormBtnSave").prop("disabled")) { curPsy = response.userData; setToDefault()}
@@ -300,7 +301,7 @@ function showTestees(key="result", reverseResults=true) {
 function getTesteeList(reloadTable= true) {
     $("#loadingIcon").show();
     $.ajaxSetup({timeout:10000});
-    $.get("/api/get_testee_list", {psyUid: curPsy.uid, grade: curGrade.dec_name}).done(function (response) {
+    $.get("/get_testee_list", {psyUid: curPsy.uid, grade: curGrade.dec_name}).done(function (response) {
         testeeList = response.testeeList
         if (reloadTable) showTestees()
     }).fail(function () { $("#loadingIcon").hide(); showMsg('Данные загрузить не удалось', "Err") });
@@ -397,7 +398,7 @@ function showGradePage(gradeIdx) {
 
 function getMyData() {
     $.ajaxSetup({timeout:2000});
-    $.get("/api/get_user_data", {isMy:"true"}).done(function (response) {
+    $.get("/get_user_data", {isMy:"true"}).done(function (response) {
         showMsg(response.msg, response.kind, function () {
             myData = response.userData;
             myData.dec_login = title(b64dec(myData.login));
@@ -407,7 +408,8 @@ function getMyData() {
     });
     }
 
-$("#psyTablePlace").ready(function () { getMyData(); getPsyList() });
+
+$("#psyTablePlace").ready(function () { getPsyList(true, true) });
 $("#psyFormBtnSave").ready(function () { $("#psyFormBtnSave").click(addNewPsy) });
 $("#statsCardBtnRefresh").ready(function () { $("#statsCardBtnRefresh").click(function () { rareCall(getPsyList) }) });
 $("#statsCardBtnDownload").ready(function () { setDownloadLinks() });

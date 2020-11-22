@@ -25,15 +25,15 @@ func main() {
 	r.HandleFunc("/admin", AdminPage).Methods("GET")
 	r.HandleFunc("/psy", PsyPage).Methods("GET")
 
-	r.Handle("/api/get_psy_list", AuthMiddleware(Get_psy_list, AdminAccess)).Methods("GET")
-	r.Handle("/api/add_psy", AuthMiddleware(Add_psy, AdminAccess)).Methods("POST")
-	r.Handle("/api/accept_del", AuthMiddleware(Accept_del, AdminAccess)).Methods("POST")
-	r.Handle("/api/edit_psy", AuthMiddleware(Edit_psy, AdminAndPsyAccess)).Methods("POST")
-	r.Handle("/api/get_user_data", AuthMiddleware(Get_user_data, AllAccess)).Methods("GET")
-	r.Handle("/api/add_testees", AuthMiddleware(Add_testees, PsyAccess)).Methods("POST")
-	r.Handle("/api/get_testee_list", AuthMiddleware(Get_testee_list, AdminAndPsyAccess)).Methods("GET")
-	r.Handle("/api/del_result", AuthMiddleware(Del_result, PsyAccess)).Methods("POST")
-	r.Handle("/api/edit_user_data", AuthMiddleware(Edit_user_data, AdminAndPsyAccess)).Methods("POST")
+	r.Handle("/get_psy_list", AuthMiddleware(Get_psy_list, AdminAccess)).Methods("GET")
+	r.Handle("/add_psy", AuthMiddleware(Add_psy, AdminAccess)).Methods("POST")
+	r.Handle("/accept_del", AuthMiddleware(Accept_del, AdminAccess)).Methods("POST")
+	r.Handle("/edit_psy", AuthMiddleware(Edit_psy, AdminAndPsyAccess)).Methods("POST")
+	r.Handle("/get_user_data", AuthMiddleware(Get_user_data, AllAccess)).Methods("GET")
+	r.Handle("/add_testees", AuthMiddleware(Add_testees, PsyAccess)).Methods("POST")
+	r.Handle("/get_testee_list", AuthMiddleware(Get_testee_list, AdminAndPsyAccess)).Methods("GET")
+	r.Handle("/del_result", AuthMiddleware(Del_result, PsyAccess)).Methods("POST")
+	r.Handle("/edit_user_data", AuthMiddleware(Edit_user_data, AdminAndPsyAccess)).Methods("POST")
 	r.Handle("/download", AuthMiddleware(Download, AdminAndPsyAccess)).Methods("GET")
 
 	r.HandleFunc("/remake", remakeDb).Methods("GET")
@@ -42,8 +42,7 @@ func main() {
 }
 
 var logOut = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	http.SetCookie(w, &http.Cookie{Name: "AccessToken", HttpOnly: true, MaxAge: -1})
-	http.SetCookie(w, &http.Cookie{Name: "RefreshToken", HttpOnly: true, MaxAge: -1})
+	DeleteLoginCookies(w)
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 	http.Redirect(w, r, "/", 301)
 

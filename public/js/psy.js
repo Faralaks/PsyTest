@@ -101,7 +101,7 @@ function deleteResult(testeeIdx, btn) {
     let testee = testeeList[testeeIdx];
     let delMsg = $("#delReasonField"+testeeIdx).val();
     $.ajaxSetup({timeout:2000});
-    $.post("/api/del_result", {testeeUid: testee.uid, msg: delMsg, grade: curGrade.dec_name}).done(function (response) {
+    $.post("/del_result", {testeeUid: testee.uid, msg: delMsg, grade: curGrade.dec_name}).done(function (response) {
         showMsg(response.msg, response.kind, function () {
             $(btn).hide();
             $(btn).parent().append($(`<span  title="Этот результат был удален по вашей причине: ${delMsg}"><i class="fa fa-trash" aria-hidden="true"></i></span>`))
@@ -177,7 +177,7 @@ function showTestees(key="result", reverseResults= true) {
 function getTesteeList(reloadTable= true) {
     $("#loadingIcon").show();
     $.ajaxSetup({timeout:10000});
-    $.get("/api/get_testee_list", {psyUid: curPsy.uid, grade: curGrade.dec_name}).done(function (response) {
+    $.get("/get_testee_list", {psyUid: curPsy.uid, grade: curGrade.dec_name}).done(function (response) {
         showMsg(response.msg, response.kind, function () {
             testeeList = response.testeeList
             if (reloadTable) showTestees() });
@@ -189,7 +189,7 @@ function getTesteeList(reloadTable= true) {
 function getUserData() {
     $("#loadingIcon").show();
     $.ajaxSetup({timeout:2000});
-    $.get("/api/get_user_data").done(function (response) {
+    $.get("/get_user_data").done(function (response) {
         showMsg(response.msg, response.kind, function () {
             curPsy = response.userData;
             curPsy.dec_login = title(b64dec(curPsy.login))
@@ -204,7 +204,7 @@ function getUserData() {
 
 function addTestees() {
     $.ajaxSetup({timeout:3000});
-    $.post("/api/add_testees", $("#addTesteesForm").serialize()).done(function (response) {
+    $.post("/add_testees", $("#addTesteesForm").serialize()).done(function (response) {
         showMsg(response.msg, response.kind, function () {
             if (!curGrade) { renderGradeList(response.newGrades); showGrades() }
             let formCount = $("#addFormCount");

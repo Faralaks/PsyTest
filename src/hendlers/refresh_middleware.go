@@ -8,44 +8,46 @@ import (
 	. "tools"
 )
 
-func RefreshMiddleware(cookieRt *http.Cookie, w http.ResponseWriter, r *http.Request, next http.Handler) {
-	//println("~~~~~~~~~~~ RefreshMiddleware")
+func RefreshMiddleware(cookieRt *http.Cookie, allowList *[]string, w http.ResponseWriter, r *http.Request, next http.Handler) {
 	rt := cookieRt.Value
-	claims, err := ExtractRt(rt)
+	claims, err := ExtractToken(rt, Config.RefreshSecret)
 	if err != nil {
 		JsonMsg{Kind: FatalKind, Msg: "Недействительный ключ обновления | " + err.Error()}.SendMsg(w)
 		return
 	}
-	var rtd RefreshTokenData
-	uuid := claims["uuid"].(string)
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	//println(uuid)
-	err = TokensCol.FindOne(ctx, bson.M{"_id": uuid}).Decode(&rtd)
+	var rtd TokenData
+	uid := claims["uid"].(string)
+	ctx, _ := context.WithTimeout(context.Background(), 2*time.Second)
+	err = TokensCol.FindOne(ctx, bson.M{"_id": uid}).Decode(&rtd)
 	if err != nil {
-		ctx, _ = context.WithTimeout(context.Background(), 7*time.Second)
+		ctx, _ = context.WithTimeout(context.Background(), 3*time.Second)
 		_, _ = TokensCol.DeleteMany(ctx, bson.M{"owner": claims["owner"].(string)})
 
-		http.SetCookie(w, &http.Cookie{Name: "AccessToken", HttpOnly: true, MaxAge: -1})
-		http.SetCookie(w, &http.Cookie{Name: "RefreshToken", HttpOnly: true, MaxAge: -1})
+		DeleteLoginCookies(w)
 
-		JsonMsg{Kind: ReloginKind, Msg: "Скомпрометирован ключ обновления | " + err.Error()}.SendMsg(w)
+		JsonMsg{Kind: ReloginKind, Msg: "Веронятно, ваш ключ обновления скомпромитирован, рекомендуется сменить пароль | " + err.Error()}.SendMsg(w)
 		return
 	}
-	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
-	_, err = TokensCol.DeleteOne(ctx, bson.M{"_id": uuid})
+
+	ctx, _ = context.WithTimeout(context.Background(), 3*time.Second)
+	_, err = TokensCol.DeleteOne(ctx, bson.M{"_id": uid})
 	if err != nil {
-		println("\n", err.Error(), "\n\n")
+		VPrint(err.Error())
 	}
-	NewAt, NewRt, err := CreateTokens(rtd.Owner, rtd.Status)
+	newAt, newRt, err := CreateTokens(rtd.Owner, rtd.Status)
 	if err != nil {
 		JsonMsg{Kind: ReloginKind, Msg: "Не удалось создать новые токены | " + err.Error()}.SendMsg(w)
 		return
 	}
-	http.SetCookie(w, &http.Cookie{Name: "AccessToken", Value: NewAt, HttpOnly: true, Expires: time.Now().Add(time.Minute * 10)})
-	http.SetCookie(w, &http.Cookie{Name: "RefreshToken", Value: NewRt, HttpOnly: true, Expires: time.Now().Add(time.Hour)})
+	SetLoginCookies(w, newAt, newRt)
 
-	r.Header.Set("owner", rtd.Owner)
-	r.Header.Set("status", rtd.Status)
+	if !IsAllowed(rtd.Status, allowList) {
+		JsonMsg{Kind: ReloginKind, Msg: "Отказано в доступе"}.SendMsg(w)
+		return
+	}
+
+	SetUserDataHeaders(claims["status"].(string), claims["owner"].(string), r)
 
 	next.ServeHTTP(w, r)
+
 }

@@ -43,12 +43,12 @@ const AdminStatus = "admin"
 const PsyStatus = "psy"
 const TesteeStatus = "testee"
 
-var AdminAccess = []string{AdminStatus}
-var PsyAccess = []string{PsyStatus}
+var AdminAccess = &[]string{AdminStatus}
+var PsyAccess = &[]string{PsyStatus}
 
 //var TesteeAccess = []string{TesteeStatus}
-var AdminAndPsyAccess = []string{PsyStatus, AdminStatus}
-var AllAccess = []string{PsyStatus, TesteeStatus, AdminStatus}
+var AdminAndPsyAccess = &[]string{PsyStatus, AdminStatus}
+var AllAccess = &[]string{PsyStatus, TesteeStatus, AdminStatus}
 
 const NotYetResult = int8(-1)
 const ClearResult = int8(0)

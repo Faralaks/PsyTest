@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type configType struct {
@@ -18,6 +19,8 @@ type configType struct {
 	PasSecret      []byte
 	AccessSecret   []byte
 	RefreshSecret  []byte
+	ATLifeTime     time.Duration
+	RTLifeTime     time.Duration
 	MongoUrl       string
 	DbName         string
 	UsersColName   string
@@ -78,7 +81,7 @@ func (jm JsonMsg) SendMsg(w http.ResponseWriter) {
 	}
 }
 
-func Contains(elem string, list []string) bool {
+func _(elem string, list []string) bool {
 	for _, e := range list {
 		if elem == e {
 			return true
@@ -98,4 +101,28 @@ func TrimStr(str string, l int) string {
 
 func GeneratePas() string {
 	return "pas"
+}
+
+func IsAllowed(status string, allowList *[]string) bool {
+	for _, allow := range *allowList {
+		if status == allow {
+			return true
+		}
+	}
+	return false
+
+}
+func SetUserDataHeaders(status, owner string, r *http.Request) {
+	r.Header.Set("status", status)
+	r.Header.Set("owner", owner)
+}
+
+func SetLoginCookies(w http.ResponseWriter, newAt, newRt string) {
+	http.SetCookie(w, &http.Cookie{Name: "AccessToken", Value: newAt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.ATLifeTime)})
+	http.SetCookie(w, &http.Cookie{Name: "RefreshToken", Value: newRt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.RTLifeTime)})
+}
+
+func DeleteLoginCookies(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{Name: "AccessToken", HttpOnly: true, MaxAge: -1})
+	http.SetCookie(w, &http.Cookie{Name: "RefreshToken", HttpOnly: true, MaxAge: -1})
 }
