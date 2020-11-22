@@ -112,6 +112,10 @@ func IsAllowed(status string, allowList *[]string) bool {
 	return false
 
 }
+func SetUserDataHeaders(status, owner string, r *http.Request) {
+	r.Header.Set("status", status)
+	r.Header.Set("owner", owner)
+}
 
 func SetLoginCookies(w http.ResponseWriter, newAt, newRt string) {
 	http.SetCookie(w, &http.Cookie{Name: "AccessToken", Value: newAt, HttpOnly: true, Expires: time.Now().UTC().Add(Config.ATLifeTime)})
